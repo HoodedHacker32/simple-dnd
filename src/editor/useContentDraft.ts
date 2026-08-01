@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 import type { DndClass, Race, StatBlock } from '../types/character';
-import type { RuleSection } from '../types/rules';
+import type { Mechanics, RuleSection } from '../types/rules';
 import { CONTENT, PACK_FORMAT, PACK_VERSION, parseContentPack, type ContentPack } from '../content';
 
 const DRAFT_KEY = 'chroniclers-table.draft.v1';
@@ -84,6 +84,7 @@ export function useContentDraft() {
   const setRaces = useCallback((races: Race[]) => update({ races }), [update]);
   const setClasses = useCallback((classes: DndClass[]) => update({ classes }), [update]);
   const setCodex = useCallback((codex: RuleSection[]) => update({ codex }), [update]);
+  const setMechanics = useCallback((mechanics: Mechanics) => update({ mechanics }), [update]);
   const setLabel = useCallback((label: string) => update({ label }), [update]);
 
   const reset = useCallback(() => {
@@ -97,6 +98,7 @@ export function useContentDraft() {
         races: incoming.races,
         classes: incoming.classes,
         codex: incoming.codex,
+        mechanics: incoming.mechanics,
         label: incoming.label,
       });
     },
@@ -105,8 +107,8 @@ export function useContentDraft() {
 
   /** True when the draft differs from the content the live app currently ships. */
   const isDirty =
-    JSON.stringify({ r: pack.races, c: pack.classes, x: pack.codex }) !==
-    JSON.stringify({ r: CONTENT.races, c: CONTENT.classes, x: CONTENT.codex });
+    JSON.stringify({ r: pack.races, c: pack.classes, x: pack.codex, m: pack.mechanics }) !==
+    JSON.stringify({ r: CONTENT.races, c: CONTENT.classes, x: CONTENT.codex, m: CONTENT.mechanics });
 
-  return { pack, setRaces, setClasses, setCodex, setLabel, reset, replace, isDirty };
+  return { pack, setRaces, setClasses, setCodex, setMechanics, setLabel, reset, replace, isDirty };
 }

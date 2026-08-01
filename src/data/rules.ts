@@ -1,6 +1,6 @@
 import { CONTENT } from '../content';
 
-export type { RuleRow, RuleTable, RuleSection } from '../types/rules';
+export type { RuleSection, Mechanics } from '../types/rules';
 
 /**
  * The prose and lookup tables shown in the Codex. Authored content, edited via

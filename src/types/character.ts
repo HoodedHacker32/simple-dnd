@@ -62,6 +62,41 @@ export interface Ability {
   description: string;
 }
 
+/**
+ * A mechanical effect a class grants, expressed as data so new classes can
+ * carry real rules rather than only descriptive text.
+ *
+ * - `unarmedDamage` adds a damage multiplier line (the Barbarian's fists)
+ * - `bowRange` replaces the Dexterity bow multiplier (the Ranger's Archer)
+ * - `spellPower` replaces the Magic multiplier
+ * - `movement` replaces the Speed movement multiplier
+ * - `socialRolls` replaces the Charisma multiplier
+ */
+export type ClassEffectKind =
+  | 'unarmedDamage'
+  | 'bowRange'
+  | 'spellPower'
+  | 'movement'
+  | 'socialRolls';
+
+export interface ClassEffect {
+  kind: ClassEffectKind;
+  /** Shown on the character sheet next to the computed value. */
+  label: string;
+  /** Which stat indexes the table below. */
+  basedOn: StatKey;
+  /** One value per score of `basedOn`, starting at 0. */
+  values: (number | null)[];
+}
+
+export const EFFECT_KINDS: { kind: ClassEffectKind; label: string; hint: string }[] = [
+  { kind: 'unarmedDamage', label: 'Unarmed damage', hint: 'Adds a bare-fist damage multiplier.' },
+  { kind: 'bowRange', label: 'Bow range', hint: 'Replaces the normal Dexterity bow multiplier.' },
+  { kind: 'spellPower', label: 'Spell power', hint: 'Replaces the normal Magic multiplier.' },
+  { kind: 'movement', label: 'Movement', hint: 'Replaces the normal Speed movement multiplier.' },
+  { kind: 'socialRolls', label: 'Social rolls', hint: 'Replaces the normal Charisma multiplier.' },
+];
+
 export interface Race {
   id: string;
   name: string;
@@ -80,6 +115,8 @@ export interface DndClass {
   accent: string;
   modifiers: StatBlock;
   abilities: Ability[];
+  /** Mechanical effects the engine applies. Descriptive text lives in `abilities`. */
+  effects?: ClassEffect[];
   lore: string;
   /** Alternate narrative state this class can transition into (e.g. Paladin oath break). */
   oathState?: {

@@ -1,9 +1,11 @@
-import type { Ability, DndClass } from '../types/character';
+import type { Ability, ClassEffect, DndClass, StatKey } from '../types/character';
+import { EFFECT_KINDS, STATS, STAT_ORDER } from '../types/character';
 import { Icon } from '../components/Icon';
 import { StatEditor } from './fields/StatEditor';
 import { EntityList } from './EntityList';
 import { newClass } from './useContentDraft';
 import './EntityEditor.css';
+import './RulesEditor.css';
 
 interface ClassEditorProps {
   classes: DndClass[];
@@ -172,6 +174,147 @@ export function ClassEditor({ classes, onChange, selectedId, onSelect }: ClassEd
               >
                 <Icon name="plus" size={13} />
                 Add ability
+              </button>
+            </div>
+
+            <div className="field field-full">
+              <span className="field-label">Mechanical effects</span>
+              <p className="hint">
+                Real rules the app calculates with, unlike the ability text above. An effect keyed to a stat
+                replaces — or adds to — the normal value for that score.
+              </p>
+
+              {(selected.effects ?? []).map((effect, i) => {
+                const meta = EFFECT_KINDS.find((k) => k.kind === effect.kind);
+                const setEffect = (changes: Partial<ClassEffect>) =>
+                  patch({
+                    effects: (selected.effects ?? []).map((e, j) => (j === i ? { ...e, ...changes } : e)),
+                  });
+                return (
+                  <div className="ability-block" key={i}>
+                    <div className="ability-head">
+                      <div className="field">
+                        <label className="field-label" htmlFor={`effect-kind-${i}`}>
+                          Effect
+                        </label>
+                        <select
+                          id={`effect-kind-${i}`}
+                          className="select"
+                          value={effect.kind}
+                          onChange={(e) => setEffect({ kind: e.target.value as ClassEffect['kind'] })}
+                        >
+                          {EFFECT_KINDS.map((k) => (
+                            <option key={k.kind} value={k.kind}>
+                              {k.label}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                      <div className="field">
+                        <label className="field-label" htmlFor={`effect-stat-${i}`}>
+                          Scales with
+                        </label>
+                        <select
+                          id={`effect-stat-${i}`}
+                          className="select"
+                          value={effect.basedOn}
+                          onChange={(e) => setEffect({ basedOn: e.target.value as StatKey })}
+                        >
+                          {STAT_ORDER.map((s) => (
+                            <option key={s} value={s}>
+                              {STATS[s].label}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                      <button
+                        type="button"
+                        className="ability-delete"
+                        aria-label="Remove effect"
+                        onClick={() => patch({ effects: (selected.effects ?? []).filter((_, j) => j !== i) })}
+                      >
+                        <Icon name="close" size={13} />
+                      </button>
+                    </div>
+
+                    {meta && <p className="hint">{meta.hint}</p>}
+
+                    <div className="field">
+                      <label className="field-label" htmlFor={`effect-label-${i}`}>
+                        Label on the sheet
+                      </label>
+                      <input
+                        id={`effect-label-${i}`}
+                        className="input"
+                        value={effect.label}
+                        onChange={(e) => setEffect({ label: e.target.value })}
+                      />
+                    </div>
+
+                    <div className="effect-values">
+                      {effect.values.map((v, k) => (
+                        <div className="tier-cell" key={k}>
+                          <span className="tier-score">{k}</span>
+                          <input
+                            className="input tier-input"
+                            type="number"
+                            step="0.05"
+                            value={v ?? ''}
+                            placeholder="—"
+                            aria-label={`Value at ${STATS[effect.basedOn].label} ${k}`}
+                            onChange={(e) =>
+                              setEffect({
+                                values: effect.values.map((old, m) =>
+                                  m === k ? (e.target.value === '' ? null : Number(e.target.value)) : old,
+                                ),
+                              })
+                            }
+                          />
+                        </div>
+                      ))}
+                      <div className="effect-tools">
+                        <button
+                          type="button"
+                          className="tier-tool"
+                          disabled={effect.values.length <= 1}
+                          onClick={() => setEffect({ values: effect.values.slice(0, -1) })}
+                        >
+                          −
+                        </button>
+                        <button
+                          type="button"
+                          className="tier-tool"
+                          onClick={() =>
+                            setEffect({ values: [...effect.values, effect.values.at(-1) ?? 1] })
+                          }
+                        >
+                          +
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+
+              <button
+                type="button"
+                className="btn btn-ghost list-add"
+                onClick={() =>
+                  patch({
+                    effects: [
+                      ...(selected.effects ?? []),
+                      {
+                        kind: 'unarmedDamage',
+                        label: 'New effect',
+                        basedOn: 'strength',
+                        values: [1, 2, 3, 4],
+                      },
+                    ],
+                  })
+                }
+              >
+                <Icon name="plus" size={13} />
+                Add effect
               </button>
             </div>
 

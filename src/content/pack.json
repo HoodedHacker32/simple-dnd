@@ -214,7 +214,20 @@
           "description": "Increased damage when attacking with bare fists. For every point in your Strength stat you gain +1 to the damage multiplier: 0 = 1x, 1 = 2x, 2 = 3x, 3 = 4x. This multiplier can be increased further by equipping rings."
         }
       ],
-      "placeholder": false
+      "placeholder": false,
+      "effects": [
+        {
+          "kind": "unarmedDamage",
+          "label": "Bare fists",
+          "basedOn": "strength",
+          "values": [
+            1,
+            2,
+            3,
+            4
+          ]
+        }
+      ]
     },
     {
       "id": "fighter",
@@ -235,7 +248,8 @@
           "description": "The Fighter has no special ability. Instead they get a solid bonus in almost every stat — the most well-rounded class in the game, and the easiest one to learn on."
         }
       ],
-      "placeholder": false
+      "placeholder": false,
+      "effects": []
     },
     {
       "id": "ranger",
@@ -256,7 +270,20 @@
           "description": "Increased range on bows. Add +0.5 to whatever your existing Dexterity range multiplier is: 0 = 0.5x, 1 = 1x, 2 = 1.5x, 3 = 2x."
         }
       ],
-      "placeholder": false
+      "placeholder": false,
+      "effects": [
+        {
+          "kind": "bowRange",
+          "label": "Archer",
+          "basedOn": "dexterity",
+          "values": [
+            0.5,
+            1,
+            1.5,
+            2
+          ]
+        }
+      ]
     },
     {
       "id": "paladin-oathsworn",
@@ -291,7 +318,8 @@
         "label": "Break the oath",
         "warning": "Breaking the oath is permanent. The character loses all spellcasting and every other ability, and their stats drop to the Oath Broken block."
       },
-      "placeholder": false
+      "placeholder": false,
+      "effects": []
     },
     {
       "id": "paladin-oathbroken",
@@ -318,7 +346,8 @@
         "label": "Restore the oath",
         "warning": "Only do this if your GM has ruled that the oath is restored. It returns the full Oath Sworn stats and abilities."
       },
-      "placeholder": false
+      "placeholder": false,
+      "effects": []
     },
     {
       "id": "rogue",
@@ -340,7 +369,8 @@
         }
       ],
       "placeholder": true,
-      "placeholderNote": "Stat block pending — the GM has not designed this class yet."
+      "placeholderNote": "Stat block pending — the GM has not designed this class yet.",
+      "effects": []
     }
   ],
   "codex": [
@@ -348,277 +378,119 @@
       "stat": "strength",
       "headline": "Strength decides what you are allowed to pick up.",
       "plainEnglish": "No damage maths here — Strength is a gate. Your score tells you which tier of weapon you can actually use. Everything from that tier and below is fair game.",
-      "tables": [
-        {
-          "title": "Weapon access",
-          "columns": [
-            "Strength",
-            "What you can wield"
-          ],
-          "rows": [
-            {
-              "key": "0",
-              "value": "Light weapons only"
-            },
-            {
-              "key": "1",
-              "value": "Light + normal weapons"
-            },
-            {
-              "key": "2",
-              "value": "All weapons"
-            },
-            {
-              "key": "3",
-              "value": "All weapons, and heavy weapons can be thrown"
-            }
-          ],
-          "footnote": "Other uses may arise — ask your GM."
-        }
-      ]
+      "footnote": "Other uses may arise — ask your GM."
     },
     {
       "stat": "magic",
       "headline": "Magic is a straight multiplier on your spells.",
-      "plainEnglish": "Roll your spell as normal, then multiply the result by the number below. At Magic 0 you simply cannot cast.",
-      "tables": [
-        {
-          "title": "Spell power",
-          "columns": [
-            "Magic",
-            "Effect"
-          ],
-          "rows": [
-            {
-              "key": "0",
-              "value": "No magic at all"
-            },
-            {
-              "key": "1",
-              "value": "0.5x magic"
-            },
-            {
-              "key": "2",
-              "value": "1x magic"
-            },
-            {
-              "key": "3",
-              "value": "1.5x magic"
-            }
-          ]
-        }
-      ]
+      "plainEnglish": "Roll your spell as normal, then multiply the result by the number below. At Magic 0 you simply cannot cast."
     },
     {
       "stat": "speed",
       "headline": "Speed covers how far you move and how well you dodge.",
-      "plainEnglish": "Two jobs. For movement, roll a d4 and multiply by your Speed multiplier, rounding down. For dodging, compare your Speed to the attack or enemy's Speed and roll a d20 against the target number.",
-      "tables": [
-        {
-          "title": "Movement — roll a d4, multiply, round down",
-          "columns": [
-            "Speed",
-            "Movement"
-          ],
-          "rows": [
-            {
-              "key": "0",
-              "value": "1x the roll"
-            },
-            {
-              "key": "1",
-              "value": "1.25x the roll"
-            },
-            {
-              "key": "2",
-              "value": "1.5x the roll"
-            },
-            {
-              "key": "3",
-              "value": "2x the roll"
-            }
-          ]
-        },
-        {
-          "title": "Agility — dodging with a d20",
-          "intro": "Enemies and attacks have set Speeds. Work out how your Speed compares to theirs, then roll a d20 and try to hit the number.",
-          "columns": [
-            "Your Speed vs theirs",
-            "You need"
-          ],
-          "rows": [
-            {
-              "key": "2 or more lower",
-              "value": "Roll a 20"
-            },
-            {
-              "key": "1 lower",
-              "value": "16 or higher"
-            },
-            {
-              "key": "Equal",
-              "value": "11 or higher"
-            },
-            {
-              "key": "1 higher",
-              "value": "8 or higher"
-            },
-            {
-              "key": "2 higher",
-              "value": "5 or higher"
-            },
-            {
-              "key": "3 higher",
-              "value": "3 or higher"
-            }
-          ]
-        }
-      ]
+      "plainEnglish": "Two jobs. For movement, roll a d4 and multiply by your Speed multiplier, rounding down. For dodging, compare your Speed to the attack or enemy's Speed and roll a d20 against the target number."
     },
     {
       "stat": "dexterity",
       "headline": "Dexterity handles bows and sneaking.",
-      "plainEnglish": "For bows, multiply the weapon's range by your multiplier and round up. At Dexterity 0 you cannot use bows at all. For stealth, your GM decides whether being spotted is Likely or Unlikely, and you roll a d20 against the matching number.",
-      "tables": [
-        {
-          "title": "Bow range — multiply, round up",
-          "columns": [
-            "Dexterity",
-            "Range"
-          ],
-          "rows": [
-            {
-              "key": "0",
-              "value": "Cannot use bows"
-            },
-            {
-              "key": "1",
-              "value": "0.75x range"
-            },
-            {
-              "key": "2",
-              "value": "1x range"
-            },
-            {
-              "key": "3",
-              "value": "1.5x range"
-            }
-          ]
-        },
-        {
-          "title": "Stealth — d20, situation \"Unlikely\"",
-          "intro": "Use this column when the odds are against you — open ground, bright light, alert guards.",
-          "columns": [
-            "Dexterity",
-            "You need"
-          ],
-          "rows": [
-            {
-              "key": "0",
-              "value": "Roll a 20"
-            },
-            {
-              "key": "1",
-              "value": "16 or higher"
-            },
-            {
-              "key": "2",
-              "value": "11 or higher"
-            },
-            {
-              "key": "3",
-              "value": "8 or higher"
-            }
-          ]
-        },
-        {
-          "title": "Stealth — d20, situation \"Likely\"",
-          "intro": "Use this column when conditions favour you — darkness, cover, distracted enemies.",
-          "columns": [
-            "Dexterity",
-            "You need"
-          ],
-          "rows": [
-            {
-              "key": "0",
-              "value": "16 or higher"
-            },
-            {
-              "key": "1",
-              "value": "11 or higher"
-            },
-            {
-              "key": "2",
-              "value": "7 or higher"
-            },
-            {
-              "key": "3",
-              "value": "4 or higher"
-            }
-          ]
-        }
-      ]
+      "plainEnglish": "For bows, multiply the weapon's range by your multiplier and round up. At Dexterity 0 you cannot use bows at all. For stealth, your GM decides whether being spotted is Likely or Unlikely, and you roll a d20 against the matching number."
     },
     {
       "stat": "charisma",
       "headline": "Charisma multiplies your social rolls.",
       "plainEnglish": "Persuading, lying, haggling, intimidating — roll as normal, then multiply by the number below.",
-      "tables": [
-        {
-          "title": "Social rolls",
-          "columns": [
-            "Charisma",
-            "Effect"
-          ],
-          "rows": [
-            {
-              "key": "0",
-              "value": "0.5x roll"
-            },
-            {
-              "key": "1",
-              "value": "1x roll"
-            },
-            {
-              "key": "2",
-              "value": "1.25x roll"
-            },
-            {
-              "key": "3",
-              "value": "1.5x roll"
-            }
-          ],
-          "footnote": "Other uses may arise — ask your GM."
-        }
-      ]
+      "footnote": "Other uses may arise — ask your GM."
     },
     {
       "stat": "health",
       "headline": "Health is flat hit points. No maths beyond adding.",
-      "plainEnglish": "Everyone starts at 100 HP. Each point of Health adds 20, each negative point takes 20 away. That is the whole rule.",
-      "tables": [
-        {
-          "title": "Hit points",
-          "columns": [
-            "Health",
-            "Total HP"
-          ],
-          "rows": [
-            {
-              "key": "Base",
-              "value": "100 HP"
-            },
-            {
-              "key": "Each +1",
-              "value": "+20 HP"
-            },
-            {
-              "key": "Each -1",
-              "value": "-20 HP"
-            }
-          ]
-        }
+      "plainEnglish": "Everyone starts at 100 HP. Each point of Health adds 20, each negative point takes 20 away. That is the whole rule."
+    }
+  ],
+  "mechanics": {
+    "baseHp": 100,
+    "hpPerPoint": 20,
+    "maxTier": 3,
+    "movement": {
+      "die": 4,
+      "multipliers": [
+        1,
+        1.25,
+        1.5,
+        2
+      ],
+      "rounding": "floor"
+    },
+    "magic": {
+      "multipliers": [
+        null,
+        0.5,
+        1,
+        1.5
+      ]
+    },
+    "bow": {
+      "multipliers": [
+        null,
+        0.75,
+        1,
+        1.5
+      ],
+      "rounding": "ceil"
+    },
+    "charisma": {
+      "multipliers": [
+        0.5,
+        1,
+        1.25,
+        1.5
+      ]
+    },
+    "weaponAccess": [
+      "Light weapons",
+      "Light + normal weapons",
+      "All weapons",
+      "All weapons, heavy can be thrown"
+    ],
+    "dodge": [
+      {
+        "delta": -2,
+        "target": 20
+      },
+      {
+        "delta": -1,
+        "target": 16
+      },
+      {
+        "delta": 0,
+        "target": 11
+      },
+      {
+        "delta": 1,
+        "target": 8
+      },
+      {
+        "delta": 2,
+        "target": 5
+      },
+      {
+        "delta": 3,
+        "target": 3
+      }
+    ],
+    "stealth": {
+      "likely": [
+        16,
+        11,
+        7,
+        4
+      ],
+      "unlikely": [
+        20,
+        16,
+        11,
+        8
       ]
     }
-  ]
+  }
 }

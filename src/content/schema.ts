@@ -1,6 +1,6 @@
-import type { Ability, DndClass, Race, StatBlock, StatKey } from '../types/character';
-import { STAT_ORDER } from '../types/character';
-import type { RuleSection } from '../types/rules';
+import type { Ability, ClassEffect, ClassEffectKind, DndClass, Race, StatBlock, StatKey } from '../types/character';
+import { EFFECT_KINDS, STAT_ORDER } from '../types/character';
+import type { DodgeRow, Mechanics, RuleSection, Rounding, TierValues } from '../types/rules';
 
 export const PACK_FORMAT = 'chroniclers-table-content';
 export const PACK_VERSION = 1;
@@ -14,6 +14,7 @@ export interface ContentPack {
   races: Race[];
   classes: DndClass[];
   codex: RuleSection[];
+  mechanics: Mechanics;
 }
 
 export class PackError extends Error {}
@@ -108,6 +109,7 @@ function parseClass(value: unknown, i: number): DndClass {
     accent: str(c.accent, `${path}.accent`),
     modifiers: statBlock(c.modifiers, `${path}.modifiers`),
     abilities: abilities(c.abilities ?? [], `${path}.abilities`),
+    effects: parseEffects(c.effects ?? [], `${path}.effects`),
     lore: str(c.lore, `${path}.lore`, { allowEmpty: true }),
     oathState: oath
       ? {
@@ -133,28 +135,114 @@ function parseCodex(value: unknown, i: number): RuleSection {
     stat: stat as StatKey,
     headline: str(s.headline, `${path}.headline`, { allowEmpty: true }),
     plainEnglish: str(s.plainEnglish, `${path}.plainEnglish`, { allowEmpty: true }),
-    tables: arr(s.tables ?? [], `${path}.tables`).map((t, j) => {
-      const tp = `${path}.tables[${j}]`;
-      const table = obj(t, tp);
-      const columns = arr(table.columns, `${tp}.columns`);
-      if (columns.length !== 2) fail(`${tp}.columns`, 'must have exactly two column headings.');
-      return {
-        title: str(table.title, `${tp}.title`),
-        intro: table.intro ? str(table.intro, `${tp}.intro`) : undefined,
-        columns: [str(columns[0], `${tp}.columns[0]`), str(columns[1], `${tp}.columns[1]`)] as [string, string],
-        rows: arr(table.rows ?? [], `${tp}.rows`).map((r, k) => {
-          const rp = `${tp}.rows[${k}]`;
-          const row = obj(r, rp);
-          return {
-            key: str(row.key, `${rp}.key`, { allowEmpty: true }),
-            value: str(row.value, `${rp}.value`, { allowEmpty: true }),
-            note: row.note ? str(row.note, `${rp}.note`) : undefined,
-          };
-        }),
-        footnote: table.footnote ? str(table.footnote, `${tp}.footnote`) : undefined,
-      };
-    }),
+    footnote: s.footnote ? str(s.footnote, `${path}.footnote`) : undefined,
   };
+}
+
+/* --------------------------------------------------------------- mechanics */
+
+/** A per-tier table. `null` entries mean the character cannot do it at all. */
+function tierValues(value: unknown, path: string, { allowNull = true } = {}): TierValues {
+  const list = arr(value, path);
+  if (list.length < 1) fail(path, 'needs at least one entry (the value at score 0).');
+  return list.map((entry, i) => {
+    if (entry === null) {
+      if (!allowNull) fail(`${path}[${i}]`, 'must be a number.');
+      return null;
+    }
+    return num(entry, `${path}[${i}]`);
+  });
+}
+
+function rounding(value: unknown, path: string): Rounding {
+  const raw = str(value, path);
+  if (raw !== 'floor' && raw !== 'ceil' && raw !== 'round') {
+    fail(path, 'must be "floor", "ceil" or "round".');
+  }
+  return raw;
+}
+
+function parseMechanics(value: unknown): Mechanics {
+  const m = obj(value, 'mechanics');
+
+  const maxTier = num(m.maxTier ?? 3, 'mechanics.maxTier');
+  if (!Number.isInteger(maxTier) || maxTier < 0) fail('mechanics.maxTier', 'must be a whole number of 0 or more.');
+
+  const movement = obj(m.movement, 'mechanics.movement');
+  const magic = obj(m.magic, 'mechanics.magic');
+  const bow = obj(m.bow, 'mechanics.bow');
+  const charisma = obj(m.charisma, 'mechanics.charisma');
+  const stealth = obj(m.stealth, 'mechanics.stealth');
+
+  const die = num(movement.die ?? 4, 'mechanics.movement.die');
+  if (!Number.isInteger(die) || die < 2) fail('mechanics.movement.die', 'must be a whole number of 2 or more.');
+
+  const weaponAccess = arr(m.weaponAccess, 'mechanics.weaponAccess').map((w, i) =>
+    str(w, `mechanics.weaponAccess[${i}]`, { allowEmpty: true }),
+  );
+  if (weaponAccess.length === 0) fail('mechanics.weaponAccess', 'needs at least one entry.');
+
+  const d20 = (list: unknown, path: string): number[] =>
+    arr(list, path).map((t, i) => {
+      const n = num(t, `${path}[${i}]`);
+      if (!Number.isInteger(n) || n < 1 || n > 21) {
+        fail(`${path}[${i}]`, 'must be a whole number between 1 and 21 (21 means impossible).');
+      }
+      return n;
+    });
+
+  const dodge: DodgeRow[] = arr(m.dodge, 'mechanics.dodge').map((r, i) => {
+    const row = obj(r, `mechanics.dodge[${i}]`);
+    return {
+      delta: num(row.delta, `mechanics.dodge[${i}].delta`),
+      target: d20([row.target], `mechanics.dodge[${i}].target`)[0],
+    };
+  });
+  if (dodge.length === 0) fail('mechanics.dodge', 'needs at least one row.');
+
+  return {
+    baseHp: num(m.baseHp, 'mechanics.baseHp'),
+    hpPerPoint: num(m.hpPerPoint, 'mechanics.hpPerPoint'),
+    maxTier,
+    movement: {
+      die,
+      multipliers: tierValues(movement.multipliers, 'mechanics.movement.multipliers'),
+      rounding: rounding(movement.rounding ?? 'floor', 'mechanics.movement.rounding'),
+    },
+    magic: { multipliers: tierValues(magic.multipliers, 'mechanics.magic.multipliers') },
+    bow: {
+      multipliers: tierValues(bow.multipliers, 'mechanics.bow.multipliers'),
+      rounding: rounding(bow.rounding ?? 'ceil', 'mechanics.bow.rounding'),
+    },
+    charisma: { multipliers: tierValues(charisma.multipliers, 'mechanics.charisma.multipliers') },
+    weaponAccess,
+    dodge: [...dodge].sort((a, b) => a.delta - b.delta),
+    stealth: {
+      likely: d20(stealth.likely, 'mechanics.stealth.likely'),
+      unlikely: d20(stealth.unlikely, 'mechanics.stealth.unlikely'),
+    },
+  };
+}
+
+function parseEffects(value: unknown, path: string): ClassEffect[] {
+  const kinds = new Set(EFFECT_KINDS.map((k) => k.kind));
+  return arr(value, path).map((entry, i) => {
+    const e = obj(entry, `${path}[${i}]`);
+    const kind = str(e.kind, `${path}[${i}].kind`);
+    if (!kinds.has(kind as ClassEffectKind)) {
+      fail(`${path}[${i}].kind`, `must be one of: ${[...kinds].join(', ')}.`);
+    }
+    const basedOn = str(e.basedOn, `${path}[${i}].basedOn`);
+    if (!STAT_ORDER.includes(basedOn as StatKey)) {
+      fail(`${path}[${i}].basedOn`, `must be one of: ${STAT_ORDER.join(', ')}.`);
+    }
+    return {
+      kind: kind as ClassEffectKind,
+      label: str(e.label, `${path}[${i}].label`),
+      basedOn: basedOn as StatKey,
+      values: tierValues(e.values, `${path}[${i}].values`),
+    };
+  });
 }
 
 /**
@@ -175,6 +263,7 @@ export function parseContentPack(input: unknown): ContentPack {
   const races = arr(pack.races, 'races').map(parseRace);
   const classes = arr(pack.classes, 'classes').map(parseClass);
   const codex = arr(pack.codex, 'codex').map(parseCodex);
+  const mechanics = parseMechanics(pack.mechanics);
 
   if (races.length === 0) throw new PackError('A pack needs at least one race.');
   if (classes.length === 0) throw new PackError('A pack needs at least one class.');
@@ -200,6 +289,7 @@ export function parseContentPack(input: unknown): ContentPack {
     races,
     classes,
     codex,
+    mechanics,
   };
 }
 

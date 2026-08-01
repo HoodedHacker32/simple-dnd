@@ -8,12 +8,14 @@ import { useContentDraft } from './useContentDraft';
 import { RaceEditor } from './RaceEditor';
 import { ClassEditor } from './ClassEditor';
 import { CodexEditor } from './CodexEditor';
+import { RulesEditor } from './RulesEditor';
 import { PublishPanel } from './PublishPanel';
 import './EditorApp.css';
 
 const TABS: TabDef[] = [
   { id: 'races', label: 'Races', icon: 'star' },
   { id: 'classes', label: 'Classes', icon: 'sword' },
+  { id: 'rules', label: 'Rules', icon: 'table' },
   { id: 'codex', label: 'Codex', icon: 'book' },
   { id: 'publish', label: 'Publish', icon: 'scroll' },
 ];
@@ -82,6 +84,10 @@ export function EditorApp() {
             selectedId={classId}
             onSelect={setClassId}
           />
+        )}
+
+        {tab === 'rules' && (
+          <RulesEditor mechanics={draft.pack.mechanics} onChange={draft.setMechanics} />
         )}
 
         {tab === 'codex' && (

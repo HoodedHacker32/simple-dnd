@@ -1,17 +1,7 @@
-import type { Character, DndClass, Race, StatBlock, StatKey, StatMode } from '../types/character';
+import type { Character, ClassEffectKind, DndClass, Race, StatBlock, StatKey, StatMode } from '../types/character';
 import { STAT_ORDER } from '../types/character';
-import {
-  BASE_HP,
-  BOW_MULTIPLIERS,
-  CHARISMA_MULTIPLIERS,
-  DODGE_TARGETS,
-  HP_PER_POINT,
-  MAGIC_MULTIPLIERS,
-  MOVEMENT_MULTIPLIERS,
-  STEALTH_LIKELY,
-  STEALTH_UNLIKELY,
-  WEAPON_ACCESS,
-} from '../data/rules';
+import type { Mechanics, Rounding, TierValues } from '../types/rules';
+import { CONTENT } from '../content';
 
 export const ZERO_STATS: StatBlock = {
   strength: 0,
@@ -64,9 +54,30 @@ export function calculateStats(
   return STRATEGIES[mode].compute({ race, dndClass, character });
 }
 
-/** Clamp to the 0-3 band the rule tables are written for, so lookups never fall off the end. */
-function tier(value: number): number {
-  return Math.max(0, Math.min(3, value));
+/**
+ * Clamps a score to a row that exists in the tables. A character can exceed the
+ * top score — a Half-Orc Barbarian reaches Strength 4 — and the rules only go
+ * as far as `maxTier`, so anything above reuses the top row.
+ */
+function tier(value: number, mechanics: Mechanics, table?: TierValues | unknown[]): number {
+  const ceiling = Math.min(mechanics.maxTier, (table?.length ?? mechanics.maxTier + 1) - 1);
+  return Math.max(0, Math.min(ceiling, value));
+}
+
+function lookup(table: TierValues, value: number, mechanics: Mechanics): number | null {
+  return table[tier(value, mechanics, table)] ?? null;
+}
+
+export function applyRounding(value: number, mode: Rounding): number {
+  if (mode === 'ceil') return Math.ceil(value);
+  if (mode === 'round') return Math.round(value);
+  return Math.floor(value);
+}
+
+export interface EffectResult {
+  kind: ClassEffectKind;
+  label: string;
+  value: number | null;
 }
 
 export interface DerivedStats {
@@ -76,57 +87,86 @@ export interface DerivedStats {
   bowMultiplier: number | null;
   charismaMultiplier: number;
   movementMultiplier: number;
+  movementDie: number;
   movementRange: { min: number; max: number };
   stealthUnlikely: number;
   stealthLikely: number;
   dodgeTable: { comparison: string; target: number }[];
-  /** Barbarian bare-fist damage multiplier, null for every other class. */
-  bareFistMultiplier: number | null;
-  /** Ranger's Archer ability adds +0.5 on top of the base bow multiplier. */
-  archerBowMultiplier: number | null;
+  /** Class effects that add a line rather than replacing a base value. */
+  extraEffects: EffectResult[];
+  /** Labels for base values a class effect overrode, keyed by what it replaced. */
+  overrides: Partial<Record<ClassEffectKind, string>>;
 }
 
-// The Ranger card's "+0.5 to the existing modifier" wording disagrees with its own worked table at
-// Dexterity 1 (0.75 + 0.5 = 1.25, but the card says 1x). The explicit table wins.
-const ARCHER_BOW_MULTIPLIERS: Record<number, number> = { 0: 0.5, 1: 1, 2: 1.5, 3: 2 };
+function dodgeLabel(delta: number): string {
+  if (delta === 0) return 'Same speed';
+  const n = Math.abs(delta);
+  const direction = delta > 0 ? 'faster' : 'slower';
+  const suffix = delta < -1 ? '+ ' : ' ';
+  return `${n}${suffix}${direction} than them`;
+}
 
-// Object key order puts integer-like keys before negative ones, so the order is stated explicitly.
-const DODGE_DELTAS = [-2, -1, 0, 1, 2, 3];
+export function deriveStats(
+  stats: StatBlock,
+  dndClass: DndClass | null,
+  mechanics: Mechanics = CONTENT.mechanics,
+): DerivedStats {
+  const effects = dndClass?.effects ?? [];
+  const byKind = new Map(effects.map((e) => [e.kind, e]));
 
-const DODGE_LABELS: Record<number, string> = {
-  [-2]: '2+ slower than them',
-  [-1]: '1 slower than them',
-  0: 'Same speed',
-  1: '1 faster than them',
-  2: '2 faster than them',
-  3: '3 faster than them',
-};
+  /** A class effect wins over the base table when it targets the same value. */
+  const resolve = (kind: ClassEffectKind, base: number | null): { value: number | null; label?: string } => {
+    const effect = byKind.get(kind);
+    if (!effect) return { value: base };
+    return { value: lookup(effect.values, stats[effect.basedOn], mechanics), label: effect.label };
+  };
 
-export function deriveStats(stats: StatBlock, dndClass: DndClass | null): DerivedStats {
-  const movementMultiplier = MOVEMENT_MULTIPLIERS[tier(stats.speed)];
-  const baseBow = BOW_MULTIPLIERS[tier(stats.dexterity)];
-  const isRanger = dndClass?.id === 'ranger';
-  const isBarbarian = dndClass?.id === 'barbarian';
+  const magic = resolve('spellPower', lookup(mechanics.magic.multipliers, stats.magic, mechanics));
+  const bow = resolve('bowRange', lookup(mechanics.bow.multipliers, stats.dexterity, mechanics));
+  const social = resolve('socialRolls', lookup(mechanics.charisma.multipliers, stats.charisma, mechanics));
+  const move = resolve('movement', lookup(mechanics.movement.multipliers, stats.speed, mechanics));
+
+  const movementMultiplier = move.value ?? 1;
+  const die = mechanics.movement.die;
+
+  const overrides: Partial<Record<ClassEffectKind, string>> = {};
+  for (const [kind, result] of [
+    ['spellPower', magic],
+    ['bowRange', bow],
+    ['socialRolls', social],
+    ['movement', move],
+  ] as const) {
+    if (result.label) overrides[kind] = result.label;
+  }
+
+  const stealthTier = (table: number[]) => table[tier(stats.dexterity, mechanics, table)] ?? 21;
 
   return {
-    hitPoints: BASE_HP + stats.health * HP_PER_POINT,
-    weaponAccess: WEAPON_ACCESS[tier(stats.strength)],
-    magicMultiplier: MAGIC_MULTIPLIERS[tier(stats.magic)],
-    bowMultiplier: baseBow,
-    charismaMultiplier: CHARISMA_MULTIPLIERS[tier(stats.charisma)],
+    hitPoints: mechanics.baseHp + stats.health * mechanics.hpPerPoint,
+    weaponAccess: mechanics.weaponAccess[tier(stats.strength, mechanics, mechanics.weaponAccess)] ?? '—',
+    magicMultiplier: magic.value,
+    bowMultiplier: bow.value,
+    charismaMultiplier: social.value ?? 0,
     movementMultiplier,
+    movementDie: die,
     movementRange: {
-      min: Math.floor(1 * movementMultiplier),
-      max: Math.floor(4 * movementMultiplier),
+      min: applyRounding(1 * movementMultiplier, mechanics.movement.rounding),
+      max: applyRounding(die * movementMultiplier, mechanics.movement.rounding),
     },
-    stealthUnlikely: STEALTH_UNLIKELY[tier(stats.dexterity)],
-    stealthLikely: STEALTH_LIKELY[tier(stats.dexterity)],
-    dodgeTable: DODGE_DELTAS.map((delta) => ({
-      comparison: DODGE_LABELS[delta],
-      target: DODGE_TARGETS[delta],
+    stealthUnlikely: stealthTier(mechanics.stealth.unlikely),
+    stealthLikely: stealthTier(mechanics.stealth.likely),
+    dodgeTable: mechanics.dodge.map((row) => ({
+      comparison: dodgeLabel(row.delta),
+      target: row.target,
     })),
-    bareFistMultiplier: isBarbarian ? tier(stats.strength) + 1 : null,
-    archerBowMultiplier: isRanger ? ARCHER_BOW_MULTIPLIERS[tier(stats.dexterity)] : null,
+    extraEffects: effects
+      .filter((e) => e.kind === 'unarmedDamage')
+      .map((e) => ({
+        kind: e.kind,
+        label: e.label,
+        value: lookup(e.values, stats[e.basedOn], mechanics),
+      })),
+    overrides,
   };
 }
 

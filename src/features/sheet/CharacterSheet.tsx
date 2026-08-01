@@ -96,21 +96,21 @@ export const CharacterSheet = forwardRef<HTMLDivElement, CharacterSheetProps>(fu
           <span className="derived-value">{multiplierText(derived.magicMultiplier)}</span>
         </div>
         <div className="derived-item">
-          <span className="derived-label">Movement (d4)</span>
+          <span className="derived-label">Movement (d{derived.movementDie})</span>
           <span className="derived-value">
             {derived.movementMultiplier}x — {derived.movementRange.min}–{derived.movementRange.max}
           </span>
         </div>
         <div className="derived-item">
-          <span className="derived-label">Bow range</span>
-          <span className="derived-value">
-            {derived.archerBowMultiplier !== null
-              ? `${derived.archerBowMultiplier}x (Archer)`
-              : multiplierText(derived.bowMultiplier)}
+          <span className="derived-label">
+            Bow range{derived.overrides.bowRange ? ` (${derived.overrides.bowRange})` : ''}
           </span>
+          <span className="derived-value">{multiplierText(derived.bowMultiplier)}</span>
         </div>
         <div className="derived-item">
-          <span className="derived-label">Social rolls</span>
+          <span className="derived-label">
+            Social rolls{derived.overrides.socialRolls ? ` (${derived.overrides.socialRolls})` : ''}
+          </span>
           <span className="derived-value">{derived.charismaMultiplier}x</span>
         </div>
         <div className="derived-item">
@@ -119,12 +119,14 @@ export const CharacterSheet = forwardRef<HTMLDivElement, CharacterSheetProps>(fu
             {derived.stealthLikely}+ / {derived.stealthUnlikely}+
           </span>
         </div>
-        {derived.bareFistMultiplier !== null && (
-          <div className="derived-item">
-            <span className="derived-label">Bare fists</span>
-            <span className="derived-value">{derived.bareFistMultiplier}x damage</span>
+        {derived.extraEffects.map((effect) => (
+          <div className="derived-item" key={effect.label}>
+            <span className="derived-label">{effect.label}</span>
+            <span className="derived-value">
+              {effect.value === null ? 'Unable' : `${effect.value}x damage`}
+            </span>
           </div>
-        )}
+        ))}
       </section>
 
       <section className="sheet-dodge">

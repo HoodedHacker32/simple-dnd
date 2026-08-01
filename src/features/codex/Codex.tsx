@@ -4,6 +4,8 @@ import { CLASSES, classDisplayName } from '../../data/classes';
 import { STATS, STAT_ORDER } from '../../types/character';
 import { formatModifier } from '../../engine/statCalculator';
 import { Icon } from '../../components/Icon';
+import { CONTENT } from '../../content';
+import { buildTables } from './buildTables';
 import './Codex.css';
 
 export function Codex() {
@@ -37,7 +39,7 @@ export function Codex() {
           <p className="codex-plain">{section.plainEnglish}</p>
 
           <div className="codex-tables">
-            {section.tables.map((table) => (
+            {buildTables(section.stat, CONTENT.mechanics).map((table) => (
               <div className="codex-table parchment-surface" key={table.title}>
                 <h4 className="codex-table-title">{table.title}</h4>
                 {table.intro && <p className="codex-table-intro">{table.intro}</p>}
@@ -57,10 +59,11 @@ export function Codex() {
                     ))}
                   </tbody>
                 </table>
-                {table.footnote && <p className="codex-footnote">{table.footnote}</p>}
               </div>
             ))}
           </div>
+
+          {section.footnote && <p className="codex-footnote codex-section-footnote">{section.footnote}</p>}
         </section>
       ))}
 

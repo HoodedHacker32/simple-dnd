@@ -45,17 +45,15 @@ function derivedRows({ derived }: ExportPayload): [string, string][] {
       `${derived.movementMultiplier}x — ${derived.movementRange.min}–${derived.movementRange.max}`,
     ],
     [
-      'Bow range',
-      derived.archerBowMultiplier !== null
-        ? `${derived.archerBowMultiplier}x (Archer)`
-        : multiplierText(derived.bowMultiplier),
+      derived.overrides.bowRange ? `Bow range (${derived.overrides.bowRange})` : 'Bow range',
+      multiplierText(derived.bowMultiplier),
     ],
     ['Social rolls', `${derived.charismaMultiplier}x`],
     ['Stealth (likely)', `${derived.stealthLikely}+`],
     ['Stealth (unlikely)', `${derived.stealthUnlikely}+`],
   ];
-  if (derived.bareFistMultiplier !== null) {
-    rows.push(['Bare fist damage', `${derived.bareFistMultiplier}x`]);
+  for (const effect of derived.extraEffects) {
+    rows.push([effect.label, effect.value === null ? 'Unable' : `${effect.value}x`]);
   }
   return rows;
 }
