@@ -1,0 +1,199 @@
+.codex {
+  display: flex;
+  flex-direction: column;
+  gap: 34px;
+}
+
+.codex-intro {
+  padding: 30px 34px;
+  border: 1px solid var(--parchment-shadow);
+  border-radius: 3px;
+  box-shadow: var(--shadow-deep), inset 0 0 60px rgba(120, 85, 40, 0.28);
+}
+
+.codex-intro-title {
+  font-family: var(--font-display);
+  font-size: 28px;
+  color: var(--ink);
+  margin-bottom: 14px;
+}
+
+.codex-intro p {
+  margin: 0 0 12px;
+  color: var(--ink-soft);
+  text-align: justify;
+  hyphens: auto;
+}
+
+.codex-intro p:last-child {
+  margin-bottom: 0;
+}
+
+/* --- Sections ----------------------------------------------------------- */
+.codex-section-header {
+  display: flex;
+  align-items: center;
+  gap: 17px;
+  padding-bottom: 13px;
+  margin-bottom: 14px;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.28);
+}
+
+.codex-abbr {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 50px;
+  height: 50px;
+  font-family: var(--font-display);
+  font-size: 21px;
+  font-weight: 900;
+  color: var(--wood-darkest);
+  border-radius: 3px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.4), transparent 55%),
+    linear-gradient(160deg, var(--gold-bright), var(--gold) 55%, var(--gold-deep));
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.45), 0 0 20px var(--candle-glow);
+}
+
+.codex-abbr svg {
+  display: block;
+}
+
+.codex-stat-name {
+  font-family: var(--font-display);
+  font-size: 25px;
+  color: var(--gold-bright);
+}
+
+.codex-headline {
+  margin: 2px 0 0;
+  font-size: 16px;
+  font-style: italic;
+  color: rgba(239, 224, 192, 0.72);
+}
+
+.codex-plain {
+  max-width: 78ch;
+  margin: 0 0 20px;
+  color: rgba(239, 224, 192, 0.9);
+}
+
+/* --- Tables ------------------------------------------------------------- */
+.codex-tables {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(288px, 1fr));
+  gap: 17px;
+  align-items: start;
+}
+
+.codex-table {
+  padding: 20px 22px 22px;
+  border: 1px solid var(--parchment-shadow);
+  border-radius: 3px;
+  box-shadow: var(--shadow-lift), inset 0 0 42px rgba(120, 85, 40, 0.26);
+}
+
+.codex-wide {
+  margin-top: 17px;
+}
+
+.codex-table-title {
+  font-family: var(--font-heading);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--blood);
+  padding-bottom: 9px;
+  margin-bottom: 11px;
+  border-bottom: 2px solid rgba(140, 47, 36, 0.3);
+}
+
+.codex-table-intro {
+  margin: -4px 0 12px;
+  font-size: 14px;
+  font-style: italic;
+  color: var(--ink-faded);
+}
+
+.codex-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.codex-table th {
+  font-family: var(--font-heading);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  text-align: left;
+  color: var(--ink-faded);
+  padding: 0 9px 7px;
+}
+
+.codex-table td {
+  padding: 7px 9px;
+  font-size: 15px;
+  color: var(--ink-soft);
+  border-top: 1px solid rgba(43, 26, 14, 0.16);
+}
+
+.codex-table tbody tr:nth-child(odd) td {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.codex-key {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.codex-footnote {
+  margin: 11px 0 0;
+  font-size: 13px;
+  font-style: italic;
+  color: var(--ink-faded);
+}
+
+/* --- Matrix tables ------------------------------------------------------ */
+.table-scroll {
+  overflow-x: auto;
+}
+
+.matrix th:not(:first-child),
+.matrix td:not(:first-child) {
+  text-align: center;
+  font-family: var(--font-heading);
+  font-weight: 700;
+}
+
+.matrix td.zero {
+  opacity: 0.35;
+  font-weight: 400;
+}
+
+.swatch {
+  display: inline-block;
+  width: 11px;
+  height: 11px;
+  margin-right: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.45);
+  border-radius: 2px;
+  vertical-align: baseline;
+}
+
+.row-pending td {
+  opacity: 0.6;
+  font-style: italic;
+}
+
+.pending-cell {
+  text-align: center !important;
+  font-family: var(--font-body) !important;
+  font-weight: 400 !important;
+  color: var(--ink-faded);
+}

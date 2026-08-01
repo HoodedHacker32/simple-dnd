@@ -1,0 +1,263 @@
+.picker {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 26px;
+  align-items: start;
+}
+
+.picker-open {
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+}
+
+.picker-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+  gap: 13px;
+}
+
+/* --- Choice cards ------------------------------------------------------- */
+.choice-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  padding: 17px 12px 13px;
+  cursor: pointer;
+  overflow: hidden;
+  border: 1px solid rgba(212, 175, 55, 0.28);
+  border-radius: 4px;
+  color: var(--parchment);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent 40%),
+    linear-gradient(170deg, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.55));
+  box-shadow: inset 0 0 22px rgba(0, 0, 0, 0.45), 0 3px 9px rgba(0, 0, 0, 0.4);
+  transition: transform 0.16s ease, border-color 0.22s ease, box-shadow 0.25s ease;
+}
+
+.choice-card:hover:not(:disabled) {
+  transform: translateY(-3px);
+  border-color: var(--card-accent, var(--gold));
+  box-shadow:
+    inset 0 0 22px rgba(0, 0, 0, 0.35),
+    0 9px 22px rgba(0, 0, 0, 0.5),
+    0 0 22px color-mix(in srgb, var(--card-accent, var(--gold)) 30%, transparent);
+}
+
+.choice-selected {
+  border-color: var(--card-accent, var(--gold));
+  box-shadow:
+    inset 0 0 26px color-mix(in srgb, var(--card-accent, var(--gold)) 18%, transparent),
+    0 0 0 1px var(--card-accent, var(--gold)),
+    0 8px 24px rgba(0, 0, 0, 0.55),
+    0 0 28px color-mix(in srgb, var(--card-accent, var(--gold)) 38%, transparent);
+}
+
+/* Painted banner behind the name, echoing the brother's brush-stroke headers */
+.choice-banner {
+  position: absolute;
+  top: 8px;
+  left: 6%;
+  width: 88%;
+  height: 34px;
+  background: var(--card-accent, var(--gold));
+  opacity: 0.34;
+  filter: url(#ink-rough) blur(0.4px);
+  border-radius: 3px;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+.choice-card:hover .choice-banner,
+.choice-selected .choice-banner {
+  opacity: 0.62;
+}
+
+.choice-name {
+  position: relative;
+  font-family: var(--font-heading);
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+.choice-subtitle {
+  position: relative;
+  font-size: 12px;
+  font-style: italic;
+  letter-spacing: 0.06em;
+  color: rgba(239, 224, 192, 0.75);
+  margin-top: -4px;
+}
+
+/* --- Modifier grid on each card ----------------------------------------- */
+.choice-mods {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3px;
+  width: 100%;
+  margin-top: 4px;
+}
+
+.mod {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 3px;
+  padding: 2px 6px;
+  font-family: var(--font-heading);
+  font-size: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 2px;
+}
+
+.mod-abbr {
+  opacity: 0.6;
+  font-size: 11px;
+}
+
+.mod-val {
+  font-weight: 700;
+}
+
+.mod-up .mod-val {
+  color: var(--gold-bright);
+}
+
+.mod-down .mod-val {
+  color: #e07a6a;
+}
+
+.mod-flat .mod-val {
+  opacity: 0.4;
+}
+
+/* --- Locked (Rogue) ----------------------------------------------------- */
+.choice-locked {
+  cursor: not-allowed;
+  opacity: 0.55;
+  filter: grayscale(0.65);
+}
+
+.choice-locked .choice-banner {
+  opacity: 0.18;
+}
+
+.choice-locked-badge {
+  position: relative;
+  margin-top: 8px;
+  padding: 4px 11px;
+  font-family: var(--font-heading);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--wood-darkest);
+  background: var(--iron-light);
+  border-radius: 2px;
+}
+
+/* --- Lore panel --------------------------------------------------------- */
+.lore-panel {
+  position: sticky;
+  top: 18px;
+  padding: 26px 28px 30px;
+  border-radius: 3px;
+  border: 1px solid var(--parchment-shadow);
+  box-shadow: var(--shadow-deep), inset 0 0 60px rgba(120, 85, 40, 0.28);
+}
+
+.lore-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 10px;
+  margin-bottom: 14px;
+  border-bottom: 2px solid rgba(43, 26, 14, 0.28);
+}
+
+.lore-title {
+  font-family: var(--font-display);
+  font-size: 27px;
+  color: var(--ink);
+}
+
+.lore-sub {
+  font-size: 13px;
+  font-style: italic;
+  color: var(--ink-faded);
+  white-space: nowrap;
+}
+
+.lore-text {
+  margin: 0 0 18px;
+  color: var(--ink-soft);
+  text-align: justify;
+  hyphens: auto;
+}
+
+.lore-traits {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--ink-soft);
+  font-size: 15px;
+}
+
+.lore-traits li {
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+  margin-bottom: 5px;
+}
+
+.trait-marker {
+  flex-shrink: 0;
+  color: var(--blood);
+  transform: translateY(2px);
+}
+
+.lore-abilities .filigree {
+  color: var(--blood);
+  margin-bottom: 12px;
+}
+
+.lore-abilities .filigree::before,
+.lore-abilities .filigree::after {
+  background: linear-gradient(90deg, transparent, rgba(140, 47, 36, 0.5), transparent);
+}
+
+.ability + .ability {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px dashed rgba(43, 26, 14, 0.25);
+}
+
+.ability-name {
+  font-family: var(--font-heading);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--blood);
+  margin-bottom: 5px;
+}
+
+.ability-desc {
+  margin: 0;
+  font-size: 15px;
+  color: var(--ink-soft);
+}
+
+@media (max-width: 1000px) {
+  .picker,
+  .picker-open {
+    grid-template-columns: 1fr;
+  }
+  .lore-panel {
+    position: static;
+  }
+}

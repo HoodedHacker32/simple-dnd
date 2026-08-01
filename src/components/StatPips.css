@@ -1,0 +1,41 @@
+.stat-pips {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.pip {
+  width: 11px;
+  height: 11px;
+  transform: rotate(45deg);
+  border: 1px solid rgba(0, 0, 0, 0.45);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(0, 0, 0, 0.25));
+  box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.5);
+  transition: background 0.25s ease, box-shadow 0.25s ease;
+}
+
+.pip-filled {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.55), transparent 55%),
+    var(--pip-accent, var(--gold));
+  box-shadow:
+    inset 0 0 3px rgba(255, 255, 255, 0.5),
+    0 0 7px color-mix(in srgb, var(--pip-accent, var(--gold)) 55%, transparent);
+}
+
+.pip-drained {
+  background: linear-gradient(135deg, #5a2020, #2a0d0d);
+  box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.8);
+}
+
+.pip-overflow {
+  font-family: var(--font-heading);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--pip-accent, var(--gold));
+  margin-left: 3px;
+}
+
+.pip-negative {
+  color: var(--blood-bright);
+}

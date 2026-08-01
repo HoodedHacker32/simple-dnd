@@ -1,0 +1,93 @@
+.app {
+  min-height: 100vh;
+  padding: 26px 30px 60px;
+}
+
+/* Candlelight falling across the table */
+.app::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 62% 48% at 50% -8%, rgba(255, 205, 130, 0.16), transparent 70%),
+    radial-gradient(ellipse 90% 70% at 50% 50%, transparent 40%, rgba(0, 0, 0, 0.55) 100%);
+  animation: flicker 7s ease-in-out infinite;
+}
+
+.app > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* --- Header ------------------------------------------------------------- */
+.app-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 26px;
+  flex-wrap: wrap;
+  padding-bottom: 0;
+  margin-bottom: 26px;
+  border-bottom: 2px solid var(--gold-deep);
+  box-shadow: 0 3px 14px rgba(0, 0, 0, 0.5);
+}
+
+.brand {
+  padding-bottom: 14px;
+}
+
+.brand-title {
+  font-size: clamp(26px, 4vw, 42px);
+  line-height: 1.1;
+}
+
+.brand-sub {
+  margin: 5px 0 0;
+  font-size: 15px;
+  font-style: italic;
+  letter-spacing: 0.05em;
+  color: rgba(239, 224, 192, 0.6);
+}
+
+/* --- Layout ------------------------------------------------------------- */
+.app-body {
+  display: flex;
+  gap: 26px;
+  align-items: flex-start;
+  max-width: 1560px;
+  margin: 0 auto;
+}
+
+.app-main {
+  flex: 1;
+  min-width: 0;
+}
+
+/* --- Notice toast ------------------------------------------------------- */
+.notice {
+  position: fixed;
+  left: 50%;
+  bottom: 28px;
+  transform: translateX(-50%);
+  z-index: 40;
+  padding: 13px 24px;
+  font-family: var(--font-heading);
+  font-size: 14px;
+  letter-spacing: 0.06em;
+  color: var(--parchment-light);
+  border: 1px solid var(--gold-deep);
+  border-radius: 3px;
+  background: linear-gradient(180deg, var(--wood-light), var(--wood-dark));
+  box-shadow: var(--shadow-deep), 0 0 26px var(--candle-glow);
+}
+
+@media (max-width: 940px) {
+  .app {
+    padding: 20px 16px 50px;
+  }
+  .app-body {
+    flex-direction: column;
+  }
+}

@@ -1,0 +1,152 @@
+.creator {
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+}
+
+/* --- Step rail ---------------------------------------------------------- */
+.steps {
+  display: flex;
+  gap: 10px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  flex-wrap: wrap;
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 9px 19px 9px 11px;
+  cursor: pointer;
+  border: 1px solid rgba(212, 175, 55, 0.24);
+  border-radius: 3px;
+  color: rgba(239, 224, 192, 0.6);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(0, 0, 0, 0.3));
+  transition: color 0.2s ease, border-color 0.22s ease, box-shadow 0.25s ease;
+}
+
+.step:hover {
+  color: var(--parchment);
+  border-color: rgba(212, 175, 55, 0.5);
+}
+
+.step-numeral {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 27px;
+  height: 27px;
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 900;
+  border-radius: 2px;
+  color: rgba(239, 224, 192, 0.55);
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  transition: all 0.25s ease;
+}
+
+.step-label {
+  font-family: var(--font-heading);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.step-done .step-numeral {
+  color: var(--wood-darkest);
+  background: linear-gradient(160deg, var(--emerald), #1e4a2c);
+  border-color: var(--emerald);
+  color: #d8f0dd;
+}
+
+.step-active {
+  color: var(--gold-bright);
+  border-color: var(--gold);
+  box-shadow: 0 0 20px var(--candle-glow), inset 0 0 18px rgba(212, 175, 55, 0.1);
+}
+
+.step-active .step-numeral {
+  color: var(--wood-darkest);
+  background: linear-gradient(160deg, var(--gold-bright), var(--gold-deep));
+  border-color: var(--gold-bright);
+}
+
+/* --- Body --------------------------------------------------------------- */
+.creator-body {
+  min-height: 380px;
+}
+
+.sheet-stage {
+  max-width: 940px;
+}
+
+.empty-state {
+  padding: 60px 40px;
+  text-align: center;
+  border: 1px solid var(--parchment-shadow);
+  border-radius: 3px;
+  box-shadow: var(--shadow-deep), inset 0 0 60px rgba(120, 85, 40, 0.28);
+}
+
+.empty-state h3 {
+  font-family: var(--font-display);
+  font-size: 26px;
+  color: var(--ink);
+  margin-bottom: 9px;
+}
+
+.empty-state p {
+  margin: 0;
+  color: var(--ink-faded);
+  font-style: italic;
+}
+
+/* --- Oath panel --------------------------------------------------------- */
+.oath-panel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 22px;
+  flex-wrap: wrap;
+  margin-top: 22px;
+  padding: 17px 21px;
+  border: 1px solid rgba(140, 47, 36, 0.55);
+  border-left: 4px solid var(--blood);
+  border-radius: 3px;
+  background: linear-gradient(180deg, rgba(140, 47, 36, 0.16), rgba(0, 0, 0, 0.32));
+}
+
+.oath-title {
+  font-family: var(--font-heading);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #e08878;
+  margin-bottom: 5px;
+}
+
+.oath-warning {
+  margin: 0;
+  max-width: 62ch;
+  font-size: 15px;
+  color: rgba(239, 224, 192, 0.85);
+}
+
+/* --- Nav ---------------------------------------------------------------- */
+.creator-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 6px;
+}
+
+.nav-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}

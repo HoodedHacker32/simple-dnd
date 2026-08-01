@@ -1,0 +1,43 @@
+.details-form {
+  padding: 30px 32px 34px;
+  border: 1px solid var(--parchment-shadow);
+  border-radius: 3px;
+  box-shadow: var(--shadow-deep), inset 0 0 60px rgba(120, 85, 40, 0.28);
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 20px 22px;
+}
+
+.field-wide {
+  grid-column: span 2;
+}
+
+.field-full {
+  grid-column: 1 / -1;
+}
+
+.details-form .field-label {
+  color: var(--blood);
+}
+
+.details-form .hint {
+  color: var(--ink-faded);
+}
+
+@media (max-width: 860px) {
+  .details-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .field-wide {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 520px) {
+  .details-grid {
+    grid-template-columns: 1fr;
+  }
+}
