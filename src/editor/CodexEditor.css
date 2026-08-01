@@ -1,0 +1,48 @@
+.table-block {
+  padding: 16px 18px;
+  margin-bottom: 12px;
+  border: 1px solid rgba(43, 26, 14, 0.22);
+  border-left: 3px solid var(--gold-deep);
+  border-radius: 0 2px 2px 0;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.table-cols {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.row-grid {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 6px;
+}
+
+.row-grid td {
+  vertical-align: middle;
+}
+
+.row-grid td:first-child {
+  width: 34%;
+  padding-right: 8px;
+}
+
+.row-grid td:nth-child(2) {
+  padding-right: 8px;
+}
+
+.row-actions {
+  width: 34px;
+}
+
+.table-footnote {
+  margin-top: 14px;
+}
+
+@media (max-width: 560px) {
+  .table-cols {
+    grid-template-columns: 1fr;
+  }
+}

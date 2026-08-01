@@ -3,6 +3,37 @@
 A character creator and rules reference for a simplified tabletop RPG ruleset — six attributes scored 0–3,
 every mechanic resolved by looking up one small table instead of doing arithmetic at the table.
 
+**Live:** https://hoodedhacker32.github.io/simple-dnd/
+**Editor:** https://hoodedhacker32.github.io/simple-dnd/editor/
+
+## Changing the game without touching code
+
+The game lives in [`src/content/pack.json`](src/content/pack.json). The **Loremaster** editor at `/editor/`
+edits that file through a UI — races, classes, and the Codex prose and tables.
+
+The flow is:
+
+1. Open the editor and enter the passphrase.
+2. Edit whatever you like. Changes are kept in your browser as you go.
+3. On the **Publish** tab, describe the change, paste a GitHub token, and press **Propose these changes**.
+4. The editor commits to a new branch and opens a pull request. Review the diff on GitHub, then merge it.
+5. Merging to `main` redeploys the site automatically.
+
+Nothing you do in the editor touches the live game until that pull request is merged.
+
+### The passphrase is not security
+
+The site is static, so the passphrase check runs in the browser and the phrase is readable in the page
+source. It stops casual wandering and nothing more. The real boundary is the GitHub token, which lives only
+in the visitor's own tab and is never committed.
+
+### The token
+
+Use a **fine-grained** personal access token, scoped to *only* this repository, with `Contents: read and
+write` and `Pull requests: read and write`. Do not use a classic token — a classic `repo`-scoped token would
+give the page access to every repository you own. The editor keeps the token in `sessionStorage`, so it is
+forgotten when the tab closes.
+
 ## Running it
 
 ```bash
@@ -45,19 +76,25 @@ All rules content is data, not code — editing these files is enough to change 
 
 | File | Contains |
 | --- | --- |
-| `src/data/races.ts` | Race stat modifiers, lore text, typical age and lifespan |
-| `src/data/classes.ts` | Class stat modifiers, ability text, lore, oath-state links |
-| `src/data/rules.ts` | Every lookup table, and the constants the engine reads |
+| `src/content/pack.json` | All races, classes and Codex prose — edited via the Loremaster editor |
+| `src/content/schema.ts` | Validation for the pack, shared by the app and the editor |
+| `src/data/rules.ts` | The numeric constants the engine calculates with |
 
 `src/engine/statCalculator.ts` combines those into final stats. It is written around a swappable strategy:
 `raceClass` (the current mode — final stats are simply race + class) and a `pointBuy` mode that is already
 wired up but unused, so adding a point-allocation step later does not require rewriting the engine.
 
+Note the split: the **Codex tables are prose**, edited freely, while the numbers the engine actually
+computes with live in `src/data/rules.ts`. If you change a lookup table in the editor, change that file to
+match, or the Codex will describe a rule the app does not apply.
+
 ## Known gaps
 
 - **Rogue is a placeholder.** Its card is visible but locked, because the stat block has not been designed
-  yet. Fill in `modifiers` and `abilities` in `src/data/classes.ts` and delete the `placeholder` flag to
-  enable it.
+  yet. Fill it in through the editor and untick "Not finished yet" to enable it.
+- **The editor authors data, not mechanics.** You can create a class with any stat spread, lore and ability
+  *text*, but a genuinely new *rule* — something like the Barbarian's fist multiplier — is computed in
+  `src/engine/statCalculator.ts` and still needs code.
 - **The Ranger's Archer wording is inconsistent in the source rules.** The card says "+0.5 to your existing
   Dexterity modifier", but its own worked table lists Dexterity 1 as `1x` (0.75 + 0.5 would be 1.25). The
   explicit table is treated as authoritative; see the comment in `src/engine/statCalculator.ts`.
