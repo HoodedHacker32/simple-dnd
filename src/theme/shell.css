@@ -65,3 +65,40 @@
     padding: 20px 16px 50px;
   }
 }
+
+/* --------------------------------------------------------------------------
+   Touch devices: the icon-sized delete and stepper buttons are comfortable
+   with a mouse but far below a usable tap target, so grow them where the
+   pointer is coarse rather than at an arbitrary screen width.
+   -------------------------------------------------------------------------- */
+@media (pointer: coarse) {
+  .entity-remove,
+  .roster-delete,
+  .list-remove,
+  .ability-delete,
+  .stepper-btn {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .stat-stepper {
+    gap: 6px;
+  }
+
+  .entity-select,
+  .roster-select {
+    padding-top: 13px;
+    padding-bottom: 13px;
+  }
+
+  .btn {
+    min-height: 44px;
+  }
+
+  /* Stop iOS zooming the page when a field takes focus. */
+  .input,
+  .textarea,
+  .select {
+    font-size: 16px;
+  }
+}
