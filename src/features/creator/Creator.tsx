@@ -32,6 +32,13 @@ export function Creator({ character, onChange }: CreatorProps) {
   const race = character.raceId ? (RACE_BY_ID.get(character.raceId) ?? null) : null;
   const dndClass = character.classId ? (CLASS_BY_ID.get(character.classId) ?? null) : null;
 
+  // A pack update can remove a race or class that existing characters still point at.
+  // Say so plainly rather than silently showing them as "not yet chosen".
+  const missing = [
+    character.raceId && !race ? `race "${character.raceId}"` : null,
+    character.classId && !dndClass ? `class "${character.classId}"` : null,
+  ].filter(Boolean);
+
   const stats = useMemo(
     () => calculateStats(race, dndClass, character.statMode, character),
     [race, dndClass, character],
@@ -72,6 +79,16 @@ export function Creator({ character, onChange }: CreatorProps) {
           );
         })}
       </ol>
+
+      {missing.length > 0 && (
+        <div className="missing-content">
+          <h4 className="missing-title">Missing from the current rules</h4>
+          <p className="missing-body">
+            This character uses {missing.join(' and ')}, which no longer exists. Pick a replacement below — the
+            rest of the character is untouched.
+          </p>
+        </div>
+      )}
 
       <div className="creator-body">
         {step === 'race' && <RacePicker selectedId={character.raceId} onSelect={handleRaceSelect} />}

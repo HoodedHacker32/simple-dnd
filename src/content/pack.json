@@ -1,0 +1,624 @@
+{
+  "format": "chroniclers-table-content",
+  "version": 1,
+  "label": "Original rules from the reference sheets",
+  "updatedAt": "2026-08-01T15:47:04.948Z",
+  "races": [
+    {
+      "id": "human",
+      "name": "Human",
+      "accent": "#5fb7d4",
+      "modifiers": {
+        "strength": 0,
+        "magic": 0,
+        "speed": 1,
+        "dexterity": 1,
+        "charisma": 0,
+        "health": 0
+      },
+      "defaultAge": 30,
+      "lifespan": "Around 80 years",
+      "lore": "The youngest and most restless of the common peoples. Humans lack the deep magic of the elves or the stone-craft of the dwarves, and make up the difference with sheer ambition — they build empires their grandchildren will inherit, and they build them fast. Every trade, every faith and every army has humans in it somewhere.",
+      "traits": [
+        "Adaptable to any calling",
+        "Short-lived but driven",
+        "Found in every corner of the realm"
+      ]
+    },
+    {
+      "id": "dwarf",
+      "name": "Dwarf",
+      "accent": "#e6b422",
+      "modifiers": {
+        "strength": 1,
+        "magic": 0,
+        "speed": 0,
+        "dexterity": 1,
+        "charisma": 0,
+        "health": 1
+      },
+      "defaultAge": 150,
+      "lifespan": "Around 350 years",
+      "lore": "Carved out of the mountains and just as stubborn. Dwarves live in vast underground holds where the forges never cool, and they measure a life by what it leaves behind: a blade, a hall, a grudge properly kept. Slow to trust, slower to forgive, and utterly immovable once they have planted their boots.",
+      "traits": [
+        "Master smiths and stoneworkers",
+        "Resistant to poison and hardship",
+        "Darkvision in the deep places"
+      ]
+    },
+    {
+      "id": "gnome",
+      "name": "Gnome",
+      "accent": "#3fcfa6",
+      "modifiers": {
+        "strength": 0,
+        "magic": 1,
+        "speed": 2,
+        "dexterity": 1,
+        "charisma": 1,
+        "health": -1
+      },
+      "defaultAge": 90,
+      "lifespan": "Around 425 years",
+      "lore": "Small, brilliant and permanently delighted by something. Gnomes tinker, they experiment, and they occasionally blow up the workshop — then they write down what went wrong and try again with more enthusiasm. What they lack in muscle and stamina they make up for in cleverness and a knack for arcane invention.",
+      "traits": [
+        "Inventors, illusionists and tinkerers",
+        "Cunning minds resist magical trickery",
+        "Fragile frames, boundless curiosity"
+      ]
+    },
+    {
+      "id": "elf",
+      "name": "Elf",
+      "accent": "#7ed957",
+      "modifiers": {
+        "strength": 0,
+        "magic": 1,
+        "speed": 1,
+        "dexterity": 1,
+        "charisma": 1,
+        "health": 0
+      },
+      "defaultAge": 200,
+      "lifespan": "Around 750 years",
+      "lore": "Ancient, graceful and quietly certain that they have seen all this before. Elves measure time in centuries, which makes them patient teachers and infuriating negotiators. Magic runs close to the surface for them, and they move through a fight like a rumour moves through a court — elegantly, and slightly ahead of everyone else.",
+      "traits": [
+        "Innately attuned to magic",
+        "Keen senses and long memory",
+        "Trance instead of true sleep"
+      ]
+    },
+    {
+      "id": "halfling",
+      "name": "Halfling",
+      "accent": "#2e9e4f",
+      "modifiers": {
+        "strength": 0,
+        "magic": 1,
+        "speed": 1,
+        "dexterity": 1,
+        "charisma": 0,
+        "health": 0
+      },
+      "defaultAge": 40,
+      "lifespan": "Around 150 years",
+      "lore": "Cheerful, unbothered, and far braver than their size suggests. Halflings want a full larder, good company and a quiet evening — and will walk into a dragon's lair to protect those things. Their famous luck is not really luck; it is a talent for being somewhere else the instant something goes wrong.",
+      "traits": [
+        "Uncannily lucky",
+        "Naturally stealthy",
+        "Brave beyond all reason"
+      ]
+    },
+    {
+      "id": "dragonborn",
+      "name": "Dragonborn",
+      "accent": "#f08a24",
+      "modifiers": {
+        "strength": 1,
+        "magic": 1,
+        "speed": 1,
+        "dexterity": 0,
+        "charisma": 0,
+        "health": 1
+      },
+      "defaultAge": 25,
+      "lifespan": "Around 80 years",
+      "lore": "Draconic blood walking upright, scaled and proud. Dragonborn are raised on clan honour and judge themselves by whether they were useful when it counted. The dragon in their ancestry shows itself in their build, their breath and their temper — and in an instinctive understanding that respect is earned, never given.",
+      "traits": [
+        "Draconic breath weapon",
+        "Clan honour above self",
+        "Scaled hide and dragon blood"
+      ]
+    },
+    {
+      "id": "half-orc",
+      "name": "Half-Orc",
+      "accent": "#9aa0a6",
+      "modifiers": {
+        "strength": 2,
+        "magic": 0,
+        "speed": 0,
+        "dexterity": 0,
+        "charisma": 0,
+        "health": 2
+      },
+      "defaultAge": 25,
+      "lifespan": "Around 75 years",
+      "lore": "Built like a siege engine and used to being watched sideways. Half-orcs inherit orcish strength and endurance and spend their lives deciding what to do with it — some lean into the fear, others spend decades proving the assumption wrong. Either way, they are extremely hard to put down.",
+      "traits": [
+        "Relentless endurance — refuses to drop",
+        "Savage strength in melee",
+        "Intimidating presence"
+      ]
+    },
+    {
+      "id": "tiefling",
+      "name": "Tiefling",
+      "accent": "#d63bc4",
+      "modifiers": {
+        "strength": 0,
+        "magic": 1,
+        "speed": 1,
+        "dexterity": 1,
+        "charisma": 0,
+        "health": 0
+      },
+      "defaultAge": 35,
+      "lifespan": "Around 100 years",
+      "lore": "Marked by an infernal pact somewhere back in the bloodline, and reminded of it constantly by everyone they meet. Horns, tail, and eyes that catch the light wrong. Tieflings learn early to rely on themselves, and many find that the same heritage that made them outsiders also gave them a spark of real infernal power.",
+      "traits": [
+        "Infernal heritage and innate magic",
+        "Resistant to fire",
+        "Distrusted on sight, unbothered by it"
+      ]
+    },
+    {
+      "id": "arakocra",
+      "name": "Arakocra",
+      "accent": "#4a7ff0",
+      "modifiers": {
+        "strength": 1,
+        "magic": 0,
+        "speed": 2,
+        "dexterity": 0,
+        "charisma": 0,
+        "health": 0
+      },
+      "defaultAge": 12,
+      "lifespan": "Around 30 years",
+      "lore": "Bird-folk of the high peaks, more at home in a thermal than on a road. Arakocra live fast and short, and find the ground-dwelling obsession with borders and property faintly ridiculous. Give one a clear sky and it will outrun anything you can field.",
+      "traits": [
+        "Flight and unmatched mobility",
+        "Talons as natural weapons",
+        "Short-lived, sky-bound perspective"
+      ]
+    }
+  ],
+  "classes": [
+    {
+      "id": "barbarian",
+      "name": "Barbarian",
+      "accent": "#c0392b",
+      "modifiers": {
+        "strength": 2,
+        "magic": 0,
+        "speed": 1,
+        "dexterity": 0,
+        "charisma": 0,
+        "health": 2
+      },
+      "lore": "A warrior who fights on fury rather than form. Barbarians come from the places where survival was the only lesson worth teaching, and they bring that directly into battle — no stance, no technique, just an overwhelming amount of force applied at speed. Armour is optional. Restraint is not on the menu.",
+      "abilities": [
+        {
+          "name": "Barbaric Strength",
+          "description": "Increased damage when attacking with bare fists. For every point in your Strength stat you gain +1 to the damage multiplier: 0 = 1x, 1 = 2x, 2 = 3x, 3 = 4x. This multiplier can be increased further by equipping rings."
+        }
+      ],
+      "placeholder": false
+    },
+    {
+      "id": "fighter",
+      "name": "Fighter",
+      "accent": "#8d6e3f",
+      "modifiers": {
+        "strength": 1,
+        "magic": 0,
+        "speed": 1,
+        "dexterity": 1,
+        "charisma": 1,
+        "health": 1
+      },
+      "lore": "The complete soldier. Fighters train with everything, drill until it is instinct, and win by being reliably better at the fundamentals than whoever is in front of them. No tricks, no bloodline, no pact — just a professional who is good at every part of the job.",
+      "abilities": [
+        {
+          "name": "None",
+          "description": "The Fighter has no special ability. Instead they get a solid bonus in almost every stat — the most well-rounded class in the game, and the easiest one to learn on."
+        }
+      ],
+      "placeholder": false
+    },
+    {
+      "id": "ranger",
+      "name": "Ranger",
+      "accent": "#3f7d3f",
+      "modifiers": {
+        "strength": 0,
+        "magic": 0,
+        "speed": 1,
+        "dexterity": 2,
+        "charisma": 1,
+        "health": 0
+      },
+      "lore": "A hunter and tracker who does their best work before the enemy knows they are there. Rangers live on the border between the wild and the settled, and they treat a longbow the way a scholar treats a pen. Get close to one and you have already made a mistake several hundred paces ago.",
+      "abilities": [
+        {
+          "name": "Archer",
+          "description": "Increased range on bows. Add +0.5 to whatever your existing Dexterity range multiplier is: 0 = 0.5x, 1 = 1x, 2 = 1.5x, 3 = 2x."
+        }
+      ],
+      "placeholder": false
+    },
+    {
+      "id": "paladin-oathsworn",
+      "name": "Paladin",
+      "subtitle": "Oath Sworn",
+      "accent": "#d4af37",
+      "modifiers": {
+        "strength": 2,
+        "magic": 1,
+        "speed": 1,
+        "dexterity": 1,
+        "charisma": 1,
+        "health": 2
+      },
+      "lore": "A holy warrior bound by a sworn oath, granted real divine power in exchange for real divine restrictions. The Paladin is the strongest class in the game on paper — and carries the heaviest obligation. The power flows from the oath, which means the oath is not a suggestion.",
+      "abilities": [
+        {
+          "name": "Lay on Hands",
+          "description": "Has a magic satchel that replenishes with max heal potions every day. It replenishes exactly enough for 1 serving per party member."
+        },
+        {
+          "name": "Spellcaster",
+          "description": "Has access to spells such as elemental blade, light blade and basic heal from the very beginning."
+        },
+        {
+          "name": "Oath to Pacifism",
+          "description": "Swear an oath to never kill any sentient being. If this oath is broken, the player becomes an Oath Broken Paladin."
+        }
+      ],
+      "oathState": {
+        "partnerId": "paladin-oathbroken",
+        "label": "Break the oath",
+        "warning": "Breaking the oath is permanent. The character loses all spellcasting and every other ability, and their stats drop to the Oath Broken block."
+      },
+      "placeholder": false
+    },
+    {
+      "id": "paladin-oathbroken",
+      "name": "Paladin",
+      "subtitle": "Oath Broken",
+      "accent": "#6b6b6b",
+      "modifiers": {
+        "strength": 1,
+        "magic": 0,
+        "speed": 0,
+        "dexterity": 1,
+        "charisma": 1,
+        "health": 1
+      },
+      "lore": "What is left of a Paladin after the oath goes. The divine connection is severed, the satchel stays empty, and the spells simply do not come any more. They keep the training and the scars — everything else was on loan.",
+      "abilities": [
+        {
+          "name": "Oathbroken",
+          "description": "Cannot cast any spells, even using innate magic. Loses access to any and all other abilities."
+        }
+      ],
+      "oathState": {
+        "partnerId": "paladin-oathsworn",
+        "label": "Restore the oath",
+        "warning": "Only do this if your GM has ruled that the oath is restored. It returns the full Oath Sworn stats and abilities."
+      },
+      "placeholder": false
+    },
+    {
+      "id": "rogue",
+      "name": "Rogue",
+      "accent": "#4b4453",
+      "modifiers": {
+        "strength": 0,
+        "magic": 0,
+        "speed": 0,
+        "dexterity": 0,
+        "charisma": 0,
+        "health": 0
+      },
+      "lore": "Thief, scout, spy and knife-in-the-dark. Rogues win fights they were never seen entering, and their traditional strengths are stealth, precision and picking exactly the right moment. In this ruleset the Rogue has not been written up yet.",
+      "abilities": [
+        {
+          "name": "Not yet written",
+          "description": "The Rogue's stat block and ability have not been designed yet. This card is a placeholder and cannot be selected until the numbers are filled in."
+        }
+      ],
+      "placeholder": true,
+      "placeholderNote": "Stat block pending — the GM has not designed this class yet."
+    }
+  ],
+  "codex": [
+    {
+      "stat": "strength",
+      "headline": "Strength decides what you are allowed to pick up.",
+      "plainEnglish": "No damage maths here — Strength is a gate. Your score tells you which tier of weapon you can actually use. Everything from that tier and below is fair game.",
+      "tables": [
+        {
+          "title": "Weapon access",
+          "columns": [
+            "Strength",
+            "What you can wield"
+          ],
+          "rows": [
+            {
+              "key": "0",
+              "value": "Light weapons only"
+            },
+            {
+              "key": "1",
+              "value": "Light + normal weapons"
+            },
+            {
+              "key": "2",
+              "value": "All weapons"
+            },
+            {
+              "key": "3",
+              "value": "All weapons, and heavy weapons can be thrown"
+            }
+          ],
+          "footnote": "Other uses may arise — ask your GM."
+        }
+      ]
+    },
+    {
+      "stat": "magic",
+      "headline": "Magic is a straight multiplier on your spells.",
+      "plainEnglish": "Roll your spell as normal, then multiply the result by the number below. At Magic 0 you simply cannot cast.",
+      "tables": [
+        {
+          "title": "Spell power",
+          "columns": [
+            "Magic",
+            "Effect"
+          ],
+          "rows": [
+            {
+              "key": "0",
+              "value": "No magic at all"
+            },
+            {
+              "key": "1",
+              "value": "0.5x magic"
+            },
+            {
+              "key": "2",
+              "value": "1x magic"
+            },
+            {
+              "key": "3",
+              "value": "1.5x magic"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "stat": "speed",
+      "headline": "Speed covers how far you move and how well you dodge.",
+      "plainEnglish": "Two jobs. For movement, roll a d4 and multiply by your Speed multiplier, rounding down. For dodging, compare your Speed to the attack or enemy's Speed and roll a d20 against the target number.",
+      "tables": [
+        {
+          "title": "Movement — roll a d4, multiply, round down",
+          "columns": [
+            "Speed",
+            "Movement"
+          ],
+          "rows": [
+            {
+              "key": "0",
+              "value": "1x the roll"
+            },
+            {
+              "key": "1",
+              "value": "1.25x the roll"
+            },
+            {
+              "key": "2",
+              "value": "1.5x the roll"
+            },
+            {
+              "key": "3",
+              "value": "2x the roll"
+            }
+          ]
+        },
+        {
+          "title": "Agility — dodging with a d20",
+          "intro": "Enemies and attacks have set Speeds. Work out how your Speed compares to theirs, then roll a d20 and try to hit the number.",
+          "columns": [
+            "Your Speed vs theirs",
+            "You need"
+          ],
+          "rows": [
+            {
+              "key": "2 or more lower",
+              "value": "Roll a 20"
+            },
+            {
+              "key": "1 lower",
+              "value": "16 or higher"
+            },
+            {
+              "key": "Equal",
+              "value": "11 or higher"
+            },
+            {
+              "key": "1 higher",
+              "value": "8 or higher"
+            },
+            {
+              "key": "2 higher",
+              "value": "5 or higher"
+            },
+            {
+              "key": "3 higher",
+              "value": "3 or higher"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "stat": "dexterity",
+      "headline": "Dexterity handles bows and sneaking.",
+      "plainEnglish": "For bows, multiply the weapon's range by your multiplier and round up. At Dexterity 0 you cannot use bows at all. For stealth, your GM decides whether being spotted is Likely or Unlikely, and you roll a d20 against the matching number.",
+      "tables": [
+        {
+          "title": "Bow range — multiply, round up",
+          "columns": [
+            "Dexterity",
+            "Range"
+          ],
+          "rows": [
+            {
+              "key": "0",
+              "value": "Cannot use bows"
+            },
+            {
+              "key": "1",
+              "value": "0.75x range"
+            },
+            {
+              "key": "2",
+              "value": "1x range"
+            },
+            {
+              "key": "3",
+              "value": "1.5x range"
+            }
+          ]
+        },
+        {
+          "title": "Stealth — d20, situation \"Unlikely\"",
+          "intro": "Use this column when the odds are against you — open ground, bright light, alert guards.",
+          "columns": [
+            "Dexterity",
+            "You need"
+          ],
+          "rows": [
+            {
+              "key": "0",
+              "value": "Roll a 20"
+            },
+            {
+              "key": "1",
+              "value": "16 or higher"
+            },
+            {
+              "key": "2",
+              "value": "11 or higher"
+            },
+            {
+              "key": "3",
+              "value": "8 or higher"
+            }
+          ]
+        },
+        {
+          "title": "Stealth — d20, situation \"Likely\"",
+          "intro": "Use this column when conditions favour you — darkness, cover, distracted enemies.",
+          "columns": [
+            "Dexterity",
+            "You need"
+          ],
+          "rows": [
+            {
+              "key": "0",
+              "value": "16 or higher"
+            },
+            {
+              "key": "1",
+              "value": "11 or higher"
+            },
+            {
+              "key": "2",
+              "value": "7 or higher"
+            },
+            {
+              "key": "3",
+              "value": "4 or higher"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "stat": "charisma",
+      "headline": "Charisma multiplies your social rolls.",
+      "plainEnglish": "Persuading, lying, haggling, intimidating — roll as normal, then multiply by the number below.",
+      "tables": [
+        {
+          "title": "Social rolls",
+          "columns": [
+            "Charisma",
+            "Effect"
+          ],
+          "rows": [
+            {
+              "key": "0",
+              "value": "0.5x roll"
+            },
+            {
+              "key": "1",
+              "value": "1x roll"
+            },
+            {
+              "key": "2",
+              "value": "1.25x roll"
+            },
+            {
+              "key": "3",
+              "value": "1.5x roll"
+            }
+          ],
+          "footnote": "Other uses may arise — ask your GM."
+        }
+      ]
+    },
+    {
+      "stat": "health",
+      "headline": "Health is flat hit points. No maths beyond adding.",
+      "plainEnglish": "Everyone starts at 100 HP. Each point of Health adds 20, each negative point takes 20 away. That is the whole rule.",
+      "tables": [
+        {
+          "title": "Hit points",
+          "columns": [
+            "Health",
+            "Total HP"
+          ],
+          "rows": [
+            {
+              "key": "Base",
+              "value": "100 HP"
+            },
+            {
+              "key": "Each +1",
+              "value": "+20 HP"
+            },
+            {
+              "key": "Each -1",
+              "value": "-20 HP"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

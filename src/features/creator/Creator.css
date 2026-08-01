@@ -150,3 +150,29 @@
   align-items: center;
   gap: 8px;
 }
+
+/* --- Dangling content reference ----------------------------------------- */
+.missing-content {
+  padding: 15px 19px;
+  border: 1px solid rgba(224, 152, 60, 0.5);
+  border-left: 4px solid #e0983c;
+  border-radius: 3px;
+  background: linear-gradient(180deg, rgba(224, 152, 60, 0.14), rgba(0, 0, 0, 0.3));
+}
+
+.missing-title {
+  font-family: var(--font-heading);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #f0b467;
+  margin-bottom: 5px;
+}
+
+.missing-body {
+  margin: 0;
+  max-width: 70ch;
+  font-size: 15px;
+  color: rgba(239, 224, 192, 0.85);
+}
