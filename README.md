@@ -103,17 +103,19 @@ follow.
   explicit table is treated as authoritative and is now editable on the class's Effects list.
 - **PSD export is not implemented.** It was scoped as an optional stretch item.
 
-## Where this ruleset departs from official D&D
+## How this relates to official D&D
 
 The race and class blurbs describe traditional D&D lore, and the ages and lifespans follow the 5e
-Player's Handbook. Two places diverge on purpose, and are called out in the text itself:
+Player's Handbook.
 
-- **Breaking a paladin's oath.** Here it permanently strips spellcasting. Official 5e does not work that
-  way — the PHB leaves the consequence to the DM, and the usual outcome is atonement and a fresh start, or
-  the DMG's **Oathbreaker** subclass, which keeps its spellcasting and trades holy power for a darker sort.
-- **The whole stat system.** Six attributes scored 0–3 is this ruleset's own invention; D&D uses six
-  different abilities on a 1–20 scale. Nothing here is meant to be compatible with an official character
-  sheet.
+**The stat system is this ruleset's own.** Six attributes scored 0–3 is an invention; D&D uses six
+different abilities on a 1–20 scale. Nothing here is meant to be compatible with an official character
+sheet.
+
+**The paladin's broken oath is a DM ruling, not a departure.** The PHB deliberately leaves the consequence
+to the DM, listing options up to abandoning the class or taking the DMG's Oathbreaker subclass. Losing the
+divine power is squarely within that discretion, so Oath Broken losing its spellcasting is this table's
+answer to a question the rules ask the DM to answer.
 
 Aarakocra is spelled with two a's, per the Elemental Evil Player's Companion. Its internal id stays
 `arakocra` because saved characters point at it.

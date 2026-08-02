@@ -352,7 +352,7 @@
         "charisma": 1,
         "health": 1
       },
-      "lore": "What is left of a Paladin after the oath goes. The divine connection closes, the satchel stays empty, and the spells simply do not come any more. They keep the training and the scars — everything else was on loan. Note that official D&D is gentler: a paladin there usually seeks atonement and starts fresh, or becomes an Oathbreaker who trades holy power for a darker sort. This ruleset takes the harder line.",
+      "lore": "What is left of a Paladin after the oath goes. The divine connection closes, the satchel stays empty, and the spells simply do not come any more. They keep the training and the scars — everything else was on loan. D&D leaves this consequence to the DM to decide; at this table, the answer is that it does not come back.",
       "abilities": [
         {
           "name": "Oathbroken",
