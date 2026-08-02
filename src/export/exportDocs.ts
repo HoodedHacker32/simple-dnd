@@ -18,6 +18,7 @@ import { STATS, STAT_ORDER } from '../types/character';
 import { classDisplayName } from '../data/classes';
 import { formatModifier, type DerivedStats } from '../engine/statCalculator';
 import { slugify } from './saveFile';
+import { CONTENT } from '../content';
 
 export interface ExportPayload {
   character: Character;
@@ -25,6 +26,21 @@ export interface ExportPayload {
   dndClass: DndClass | null;
   stats: StatBlock;
   derived: DerivedStats;
+}
+
+/** Pack-defined fields, split by how each export lays them out. */
+function shortFieldRows(character: Character): [string, string][] {
+  return CONTENT.characterFields
+    .filter((f) => f.type !== 'longtext')
+    .map((f) => [f.label, String(character.fields[f.id] ?? '').trim()] as [string, string])
+    .filter(([, value]) => value !== '');
+}
+
+function longFieldRows(character: Character): [string, string][] {
+  return CONTENT.characterFields
+    .filter((f) => f.type === 'longtext')
+    .map((f) => [f.label, String(character.fields[f.id] ?? '').trim()] as [string, string])
+    .filter(([, value]) => value !== '');
 }
 
 const INK = '2B1A0E';
@@ -102,13 +118,8 @@ function labelValueTable(rows: [string, string][]): Table {
 export async function exportCharacterAsDocx(payload: ExportPayload): Promise<void> {
   const { character, race, dndClass, stats, derived } = payload;
 
-  const identity = [
-    character.age !== '' ? `Age ${character.age}` : null,
-    character.gender || null,
-    character.pronouns || null,
-    character.alignment || null,
-  ]
-    .filter(Boolean)
+  const identity = shortFieldRows(character)
+    .map(([label, value]) => (label === 'Age' ? `Age ${value}` : value))
     .join('  •  ');
 
   const children: (Paragraph | Table)[] = [
@@ -176,9 +187,9 @@ export async function exportCharacterAsDocx(payload: ExportPayload): Promise<voi
     }
   }
 
-  if (character.backstory.trim()) {
-    children.push(heading('Backstory'));
-    for (const para of character.backstory.split(/\n{2,}/)) {
+  for (const [label, text] of longFieldRows(character)) {
+    children.push(heading(label));
+    for (const para of text.split(/\n{2,}/)) {
       children.push(
         new Paragraph({
           spacing: { after: 120 },
@@ -233,10 +244,7 @@ export async function exportCharacterAsXlsx(payload: ExportPayload): Promise<voi
   addSection('Identity', [
     ['Race', race?.name ?? '—'],
     ['Class', dndClass ? classDisplayName(dndClass) : '—'],
-    ['Age', character.age === '' ? '—' : String(character.age)],
-    ['Gender', character.gender || '—'],
-    ['Pronouns', character.pronouns || '—'],
-    ['Alignment', character.alignment || '—'],
+    ...shortFieldRows(character),
   ]);
 
   addSection(
@@ -258,8 +266,8 @@ export async function exportCharacterAsXlsx(payload: ExportPayload): Promise<voi
     );
   }
 
-  if (character.backstory.trim()) {
-    addSection('Backstory', [['Text', character.backstory]]);
+  for (const [label, text] of longFieldRows(character)) {
+    addSection(label, [['Text', text]]);
     sheet.lastRow!.getCell(2).alignment = { wrapText: true, vertical: 'top' };
   }
 

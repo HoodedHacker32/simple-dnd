@@ -1,5 +1,6 @@
 .tabs {
   display: flex;
+  flex-wrap: wrap;
   gap: 4px;
   align-items: flex-end;
 }
@@ -49,5 +50,18 @@
   }
   .tab {
     padding: 12px 18px;
+  }
+}
+
+/* Six icon-only tabs still overrun a 320px phone at the padding above. */
+@media (max-width: 420px) {
+  .tabs {
+    width: 100%;
+    justify-content: flex-start;
+  }
+  .tab {
+    flex: 1 1 auto;
+    justify-content: center;
+    padding: 11px 10px;
   }
 }

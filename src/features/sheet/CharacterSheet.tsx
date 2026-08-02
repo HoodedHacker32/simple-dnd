@@ -1,9 +1,10 @@
-import { forwardRef } from 'react';
+import { Fragment, forwardRef } from 'react';
 import type { Character, DndClass, Race, StatBlock } from '../../types/character';
 import { STATS, STAT_ORDER } from '../../types/character';
 import { classDisplayName } from '../../data/classes';
 import { formatModifier, type DerivedStats } from '../../engine/statCalculator';
 import { StatPips } from '../../components/StatPips';
+import { CONTENT } from '../../content';
 import './CharacterSheet.css';
 
 interface CharacterSheetProps {
@@ -16,6 +17,26 @@ interface CharacterSheetProps {
 
 function multiplierText(value: number | null, suffix = 'x'): string {
   return value === null ? 'Unable' : `${value}${suffix}`;
+}
+
+/** Short fields the pack marks for the sheet, joined into one identity line. */
+function identityLine(character: Character): string {
+  return CONTENT.characterFields
+    .filter((f) => f.showOnSheet && f.type !== 'longtext')
+    .map((f) => {
+      const value = character.fields[f.id];
+      if (value === '' || value === undefined || value === null) return null;
+      return f.type === 'number' ? `${f.label} ${value}` : String(value);
+    })
+    .filter(Boolean)
+    .join('  •  ');
+}
+
+/** Long fields get their own titled section, the way Backstory always did. */
+function longFields(character: Character) {
+  return CONTENT.characterFields.filter(
+    (f) => f.type === 'longtext' && String(character.fields[f.id] ?? '').trim(),
+  );
 }
 
 export const CharacterSheet = forwardRef<HTMLDivElement, CharacterSheetProps>(function CharacterSheet(
@@ -53,16 +74,7 @@ export const CharacterSheet = forwardRef<HTMLDivElement, CharacterSheetProps>(fu
             {[race?.name, dndClass ? classDisplayName(dndClass) : null].filter(Boolean).join(' · ') ||
               'No race or class chosen'}
           </p>
-          <p className="sheet-meta">
-            {[
-              character.age !== '' ? `Age ${character.age}` : null,
-              character.gender || null,
-              character.pronouns || null,
-              character.alignment || null,
-            ]
-              .filter(Boolean)
-              .join('  •  ')}
-          </p>
+          <p className="sheet-meta">{identityLine(character)}</p>
         </div>
 
         <div className="sheet-hp">
@@ -155,14 +167,14 @@ export const CharacterSheet = forwardRef<HTMLDivElement, CharacterSheetProps>(fu
         </>
       )}
 
-      {character.backstory.trim() && (
-        <>
-          <span className="filigree sheet-filigree">Backstory</span>
+      {longFields(character).map((field) => (
+        <Fragment key={field.id}>
+          <span className="filigree sheet-filigree">{field.label}</span>
           <section className="sheet-backstory">
-            <p className="illuminated">{character.backstory}</p>
+            <p className="illuminated">{String(character.fields[field.id])}</p>
           </section>
-        </>
-      )}
+        </Fragment>
+      ))}
 
       <footer className="sheet-footer">
         <span>Scribed with the Chronicler's Table</span>

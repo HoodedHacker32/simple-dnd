@@ -37,7 +37,7 @@ export function PasswordGate({ onUnlock }: PasswordGateProps) {
           <Icon name="book" size={30} />
         </div>
 
-        <h2 className="gate-title">The Loremaster's Study</h2>
+        <h2 className="gate-title">Behind the DM Screen</h2>
         <p className="gate-blurb">
           Beyond this door you can rewrite the races, the classes and the rules themselves. Speak the words.
         </p>

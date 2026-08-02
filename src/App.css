@@ -35,5 +35,12 @@
 @media (max-width: 940px) {
   .app-body {
     flex-direction: column;
+    /* Without this the column children size to their content and push the
+       page wider than the viewport on narrow phones. */
+    align-items: stretch;
+  }
+
+  .app-main {
+    width: 100%;
   }
 }

@@ -11,7 +11,7 @@
 
 .picker-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
   gap: 13px;
 }
 
@@ -25,6 +25,9 @@
   padding: 17px 12px 13px;
   cursor: pointer;
   overflow: hidden;
+  /* Grid items default to min-width:auto, which lets the modifier cells below
+     force the whole grid wider than a narrow phone. */
+  min-width: 0;
   border: 1px solid rgba(212, 175, 55, 0.28);
   border-radius: 4px;
   color: var(--parchment);
@@ -94,9 +97,10 @@
 /* --- Modifier grid on each card ----------------------------------------- */
 .choice-mods {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 3px;
   width: 100%;
+  min-width: 0;
   margin-top: 4px;
 }
 
@@ -105,7 +109,8 @@
   align-items: center;
   justify-content: space-between;
   gap: 3px;
-  padding: 2px 6px;
+  padding: 2px 5px;
+  min-width: 0;
   font-family: var(--font-heading);
   font-size: 12px;
   border: 1px solid rgba(0, 0, 0, 0.5);
@@ -252,10 +257,37 @@
   color: var(--ink-soft);
 }
 
+@media (max-width: 480px) {
+  .lore-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+  }
+  /* nowrap keeps "Around 750 years" on one line, which is wider than a small phone */
+  .lore-sub {
+    white-space: normal;
+  }
+  .lore-panel {
+    padding: 20px 18px 22px;
+  }
+  .lore-text {
+    text-align: left;
+  }
+}
+
+@media (max-width: 400px) {
+  .picker-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .choice-name {
+    font-size: 17px;
+  }
+}
+
 @media (max-width: 1000px) {
   .picker,
   .picker-open {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
   .lore-panel {
     position: static;

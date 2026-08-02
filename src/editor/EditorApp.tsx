@@ -9,6 +9,7 @@ import { RaceEditor } from './RaceEditor';
 import { ClassEditor } from './ClassEditor';
 import { CodexEditor } from './CodexEditor';
 import { RulesEditor } from './RulesEditor';
+import { FieldsEditor } from './FieldsEditor';
 import { PublishPanel } from './PublishPanel';
 import './EditorApp.css';
 
@@ -16,6 +17,7 @@ const TABS: TabDef[] = [
   { id: 'races', label: 'Races', icon: 'star' },
   { id: 'classes', label: 'Classes', icon: 'sword' },
   { id: 'rules', label: 'Rules', icon: 'table' },
+  { id: 'fields', label: 'Fields', icon: 'document' },
   { id: 'codex', label: 'Codex', icon: 'book' },
   { id: 'publish', label: 'Publish', icon: 'scroll' },
 ];
@@ -26,6 +28,7 @@ export function EditorApp() {
   const [raceId, setRaceId] = useState<string | null>(null);
   const [classId, setClassId] = useState<string | null>(null);
   const [codexStat, setCodexStat] = useState<string | null>(null);
+  const [fieldId, setFieldId] = useState<string | null>(null);
 
   const draft = useContentDraft();
 
@@ -51,7 +54,7 @@ export function EditorApp() {
 
       <header className="app-header">
         <div className="brand">
-          <h1 className="display-title brand-title">Loremaster</h1>
+          <h1 className="display-title brand-title">DM Screen</h1>
           <p className="brand-sub">Rewrite the races, the classes and the rules</p>
         </div>
         <Tabs tabs={TABS} active={tab} onChange={setTab} />
@@ -88,6 +91,15 @@ export function EditorApp() {
 
         {tab === 'rules' && (
           <RulesEditor mechanics={draft.pack.mechanics} onChange={draft.setMechanics} />
+        )}
+
+        {tab === 'fields' && (
+          <FieldsEditor
+            fields={draft.pack.characterFields}
+            onChange={draft.setFields}
+            selectedId={fieldId}
+            onSelect={setFieldId}
+          />
         )}
 
         {tab === 'codex' && (

@@ -1,5 +1,5 @@
 /* ==========================================================================
-   App shell — the frame both the player app and the Loremaster editor sit in.
+   App shell — the frame both the player app and the DM Screen editor sit in.
    Lives in the theme because both entry points need it; keeping it in one
    page's stylesheet lets the other page render without the wood-grain
    overlay correctly layered behind its content.
@@ -63,6 +63,18 @@
 @media (max-width: 940px) {
   .app {
     padding: 20px 16px 50px;
+  }
+}
+
+@media (max-width: 480px) {
+  .app {
+    padding: 16px 12px 44px;
+  }
+  .app-header {
+    gap: 14px;
+  }
+  .brand {
+    padding-bottom: 4px;
   }
 }
 

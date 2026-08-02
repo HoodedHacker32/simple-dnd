@@ -9,6 +9,7 @@ import { ClassPicker } from './ClassPicker';
 import { DetailsForm } from './DetailsForm';
 import { ExportBar } from './ExportBar';
 import { Icon } from '../../components/Icon';
+import { CONTENT } from '../../content';
 import './Creator.css';
 
 interface CreatorProps {
@@ -47,12 +48,18 @@ export function Creator({ character, onChange }: CreatorProps) {
 
   const handleRaceSelect = (raceId: string) => {
     const nextRace = RACE_BY_ID.get(raceId);
-    // Age defaults follow the race until the player types their own.
-    const shouldSeedAge = character.age === '' || character.age === race?.defaultAge;
-    onChange({
-      raceId,
-      ...(shouldSeedAge && nextRace ? { age: nextRace.defaultAge } : {}),
-    });
+    if (!nextRace) return onChange({ raceId });
+
+    // Age-linked fields follow the race until the player types their own value.
+    const fields = { ...character.fields };
+    for (const field of CONTENT.characterFields) {
+      if (!field.fillFromRaceAge) continue;
+      const current = fields[field.id];
+      if (current === '' || current === undefined || current === race?.defaultAge) {
+        fields[field.id] = nextRace.defaultAge;
+      }
+    }
+    onChange({ raceId, fields });
   };
 
   const oath = dndClass?.oathState;

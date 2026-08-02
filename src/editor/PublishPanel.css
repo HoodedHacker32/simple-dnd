@@ -136,7 +136,7 @@
 
 @media (max-width: 640px) {
   .publish-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
   .publish-main {
     margin-right: 0;

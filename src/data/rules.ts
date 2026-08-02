@@ -4,7 +4,7 @@ export type { RuleSection, Mechanics } from '../types/rules';
 
 /**
  * The prose and lookup tables shown in the Codex. Authored content, edited via
- * the Loremaster editor.
+ * the DM Screen editor.
  */
 export const RULE_SECTIONS = CONTENT.codex;
 

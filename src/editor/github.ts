@@ -117,7 +117,7 @@ export async function proposeContentChange(
       head: branch,
       base: BASE_BRANCH,
       body: [
-        `Proposed from the Loremaster editor.`,
+        `Proposed from the DM Screen.`,
         '',
         `**${summary}**`,
         '',

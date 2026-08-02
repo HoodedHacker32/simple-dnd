@@ -1,5 +1,5 @@
 import { saveAs } from 'file-saver';
-import type { Character, CharacterSaveFile } from '../types/character';
+import type { Character, CharacterSaveFile, FieldValue } from '../types/character';
 import { SAVE_FORMAT, SAVE_VERSION } from '../types/character';
 
 export function slugify(name: string): string {
@@ -49,7 +49,20 @@ export function parseCharacterFile(text: string): Character {
     throw new Error('That save file is missing its character data.');
   }
 
-  return file.character;
+  return migrateCharacter(file.character as unknown as Record<string, unknown>);
+}
+
+/** Fields used to be fixed columns on Character; fold any legacy ones into `fields`. */
+const LEGACY_FIELD_KEYS = ['age', 'gender', 'pronouns', 'alignment', 'backstory'];
+
+export function migrateCharacter(raw: Record<string, unknown>): Character {
+  const fields = { ...((raw.fields as Record<string, FieldValue>) ?? {}) };
+  for (const key of LEGACY_FIELD_KEYS) {
+    if (raw[key] !== undefined && fields[key] === undefined) {
+      fields[key] = raw[key] as FieldValue;
+    }
+  }
+  return { ...(raw as unknown as Character), fields };
 }
 
 export function readCharacterFile(file: File): Promise<Character> {

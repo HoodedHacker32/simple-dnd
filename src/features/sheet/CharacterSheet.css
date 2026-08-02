@@ -260,6 +260,6 @@
     grid-column: 1 / -1;
   }
   .sheet-stats {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 }

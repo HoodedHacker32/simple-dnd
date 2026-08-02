@@ -1,5 +1,5 @@
-import type { Ability, ClassEffect, ClassEffectKind, DndClass, Race, StatBlock, StatKey } from '../types/character';
-import { EFFECT_KINDS, STAT_ORDER } from '../types/character';
+import type { Ability, CharacterField, ClassEffect, ClassEffectKind, DndClass, FieldType, Race, StatBlock, StatKey } from '../types/character';
+import { EFFECT_KINDS, FIELD_TYPES, STAT_ORDER } from '../types/character';
 import type { DodgeRow, Mechanics, RuleSection, Rounding, TierValues } from '../types/rules';
 
 export const PACK_FORMAT = 'chroniclers-table-content';
@@ -15,6 +15,7 @@ export interface ContentPack {
   classes: DndClass[];
   codex: RuleSection[];
   mechanics: Mechanics;
+  characterFields: CharacterField[];
 }
 
 export class PackError extends Error {}
@@ -91,6 +92,8 @@ function parseRace(value: unknown, i: number): Race {
     accent: str(r.accent, `${path}.accent`),
     modifiers: statBlock(r.modifiers, `${path}.modifiers`),
     defaultAge: num(r.defaultAge, `${path}.defaultAge`),
+    minAge: r.minAge === undefined || r.minAge === null ? undefined : num(r.minAge, `${path}.minAge`),
+    maxAge: r.maxAge === undefined || r.maxAge === null ? undefined : num(r.maxAge, `${path}.maxAge`),
     lifespan: str(r.lifespan, `${path}.lifespan`, { allowEmpty: true }),
     lore: str(r.lore, `${path}.lore`, { allowEmpty: true }),
     traits: arr(r.traits ?? [], `${path}.traits`).map((t, j) => str(t, `${path}.traits[${j}]`)),
@@ -264,6 +267,8 @@ export function parseContentPack(input: unknown): ContentPack {
   const classes = arr(pack.classes, 'classes').map(parseClass);
   const codex = arr(pack.codex, 'codex').map(parseCodex);
   const mechanics = parseMechanics(pack.mechanics);
+  const characterFields = arr(pack.characterFields, 'characterFields').map(parseField);
+  assertUniqueIds(characterFields, 'character field');
 
   if (races.length === 0) throw new PackError('A pack needs at least one race.');
   if (classes.length === 0) throw new PackError('A pack needs at least one class.');
@@ -290,6 +295,38 @@ export function parseContentPack(input: unknown): ContentPack {
     classes,
     codex,
     mechanics,
+    characterFields,
+  };
+}
+
+function parseField(value: unknown, i: number): CharacterField {
+  const path = `characterFields[${i}]`;
+  const f = obj(value, path);
+  const type = str(f.type, `${path}.type`);
+  if (!FIELD_TYPES.some((t) => t.type === type)) {
+    fail(`${path}.type`, `must be one of: ${FIELD_TYPES.map((t) => t.type).join(', ')}.`);
+  }
+  const width = str(f.width ?? 'half', `${path}.width`);
+  if (width !== 'half' && width !== 'full') fail(`${path}.width`, 'must be "half" or "full".');
+
+  const options =
+    f.options === undefined ? undefined : arr(f.options, `${path}.options`).map((o, j) => str(o, `${path}.options[${j}]`));
+  if (type === 'select' && (!options || options.length === 0)) {
+    fail(`${path}.options`, 'is required for a choice field — add at least one option.');
+  }
+
+  return {
+    id: id(f.id, `${path}.id`),
+    label: str(f.label, `${path}.label`),
+    type: type as FieldType,
+    placeholder: f.placeholder ? str(f.placeholder, `${path}.placeholder`) : undefined,
+    help: f.help ? str(f.help, `${path}.help`) : undefined,
+    options,
+    min: f.min === undefined || f.min === null ? undefined : num(f.min, `${path}.min`),
+    max: f.max === undefined || f.max === null ? undefined : num(f.max, `${path}.max`),
+    fillFromRaceAge: Boolean(f.fillFromRaceAge),
+    showOnSheet: f.showOnSheet !== false,
+    width: width as 'half' | 'full',
   };
 }
 

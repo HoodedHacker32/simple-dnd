@@ -8,13 +8,15 @@ every mechanic resolved by looking up one small table instead of doing arithmeti
 
 ## Changing the game without touching code
 
-The game lives in [`src/content/pack.json`](src/content/pack.json). The **Loremaster** editor at `/editor/`
-edits that file through a UI — races, classes, and the Codex prose and tables.
+The game lives in [`src/content/pack.json`](src/content/pack.json). The **DM Screen** editor at `/editor/`
+edits that file through a UI — races, classes, the rules themselves, the fields a character records, and
+the Codex prose.
 
 The flow is:
 
 1. Open the editor and enter the passphrase.
-2. Edit whatever you like. Changes are kept in your browser as you go.
+2. Edit whatever you like — stat spreads, lore, hit points, multiplier tables, dodge targets, which fields a
+   character even has. Changes are kept in your browser as you go.
 3. On the **Publish** tab, describe the change, paste a GitHub token, and press **Propose these changes**.
 4. The editor commits to a new branch and opens a pull request. Review the diff on GitHub, then merge it.
 5. Merging to `main` redeploys the site automatically.
@@ -61,9 +63,10 @@ This produces a fully static `dist/` folder with no backend. To publish it:
 
 ## What's in it
 
-- **Character tab** — pick a race and a class, fill in name/age/gender/pronouns/alignment/backstory, and get a
-  finished sheet with every derived number already worked out (hit points, weapon access, movement range, bow
-  range, stealth targets, dodge table, class ability text).
+- **Character tab** — pick a race and a class, fill in the details the DM has defined (by default name, age,
+  gender, pronouns, alignment and backstory), and get a finished sheet with every derived number already
+  worked out (hit points, weapon access, movement range, bow range, stealth targets, dodge table, class
+  ability effects).
 - **Codex tab** — every rule table in the game with a plain-English explanation, plus race and class reference
   matrices.
 - **Party panel** — characters are kept in browser storage so they survive a refresh. Save any character to a
@@ -76,26 +79,26 @@ All rules content is data, not code — editing these files is enough to change 
 
 | File | Contains |
 | --- | --- |
-| `src/content/pack.json` | All races, classes and Codex prose — edited via the Loremaster editor |
+| `src/content/pack.json` | All races, classes and Codex prose — edited via the DM Screen |
 | `src/content/schema.ts` | Validation for the pack, shared by the app and the editor |
-| `src/data/rules.ts` | The numeric constants the engine calculates with |
+| `src/data/rules.ts` | Re-exports pack content; holds no rules of its own |
 
 `src/engine/statCalculator.ts` combines those into final stats. It is written around a swappable strategy:
 `raceClass` (the current mode — final stats are simply race + class) and a `pointBuy` mode that is already
 wired up but unused, so adding a point-allocation step later does not require rewriting the engine.
 
-Note the split: the **Codex tables are prose**, edited freely, while the numbers the engine actually
-computes with live in `src/data/rules.ts`. If you change a lookup table in the editor, change that file to
-match, or the Codex will describe a rule the app does not apply.
+The Codex's lookup tables are **generated** from `mechanics` in the pack, so what a player reads can never
+disagree with what the app calculates. Change a multiplier on the Rules tab and both the sheet and the Codex
+follow.
 
 ## Known gaps
 
 - **Rogue is a placeholder.** Its card is visible but locked, because the stat block has not been designed
   yet. Fill it in through the editor and untick "Not finished yet" to enable it.
-- **The editor authors data, not mechanics.** You can create a class with any stat spread, lore and ability
-  *text*, but a genuinely new *rule* — something like the Barbarian's fist multiplier — is computed in
-  `src/engine/statCalculator.ts` and still needs code.
+- **Class effects come from a fixed set of kinds.** A class can carry real mechanics (unarmed damage, bow
+  range, spell power, movement, social rolls), each a table keyed to a stat. An effect of a genuinely new
+  *shape* — one that does not fit any of those — still needs code in `src/engine/statCalculator.ts`.
 - **The Ranger's Archer wording is inconsistent in the source rules.** The card says "+0.5 to your existing
   Dexterity modifier", but its own worked table lists Dexterity 1 as `1x` (0.75 + 0.5 would be 1.25). The
-  explicit table is treated as authoritative; see the comment in `src/engine/statCalculator.ts`.
+  explicit table is treated as authoritative and is now editable on the class's Effects list.
 - **PSD export is not implemented.** It was scoped as an optional stretch item.

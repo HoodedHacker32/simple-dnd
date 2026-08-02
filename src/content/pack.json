@@ -23,7 +23,9 @@
         "Adaptable to any calling",
         "Short-lived but driven",
         "Found in every corner of the realm"
-      ]
+      ],
+      "minAge": 1,
+      "maxAge": 80
     },
     {
       "id": "dwarf",
@@ -44,7 +46,9 @@
         "Master smiths and stoneworkers",
         "Resistant to poison and hardship",
         "Darkvision in the deep places"
-      ]
+      ],
+      "minAge": 1,
+      "maxAge": 350
     },
     {
       "id": "gnome",
@@ -65,7 +69,9 @@
         "Inventors, illusionists and tinkerers",
         "Cunning minds resist magical trickery",
         "Fragile frames, boundless curiosity"
-      ]
+      ],
+      "minAge": 1,
+      "maxAge": 425
     },
     {
       "id": "elf",
@@ -86,7 +92,9 @@
         "Innately attuned to magic",
         "Keen senses and long memory",
         "Trance instead of true sleep"
-      ]
+      ],
+      "minAge": 1,
+      "maxAge": 750
     },
     {
       "id": "halfling",
@@ -107,7 +115,9 @@
         "Uncannily lucky",
         "Naturally stealthy",
         "Brave beyond all reason"
-      ]
+      ],
+      "minAge": 1,
+      "maxAge": 150
     },
     {
       "id": "dragonborn",
@@ -128,7 +138,9 @@
         "Draconic breath weapon",
         "Clan honour above self",
         "Scaled hide and dragon blood"
-      ]
+      ],
+      "minAge": 1,
+      "maxAge": 80
     },
     {
       "id": "half-orc",
@@ -149,7 +161,9 @@
         "Relentless endurance — refuses to drop",
         "Savage strength in melee",
         "Intimidating presence"
-      ]
+      ],
+      "minAge": 1,
+      "maxAge": 75
     },
     {
       "id": "tiefling",
@@ -170,7 +184,9 @@
         "Infernal heritage and innate magic",
         "Resistant to fire",
         "Distrusted on sight, unbothered by it"
-      ]
+      ],
+      "minAge": 1,
+      "maxAge": 100
     },
     {
       "id": "arakocra",
@@ -191,7 +207,9 @@
         "Flight and unmatched mobility",
         "Talons as natural weapons",
         "Short-lived, sky-bound perspective"
-      ]
+      ],
+      "minAge": 1,
+      "maxAge": 30
     }
   ],
   "classes": [
@@ -492,5 +510,59 @@
         8
       ]
     }
-  }
+  },
+  "characterFields": [
+    {
+      "id": "age",
+      "label": "Age",
+      "type": "number",
+      "min": 0,
+      "fillFromRaceAge": true,
+      "showOnSheet": true,
+      "width": "half",
+      "help": "Pre-filled with a typical age for the chosen race."
+    },
+    {
+      "id": "gender",
+      "label": "Gender",
+      "type": "text",
+      "placeholder": "However you like",
+      "showOnSheet": true,
+      "width": "half"
+    },
+    {
+      "id": "pronouns",
+      "label": "Pronouns",
+      "type": "text",
+      "placeholder": "they/them",
+      "showOnSheet": true,
+      "width": "half"
+    },
+    {
+      "id": "alignment",
+      "label": "Alignment",
+      "type": "select",
+      "showOnSheet": true,
+      "width": "half",
+      "options": [
+        "Lawful Good",
+        "Neutral Good",
+        "Chaotic Good",
+        "Lawful Neutral",
+        "True Neutral",
+        "Chaotic Neutral",
+        "Lawful Evil",
+        "Neutral Evil",
+        "Chaotic Evil"
+      ]
+    },
+    {
+      "id": "backstory",
+      "label": "Backstory",
+      "type": "longtext",
+      "showOnSheet": false,
+      "width": "full",
+      "placeholder": "Where did they come from, and what are they running towards? Or away from?"
+    }
+  ]
 }

@@ -19,11 +19,7 @@ export function newCharacter(): Character {
   return {
     id: crypto.randomUUID(),
     name: '',
-    gender: '',
-    age: '',
-    pronouns: '',
-    alignment: '',
-    backstory: '',
+    fields: {},
     raceId: null,
     classId: null,
     statMode: 'raceClass',

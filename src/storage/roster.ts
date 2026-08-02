@@ -1,4 +1,5 @@
 import type { Character } from '../types/character';
+import { migrateCharacter } from '../export/saveFile';
 
 const KEY = 'chroniclers-table.roster.v1';
 
@@ -7,7 +8,7 @@ export function loadRoster(): Character[] {
     const raw = localStorage.getItem(KEY);
     if (!raw) return [];
     const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? (parsed as Character[]) : [];
+    return Array.isArray(parsed) ? parsed.map(migrateCharacter) : [];
   } catch {
     return [];
   }

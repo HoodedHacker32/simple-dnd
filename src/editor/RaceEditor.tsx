@@ -2,7 +2,7 @@ import type { Race } from '../types/character';
 import { StatEditor } from './fields/StatEditor';
 import { ListEditor } from './fields/ListEditor';
 import { EntityList } from './EntityList';
-import { newRace } from './useContentDraft';
+import { newRace, renameWithId } from './useContentDraft';
 import './EntityEditor.css';
 
 interface RaceEditorProps {
@@ -55,7 +55,13 @@ export function RaceEditor({ races, onChange, selectedId, onSelect }: RaceEditor
                 id="race-name"
                 className="input"
                 value={selected.name}
-                onChange={(e) => patch({ name: e.target.value })}
+                onChange={(e) => {
+                  const name = e.target.value;
+                  const taken = new Set(races.filter((r) => r.id !== selected.id).map((r) => r.id));
+                  const renamed = renameWithId(selected, name, 'new-race', taken);
+                  patch({ name, ...renamed });
+                  if (renamed.id) onSelect(renamed.id);
+                }}
               />
             </div>
 
@@ -92,6 +98,34 @@ export function RaceEditor({ races, onChange, selectedId, onSelect }: RaceEditor
                 onChange={(e) => patch({ defaultAge: Number(e.target.value) })}
               />
               <p className="hint">Pre-fills the age box when a player picks this race.</p>
+            </div>
+
+            <div className="field">
+              <label className="field-label" htmlFor="race-min-age">
+                Youngest
+              </label>
+              <input
+                id="race-min-age"
+                className="input"
+                type="number"
+                value={selected.minAge ?? ''}
+                placeholder="None"
+                onChange={(e) => patch({ minAge: e.target.value === '' ? undefined : Number(e.target.value) })}
+              />
+            </div>
+
+            <div className="field">
+              <label className="field-label" htmlFor="race-max-age">
+                Oldest
+              </label>
+              <input
+                id="race-max-age"
+                className="input"
+                type="number"
+                value={selected.maxAge ?? ''}
+                placeholder="None"
+                onChange={(e) => patch({ maxAge: e.target.value === '' ? undefined : Number(e.target.value) })}
+              />
             </div>
 
             <div className="field">

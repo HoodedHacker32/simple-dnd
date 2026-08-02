@@ -43,6 +43,6 @@
 
 @media (max-width: 560px) {
   .table-cols {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 }

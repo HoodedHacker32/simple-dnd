@@ -1,4 +1,5 @@
-import type { Character, Race } from '../../types/character';
+import type { Character, CharacterField, FieldValue, Race } from '../../types/character';
+import { CONTENT } from '../../content';
 import './DetailsForm.css';
 
 interface DetailsFormProps {
@@ -7,19 +8,89 @@ interface DetailsFormProps {
   onChange: (patch: Partial<Character>) => void;
 }
 
-const ALIGNMENTS = [
-  'Lawful Good',
-  'Neutral Good',
-  'Chaotic Good',
-  'Lawful Neutral',
-  'True Neutral',
-  'Chaotic Neutral',
-  'Lawful Evil',
-  'Neutral Evil',
-  'Chaotic Evil',
-];
-
 export function DetailsForm({ character, race, onChange }: DetailsFormProps) {
+  const fields = CONTENT.characterFields;
+
+  const setField = (id: string, value: FieldValue) =>
+    onChange({ fields: { ...character.fields, [id]: value } });
+
+  const renderField = (field: CharacterField) => {
+    const value = character.fields[field.id] ?? '';
+    const inputId = `field-${field.id}`;
+
+    // An age field takes its bounds and placeholder from the chosen race.
+    const ageBound = field.fillFromRaceAge && race;
+    const min = ageBound ? (race.minAge ?? field.min) : field.min;
+    const max = ageBound ? (race.maxAge ?? field.max) : field.max;
+    const placeholder = ageBound ? String(race.defaultAge) : field.placeholder;
+
+    const help = ageBound
+      ? `${race.name} lifespan: ${race.lifespan.toLowerCase()}. Typical adventuring age ${race.defaultAge}.`
+      : field.help;
+
+    return (
+      <div className={`field${field.width === 'full' ? ' field-full' : ''}`} key={field.id}>
+        <label className="field-label" htmlFor={inputId}>
+          {field.label}
+        </label>
+
+        {field.type === 'longtext' && (
+          <textarea
+            id={inputId}
+            className="textarea"
+            value={String(value)}
+            placeholder={field.placeholder}
+            onChange={(e) => setField(field.id, e.target.value)}
+          />
+        )}
+
+        {field.type === 'select' && (
+          <select
+            id={inputId}
+            className="select"
+            value={String(value)}
+            onChange={(e) => setField(field.id, e.target.value)}
+          >
+            <option value="">Undecided</option>
+            {(field.options ?? []).map((option) => (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            ))}
+          </select>
+        )}
+
+        {field.type === 'number' && (
+          <input
+            id={inputId}
+            className="input"
+            type="number"
+            min={min}
+            max={max}
+            value={value === '' ? '' : Number(value)}
+            placeholder={placeholder}
+            onChange={(e) => setField(field.id, e.target.value === '' ? '' : Number(e.target.value))}
+          />
+        )}
+
+        {field.type === 'text' && (
+          <input
+            id={inputId}
+            className="input"
+            value={String(value)}
+            placeholder={field.placeholder}
+            onChange={(e) => setField(field.id, e.target.value)}
+          />
+        )}
+
+        {help && <p className="hint">{help}</p>}
+        {field.type === 'longtext' && (
+          <p className="hint">{String(value).trim().split(/\s+/).filter(Boolean).length} words</p>
+        )}
+      </div>
+    );
+  };
+
   return (
     <div className="details-form parchment-surface">
       <div className="details-grid">
@@ -36,84 +107,7 @@ export function DetailsForm({ character, race, onChange }: DetailsFormProps) {
           />
         </div>
 
-        <div className="field">
-          <label className="field-label" htmlFor="char-age">
-            Age
-          </label>
-          <input
-            id="char-age"
-            className="input"
-            type="number"
-            min={0}
-            value={character.age}
-            placeholder={race ? String(race.defaultAge) : '—'}
-            onChange={(e) => onChange({ age: e.target.value === '' ? '' : Number(e.target.value) })}
-          />
-          <p className="hint">
-            {race
-              ? `${race.name} lifespan: ${race.lifespan.toLowerCase()}. Typical adventuring age ${race.defaultAge}.`
-              : 'Pick a race and this fills in with a typical age.'}
-          </p>
-        </div>
-
-        <div className="field">
-          <label className="field-label" htmlFor="char-gender">
-            Gender
-          </label>
-          <input
-            id="char-gender"
-            className="input"
-            value={character.gender}
-            placeholder="However you like"
-            onChange={(e) => onChange({ gender: e.target.value })}
-          />
-        </div>
-
-        <div className="field">
-          <label className="field-label" htmlFor="char-pronouns">
-            Pronouns
-          </label>
-          <input
-            id="char-pronouns"
-            className="input"
-            value={character.pronouns}
-            placeholder="they/them"
-            onChange={(e) => onChange({ pronouns: e.target.value })}
-          />
-        </div>
-
-        <div className="field">
-          <label className="field-label" htmlFor="char-alignment">
-            Alignment
-          </label>
-          <select
-            id="char-alignment"
-            className="select"
-            value={character.alignment}
-            onChange={(e) => onChange({ alignment: e.target.value })}
-          >
-            <option value="">Undecided</option>
-            {ALIGNMENTS.map((a) => (
-              <option key={a} value={a}>
-                {a}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div className="field field-full">
-          <label className="field-label" htmlFor="char-backstory">
-            Backstory
-          </label>
-          <textarea
-            id="char-backstory"
-            className="textarea"
-            value={character.backstory}
-            placeholder="Where did they come from, and what are they running towards? Or away from?"
-            onChange={(e) => onChange({ backstory: e.target.value })}
-          />
-          <p className="hint">{character.backstory.trim().split(/\s+/).filter(Boolean).length} words</p>
-        </div>
+        {fields.map(renderField)}
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import type { DndClass, Race, StatBlock } from '../types/character';
+import type { CharacterField, DndClass, Race, StatBlock } from '../types/character';
 import type { Mechanics, RuleSection } from '../types/rules';
 import { CONTENT, PACK_FORMAT, PACK_VERSION, parseContentPack, type ContentPack } from '../content';
 
@@ -26,6 +26,23 @@ function loadDraft(): ContentPack {
     // A corrupt or outdated draft should never block the editor from opening.
   }
   return clone(CONTENT);
+}
+
+/**
+ * Ids are permanent once real content points at them, but a freshly added entry
+ * still carries its placeholder id ("new-race"). While that is true, keep the id
+ * following the name so naming a race "Goblin" gives `goblin` rather than
+ * `new-race`. The moment the id stops looking auto-generated, it is left alone.
+ */
+export function renameWithId<T extends { id: string; name?: string; label?: string }>(
+  entry: T,
+  newName: string,
+  placeholderStem: string,
+  taken: Set<string>,
+): Partial<T> {
+  const isPlaceholder = new RegExp(`^${placeholderStem}(-\\d+)?$`).test(entry.id);
+  if (!isPlaceholder) return {} as Partial<T>;
+  return { id: slugFrom(newName, taken) } as Partial<T>;
 }
 
 export function slugFrom(name: string, taken: Set<string>): string {
@@ -85,6 +102,7 @@ export function useContentDraft() {
   const setClasses = useCallback((classes: DndClass[]) => update({ classes }), [update]);
   const setCodex = useCallback((codex: RuleSection[]) => update({ codex }), [update]);
   const setMechanics = useCallback((mechanics: Mechanics) => update({ mechanics }), [update]);
+  const setFields = useCallback((characterFields: CharacterField[]) => update({ characterFields }), [update]);
   const setLabel = useCallback((label: string) => update({ label }), [update]);
 
   const reset = useCallback(() => {
@@ -99,6 +117,7 @@ export function useContentDraft() {
         classes: incoming.classes,
         codex: incoming.codex,
         mechanics: incoming.mechanics,
+        characterFields: incoming.characterFields,
         label: incoming.label,
       });
     },
@@ -107,8 +126,8 @@ export function useContentDraft() {
 
   /** True when the draft differs from the content the live app currently ships. */
   const isDirty =
-    JSON.stringify({ r: pack.races, c: pack.classes, x: pack.codex, m: pack.mechanics }) !==
-    JSON.stringify({ r: CONTENT.races, c: CONTENT.classes, x: CONTENT.codex, m: CONTENT.mechanics });
+    JSON.stringify({ r: pack.races, c: pack.classes, x: pack.codex, m: pack.mechanics, f: pack.characterFields }) !==
+    JSON.stringify({ r: CONTENT.races, c: CONTENT.classes, x: CONTENT.codex, m: CONTENT.mechanics, f: CONTENT.characterFields });
 
-  return { pack, setRaces, setClasses, setCodex, setMechanics, setLabel, reset, replace, isDirty };
+  return { pack, setRaces, setClasses, setCodex, setMechanics, setFields, setLabel, reset, replace, isDirty };
 }

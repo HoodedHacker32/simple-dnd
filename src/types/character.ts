@@ -97,12 +97,48 @@ export const EFFECT_KINDS: { kind: ClassEffectKind; label: string; hint: string 
   { kind: 'socialRolls', label: 'Social rolls', hint: 'Replaces the normal Charisma multiplier.' },
 ];
 
+export type FieldType = 'text' | 'longtext' | 'number' | 'select';
+
+/**
+ * A field on the character sheet. These are content, not code, so the
+ * DM can add, remove and rename what a character records.
+ */
+export interface CharacterField {
+  /** Stable key stored inside saved characters — never reuse or repurpose one. */
+  id: string;
+  label: string;
+  type: FieldType;
+  placeholder?: string;
+  help?: string;
+  /** `select` only. */
+  options?: string[];
+  /** `number` only. */
+  min?: number;
+  max?: number;
+  /** `number` only: pre-fill from the chosen race's typical age. */
+  fillFromRaceAge?: boolean;
+  /** Show this field in the identity line on the finished sheet. */
+  showOnSheet: boolean;
+  width: 'half' | 'full';
+}
+
+export const FIELD_TYPES: { type: FieldType; label: string; hint: string }[] = [
+  { type: 'text', label: 'Short text', hint: 'A single line, like a name or a title.' },
+  { type: 'longtext', label: 'Long text', hint: 'A paragraph box, like a backstory.' },
+  { type: 'number', label: 'Number', hint: 'A numeric box, like an age.' },
+  { type: 'select', label: 'Choice', hint: 'A dropdown of options you supply.' },
+];
+
 export interface Race {
   id: string;
   name: string;
   accent: string;
   modifiers: StatBlock;
+  /** Typical age of an adventurer of this race. */
   defaultAge: number;
+  /** Optional bounds offered when a player edits an age field. */
+  minAge?: number;
+  maxAge?: number;
   lifespan: string;
   lore: string;
   traits: string[];
@@ -131,14 +167,17 @@ export interface DndClass {
 
 export type StatMode = 'raceClass' | 'pointBuy';
 
+export type FieldValue = string | number | '';
+
 export interface Character {
   id: string;
+  /**
+   * Kept out of `fields` because the app itself needs it — roster labels,
+   * export filenames and the sheet heading all read it directly.
+   */
   name: string;
-  gender: string;
-  age: number | '';
-  pronouns: string;
-  alignment: string;
-  backstory: string;
+  /** Values for the pack's CharacterField list, keyed by field id. */
+  fields: Record<string, FieldValue>;
   raceId: string | null;
   classId: string | null;
   statMode: StatMode;

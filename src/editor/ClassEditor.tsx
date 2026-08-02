@@ -3,7 +3,7 @@ import { EFFECT_KINDS, STATS, STAT_ORDER } from '../types/character';
 import { Icon } from '../components/Icon';
 import { StatEditor } from './fields/StatEditor';
 import { EntityList } from './EntityList';
-import { newClass } from './useContentDraft';
+import { newClass, renameWithId } from './useContentDraft';
 import './EntityEditor.css';
 import './RulesEditor.css';
 
@@ -69,7 +69,13 @@ export function ClassEditor({ classes, onChange, selectedId, onSelect }: ClassEd
                 id="class-name"
                 className="input"
                 value={selected.name}
-                onChange={(e) => patch({ name: e.target.value })}
+                onChange={(e) => {
+                  const name = e.target.value;
+                  const taken = new Set(classes.filter((c) => c.id !== selected.id).map((c) => c.id));
+                  const renamed = renameWithId(selected, name, 'new-class', taken);
+                  patch({ name, ...renamed });
+                  if (renamed.id) onSelect(renamed.id);
+                }}
               />
             </div>
 
