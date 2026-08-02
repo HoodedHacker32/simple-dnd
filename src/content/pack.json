@@ -1,7 +1,7 @@
 {
   "format": "chroniclers-table-content",
   "version": 1,
-  "label": "Second draft: Dwarf strength, the Rogue, and four new classes",
+  "label": "Rangers never run out of arrows",
   "updatedAt": "2026-08-01T15:47:04.948Z",
   "races": [
     {
@@ -286,6 +286,10 @@
         {
           "name": "Archer",
           "description": "Increased range on bows. Add +0.5 to whatever your existing Dexterity range multiplier is: 0 = 0.5x, 1 = 1x, 2 = 1.5x, 3 = 2x."
+        },
+        {
+          "name": "Unlimited Arrows",
+          "description": "Never count ammunition. A ranger fletches on the march and scavenges what they loose, so the quiver is assumed full whenever it matters."
         }
       ],
       "placeholder": false,
