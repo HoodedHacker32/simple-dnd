@@ -26,7 +26,8 @@ export interface Mechanics {
   maxTier: number;
 
   movement: { die: number; multipliers: TierValues; rounding: Rounding };
-  magic: { multipliers: TierValues };
+  /** `spellsPerDay` is a standing limit on every caster, not a per-class one. */
+  magic: { multipliers: TierValues; spellsPerDay: number };
   bow: { multipliers: TierValues; rounding: Rounding };
   charisma: { multipliers: TierValues };
 

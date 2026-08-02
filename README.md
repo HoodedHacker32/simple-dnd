@@ -93,11 +93,11 @@ follow.
 
 ## Known gaps
 
-- **Rogue is a placeholder.** Its card is visible but locked, because the stat block has not been designed
-  yet. Fill it in through the editor and untick "Not finished yet" to enable it.
 - **Class effects come from a fixed set of kinds.** A class can carry real mechanics (unarmed damage, bow
-  range, spell power, movement, social rolls), each a table keyed to a stat. An effect of a genuinely new
-  *shape* — one that does not fit any of those — still needs code in `src/engine/statCalculator.ts`.
+  range, spell power, movement, social rolls, stealth), each a table keyed to a stat. An effect of a
+  genuinely new *shape* — one that does not fit any of those — still needs code in
+  `src/engine/statCalculator.ts`. The Rogue's Detect Traps and Perceptive, and the Cleric's Word of Recall,
+  are ability text for the DM to adjudicate rather than computed values.
 - **The Ranger's Archer wording is inconsistent in the source rules.** The card says "+0.5 to your existing
   Dexterity modifier", but its own worked table lists Dexterity 1 as `1x` (0.75 + 0.5 would be 1.25). The
   explicit table is treated as authoritative and is now editable on the class's Effects list.

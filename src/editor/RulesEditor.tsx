@@ -234,12 +234,30 @@ export function RulesEditor({ mechanics: m, onChange }: RulesEditorProps) {
       {/* ---------------------------------------------------------- Magic */}
       <section className="rule-group">
         <h3 className="rule-group-title">Magic</h3>
+        <div className="rule-pair">
+          <div className="field">
+            <label className="field-label" htmlFor="spells-day">
+              Spells per day
+            </label>
+            <input
+              id="spells-day"
+              className="input"
+              type="number"
+              min={0}
+              value={m.magic.spellsPerDay}
+              onChange={(e) =>
+                patch({ magic: { ...m.magic, spellsPerDay: Math.max(0, Number(e.target.value)) } })
+              }
+            />
+            <p className="hint">Applies to every caster, whatever their class.</p>
+          </div>
+        </div>
         <TierRow
           label="Spell power multiplier"
           hint="Roll the spell, then multiply by this."
           values={m.magic.multipliers}
           cannotLabel="No magic"
-          onChange={(multipliers) => patch({ magic: { multipliers } })}
+          onChange={(multipliers) => patch({ magic: { ...m.magic, multipliers } })}
         />
       </section>
 

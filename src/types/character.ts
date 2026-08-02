@@ -71,13 +71,15 @@ export interface Ability {
  * - `spellPower` replaces the Magic multiplier
  * - `movement` replaces the Speed movement multiplier
  * - `socialRolls` replaces the Charisma multiplier
+ * - `stealth` replaces the harder of the two stealth columns
  */
 export type ClassEffectKind =
   | 'unarmedDamage'
   | 'bowRange'
   | 'spellPower'
   | 'movement'
-  | 'socialRolls';
+  | 'socialRolls'
+  | 'stealth';
 
 export interface ClassEffect {
   kind: ClassEffectKind;
@@ -95,6 +97,11 @@ export const EFFECT_KINDS: { kind: ClassEffectKind; label: string; hint: string 
   { kind: 'spellPower', label: 'Spell power', hint: 'Replaces the normal Magic multiplier.' },
   { kind: 'movement', label: 'Movement', hint: 'Replaces the normal Speed movement multiplier.' },
   { kind: 'socialRolls', label: 'Social rolls', hint: 'Replaces the normal Charisma multiplier.' },
+  {
+    kind: 'stealth',
+    label: 'Stealth',
+    hint: 'Replaces the "seen is likely" column — set it to the favourable numbers and the character is never at a disadvantage.',
+  },
 ];
 
 export type FieldType = 'text' | 'longtext' | 'number' | 'select';

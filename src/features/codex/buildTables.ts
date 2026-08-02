@@ -41,6 +41,12 @@ export function buildTables(stat: StatKey, m: Mechanics): BuiltTable[] {
           columns: ['Magic', 'Effect'],
           rows: tierRows(m.magic.multipliers, (n) => times(n, 'No magic at all')),
         },
+        {
+          title: 'Casting limit',
+          intro: 'This applies to every caster, whatever their class.',
+          columns: ['Limit', 'Value'],
+          rows: [{ key: 'Spells per day', value: String(m.magic.spellsPerDay) }],
+        },
       ];
 
     case 'speed':

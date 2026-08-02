@@ -212,7 +212,10 @@ function parseMechanics(value: unknown): Mechanics {
       multipliers: tierValues(movement.multipliers, 'mechanics.movement.multipliers'),
       rounding: rounding(movement.rounding ?? 'floor', 'mechanics.movement.rounding'),
     },
-    magic: { multipliers: tierValues(magic.multipliers, 'mechanics.magic.multipliers') },
+    magic: {
+      multipliers: tierValues(magic.multipliers, 'mechanics.magic.multipliers'),
+      spellsPerDay: num(magic.spellsPerDay ?? 3, 'mechanics.magic.spellsPerDay'),
+    },
     bow: {
       multipliers: tierValues(bow.multipliers, 'mechanics.bow.multipliers'),
       rounding: rounding(bow.rounding ?? 'ceil', 'mechanics.bow.rounding'),

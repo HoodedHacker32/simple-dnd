@@ -91,6 +91,8 @@ export interface DerivedStats {
   movementRange: { min: number; max: number };
   stealthUnlikely: number;
   stealthLikely: number;
+  /** How many spells any caster may cast in a day. */
+  spellsPerDay: number;
   dodgeTable: { comparison: string; target: number }[];
   /** Class effects that add a line rather than replacing a base value. */
   extraEffects: EffectResult[];
@@ -141,6 +143,14 @@ export function deriveStats(
 
   const stealthTier = (table: number[]) => table[tier(stats.dexterity, mechanics, table)] ?? 21;
 
+  // A stealth effect replaces the harder column, which is how the Rogue is
+  // "always treated as favourable" — its effect table is the favourable one.
+  const stealthEffect = byKind.get('stealth');
+  if (stealthEffect) overrides.stealth = stealthEffect.label;
+  const unlikelyTable = stealthEffect
+    ? stealthEffect.values.map((v) => v ?? 21)
+    : mechanics.stealth.unlikely;
+
   return {
     hitPoints: mechanics.baseHp + stats.health * mechanics.hpPerPoint,
     weaponAccess: mechanics.weaponAccess[tier(stats.strength, mechanics, mechanics.weaponAccess)] ?? '—',
@@ -153,8 +163,9 @@ export function deriveStats(
       min: applyRounding(1 * movementMultiplier, mechanics.movement.rounding),
       max: applyRounding(die * movementMultiplier, mechanics.movement.rounding),
     },
-    stealthUnlikely: stealthTier(mechanics.stealth.unlikely),
+    stealthUnlikely: stealthTier(unlikelyTable),
     stealthLikely: stealthTier(mechanics.stealth.likely),
+    spellsPerDay: mechanics.magic.spellsPerDay,
     dodgeTable: mechanics.dodge.map((row) => ({
       comparison: dodgeLabel(row.delta),
       target: row.target,

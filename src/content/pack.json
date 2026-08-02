@@ -1,7 +1,7 @@
 {
   "format": "chroniclers-table-content",
   "version": 1,
-  "label": "Original rules from the reference sheets",
+  "label": "Second draft: Dwarf strength, the Rogue, and four new classes",
   "updatedAt": "2026-08-01T15:47:04.948Z",
   "races": [
     {
@@ -32,7 +32,7 @@
       "name": "Dwarf",
       "accent": "#e6b422",
       "modifiers": {
-        "strength": 1,
+        "strength": 2,
         "magic": 0,
         "speed": 0,
         "dexterity": 1,
@@ -368,27 +368,161 @@
       "effects": []
     },
     {
+      "id": "cleric",
+      "name": "Cleric",
+      "accent": "#e0c46a",
+      "modifiers": {
+        "strength": 1,
+        "magic": 2,
+        "speed": 0,
+        "dexterity": 0,
+        "charisma": 2,
+        "health": 1
+      },
+      "lore": "Divine power with a soldier's practicality. Clerics mend the party and then set something on fire, and they are the only ones who can pull everybody out of a collapsing situation at once. Slow on their feet and no good in the dark — but no party wants to walk into a dungeon without one.",
+      "abilities": [
+        {
+          "name": "Spellcaster",
+          "description": "Access to spells such as good heal, fireball and wind blast, and able to learn genuinely powerful spells later on."
+        },
+        {
+          "name": "Word of Recall",
+          "description": "You and up to 5 creatures within 2 tiles (about 5 feet) are teleported to a place the cleric has previously marked with a lodestone. Only one lodestone can be set at a time, so choose where you drop it."
+        }
+      ],
+      "effects": []
+    },
+    {
+      "id": "druid",
+      "name": "Druid",
+      "accent": "#5c8a3a",
+      "modifiers": {
+        "strength": 0,
+        "magic": 2,
+        "speed": 1,
+        "dexterity": 1,
+        "charisma": 0,
+        "health": 1
+      },
+      "lore": "A caster whose power comes from the living world rather than any book or bloodline. Druids take the shape of animals they have met, hold a conversation with a crow, read the mood of a wood, and turn a handful of berries into something worth drinking. Out in the green they are never really outnumbered.",
+      "abilities": [
+        {
+          "name": "Spellcaster",
+          "description": "Access to spells such as good heal, thorn hold and thorn wall."
+        },
+        {
+          "name": "Wild Shape",
+          "description": "Transform into animals you have encountered, within limits the DM sets."
+        },
+        {
+          "name": "In Tune",
+          "description": "Speak with animals, and read the mood — the \"vibes\" — of plant life."
+        },
+        {
+          "name": "Forager",
+          "description": "Brew potions from berries gathered on the road."
+        }
+      ],
+      "effects": []
+    },
+    {
+      "id": "sorcerer",
+      "name": "Sorcerer",
+      "accent": "#8e44c9",
+      "modifiers": {
+        "strength": 0,
+        "magic": 2,
+        "speed": 1,
+        "dexterity": 1,
+        "charisma": 1,
+        "health": 0
+      },
+      "lore": "Magic that was never studied — it was inherited, and it has been waiting. Sorcerers do not learn spells so much as stop holding them back, and the breadth of what they can reach is unmatched by anyone. The limit is not knowledge. It is how many times a day a body can channel that much power without coming apart.",
+      "abilities": [
+        {
+          "name": "Spellcaster",
+          "description": "Access to a large variety of spells, including hold monster, ice storm, invisibility, magic blast and fireball. As with every caster, this is limited to 3 castings per day."
+        }
+      ],
+      "effects": []
+    },
+    {
+      "id": "bard",
+      "name": "Bard",
+      "accent": "#d98a2b",
+      "modifiers": {
+        "strength": 0,
+        "magic": 0,
+        "speed": 1,
+        "dexterity": 2,
+        "charisma": 2,
+        "health": 1
+      },
+      "lore": "The one who talks the party out of the fight, and wins the fight when talking fails. A bard's magic runs on presence rather than study — it is charm made loud enough to bend the room. Their Magic score is beside the point; what matters is whether people are listening.",
+      "abilities": [
+        {
+          "name": "Bardic Charm",
+          "description": "A bard's magic runs on Charisma alone. Their Magic score does not affect their spells at all — look up the spell multiplier on their Charisma instead."
+        },
+        {
+          "name": "Spellcaster",
+          "description": "Can cast spells such as taunt, bardic inspiration and vicious mockery."
+        }
+      ],
+      "effects": [
+        {
+          "kind": "spellPower",
+          "label": "Bardic Charm",
+          "basedOn": "charisma",
+          "values": [
+            null,
+            0.5,
+            1,
+            1.5
+          ]
+        }
+      ]
+    },
+    {
       "id": "rogue",
       "name": "Rogue",
       "accent": "#4b4453",
       "modifiers": {
         "strength": 0,
         "magic": 0,
-        "speed": 0,
-        "dexterity": 0,
-        "charisma": 0,
-        "health": 0
+        "speed": 2,
+        "dexterity": 2,
+        "charisma": 2,
+        "health": 1
       },
-      "lore": "Thief, scout, spy and knife-in-the-dark. Rogues win fights they were never seen entering, and their traditional strengths are stealth, precision and picking exactly the right moment. In this ruleset the Rogue has not been written up yet.",
+      "lore": "Thief, scout, spy and knife-in-the-dark. Rogues win fights they were never seen entering — they read a room before they enter it, find the trap before it finds the party, and pick exactly the right moment. Nobody moves through a place more quietly, whatever the lighting.",
       "abilities": [
         {
-          "name": "Not yet written",
-          "description": "The Rogue's stat block and ability have not been designed yet. This card is a placeholder and cannot be selected until the numbers are filled in."
+          "name": "Stealth",
+          "description": "Every stealth roll is worked out on the favourable column, whatever the situation. Open ground in broad daylight counts the same as a moonless night."
+        },
+        {
+          "name": "Detect Traps",
+          "description": "Check a room or an object for traps. A roll of 9 or more finds the traps in a room; a roll of 5 or more finds them on a single object. The DM makes this roll in secret, so a clean sweep is never a guarantee."
+        },
+        {
+          "name": "Perceptive",
+          "description": "Every perception check comes back one level of detail better than it otherwise would."
         }
       ],
-      "placeholder": true,
-      "placeholderNote": "Stat block pending — the GM has not designed this class yet.",
-      "effects": []
+      "effects": [
+        {
+          "kind": "stealth",
+          "label": "always favourable",
+          "basedOn": "dexterity",
+          "values": [
+            16,
+            11,
+            7,
+            4
+          ]
+        }
+      ]
     }
   ],
   "codex": [
@@ -445,7 +579,8 @@
         0.5,
         1,
         1.5
-      ]
+      ],
+      "spellsPerDay": 3
     },
     "bow": {
       "multipliers": [

@@ -104,7 +104,9 @@ export const CharacterSheet = forwardRef<HTMLDivElement, CharacterSheetProps>(fu
           <span className="derived-value">{derived.weaponAccess}</span>
         </div>
         <div className="derived-item">
-          <span className="derived-label">Spell power</span>
+          <span className="derived-label">
+            Spell power{derived.overrides.spellPower ? ` (${derived.overrides.spellPower})` : ''}
+          </span>
           <span className="derived-value">{multiplierText(derived.magicMultiplier)}</span>
         </div>
         <div className="derived-item">
@@ -125,8 +127,16 @@ export const CharacterSheet = forwardRef<HTMLDivElement, CharacterSheetProps>(fu
           </span>
           <span className="derived-value">{derived.charismaMultiplier}x</span>
         </div>
+        {derived.magicMultiplier !== null && (
+          <div className="derived-item">
+            <span className="derived-label">Spells per day</span>
+            <span className="derived-value">{derived.spellsPerDay}</span>
+          </div>
+        )}
         <div className="derived-item">
-          <span className="derived-label">Stealth (likely / unlikely)</span>
+          <span className="derived-label">
+            Stealth{derived.overrides.stealth ? ` (${derived.overrides.stealth})` : ''} (likely / unlikely)
+          </span>
           <span className="derived-value">
             {derived.stealthLikely}+ / {derived.stealthUnlikely}+
           </span>
