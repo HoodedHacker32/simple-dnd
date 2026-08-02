@@ -102,3 +102,18 @@ follow.
   Dexterity modifier", but its own worked table lists Dexterity 1 as `1x` (0.75 + 0.5 would be 1.25). The
   explicit table is treated as authoritative and is now editable on the class's Effects list.
 - **PSD export is not implemented.** It was scoped as an optional stretch item.
+
+## Where this ruleset departs from official D&D
+
+The race and class blurbs describe traditional D&D lore, and the ages and lifespans follow the 5e
+Player's Handbook. Two places diverge on purpose, and are called out in the text itself:
+
+- **Breaking a paladin's oath.** Here it permanently strips spellcasting. Official 5e does not work that
+  way — the PHB leaves the consequence to the DM, and the usual outcome is atonement and a fresh start, or
+  the DMG's **Oathbreaker** subclass, which keeps its spellcasting and trades holy power for a darker sort.
+- **The whole stat system.** Six attributes scored 0–3 is this ruleset's own invention; D&D uses six
+  different abilities on a 1–20 scale. Nothing here is meant to be compatible with an official character
+  sheet.
+
+Aarakocra is spelled with two a's, per the Elemental Evil Player's Companion. Its internal id stays
+`arakocra` because saved characters point at it.

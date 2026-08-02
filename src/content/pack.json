@@ -17,7 +17,7 @@
         "health": 0
       },
       "defaultAge": 30,
-      "lifespan": "Around 80 years",
+      "lifespan": "Less than a century",
       "lore": "The youngest and most restless of the common peoples. Humans lack the deep magic of the elves or the stone-craft of the dwarves, and make up the difference with sheer ambition — they build empires their grandchildren will inherit, and they build them fast. Every trade, every faith and every army has humans in it somewhere.",
       "traits": [
         "Adaptable to any calling",
@@ -63,7 +63,7 @@
         "health": -1
       },
       "defaultAge": 90,
-      "lifespan": "Around 425 years",
+      "lifespan": "Around 350 years, sometimes 500",
       "lore": "Small, brilliant and permanently delighted by something. Gnomes tinker, they experiment, and they occasionally blow up the workshop — then they write down what went wrong and try again with more enthusiasm. What they lack in muscle and stamina they make up for in cleverness and a knack for arcane invention.",
       "traits": [
         "Inventors, illusionists and tinkerers",
@@ -71,7 +71,7 @@
         "Fragile frames, boundless curiosity"
       ],
       "minAge": 1,
-      "maxAge": 425
+      "maxAge": 500
     },
     {
       "id": "elf",
@@ -89,7 +89,7 @@
       "lifespan": "Around 750 years",
       "lore": "Ancient, graceful and quietly certain that they have seen all this before. Elves measure time in centuries, which makes them patient teachers and infuriating negotiators. Magic runs close to the surface for them, and they move through a fight like a rumour moves through a court — elegantly, and slightly ahead of everyone else.",
       "traits": [
-        "Innately attuned to magic",
+        "Fey ancestry — hard to charm, immune to magical sleep",
         "Keen senses and long memory",
         "Trance instead of true sleep"
       ],
@@ -112,8 +112,8 @@
       "lifespan": "Around 150 years",
       "lore": "Cheerful, unbothered, and far braver than their size suggests. Halflings want a full larder, good company and a quiet evening — and will walk into a dragon's lair to protect those things. Their famous luck is not really luck; it is a talent for being somewhere else the instant something goes wrong.",
       "traits": [
-        "Uncannily lucky",
-        "Naturally stealthy",
+        "Uncannily lucky — bad rolls get a second chance",
+        "Nimble enough to slip through bigger folk",
         "Brave beyond all reason"
       ],
       "minAge": 1,
@@ -159,7 +159,7 @@
       "lore": "Built like a siege engine and used to being watched sideways. Half-orcs inherit orcish strength and endurance and spend their lives deciding what to do with it — some lean into the fear, others spend decades proving the assumption wrong. Either way, they are extremely hard to put down.",
       "traits": [
         "Relentless endurance — refuses to drop",
-        "Savage strength in melee",
+        "Savage attacks — critical hits bite deeper",
         "Intimidating presence"
       ],
       "minAge": 1,
@@ -178,7 +178,7 @@
         "health": 0
       },
       "defaultAge": 35,
-      "lifespan": "Around 100 years",
+      "lifespan": "A few years longer than a human",
       "lore": "Marked by an infernal pact somewhere back in the bloodline, and reminded of it constantly by everyone they meet. Horns, tail, and eyes that catch the light wrong. Tieflings learn early to rely on themselves, and many find that the same heritage that made them outsiders also gave them a spark of real infernal power.",
       "traits": [
         "Infernal heritage and innate magic",
@@ -190,7 +190,7 @@
     },
     {
       "id": "arakocra",
-      "name": "Arakocra",
+      "name": "Aarakocra",
       "accent": "#4a7ff0",
       "modifiers": {
         "strength": 1,
@@ -202,7 +202,7 @@
       },
       "defaultAge": 12,
       "lifespan": "Around 30 years",
-      "lore": "Bird-folk of the high peaks, more at home in a thermal than on a road. Arakocra live fast and short, and find the ground-dwelling obsession with borders and property faintly ridiculous. Give one a clear sky and it will outrun anything you can field.",
+      "lore": "Bird-folk of the high peaks, more at home in a thermal than on a road. Aarakocra reach maturity at just three years old and rarely see thirty, so they live at a pace that leaves other races dizzy — and find the ground-dweller's obsession with borders and property faintly ridiculous. Give one a clear sky and it will outrun anything you can field.",
       "traits": [
         "Flight and unmatched mobility",
         "Talons as natural weapons",
@@ -316,7 +316,7 @@
         "charisma": 1,
         "health": 2
       },
-      "lore": "A holy warrior bound by a sworn oath, granted real divine power in exchange for real divine restrictions. The Paladin is the strongest class in the game on paper — and carries the heaviest obligation. The power flows from the oath, which means the oath is not a suggestion.",
+      "lore": "A holy warrior bound by a sworn oath, granted real divine power in exchange for real divine restriction. The power flows from the oath, which means the oath is not a suggestion — and in this ruleset the Paladin pays for that power with the sternest limits of any class.",
       "abilities": [
         {
           "name": "Lay on Hands",
@@ -352,7 +352,7 @@
         "charisma": 1,
         "health": 1
       },
-      "lore": "What is left of a Paladin after the oath goes. The divine connection is severed, the satchel stays empty, and the spells simply do not come any more. They keep the training and the scars — everything else was on loan.",
+      "lore": "What is left of a Paladin after the oath goes. The divine connection closes, the satchel stays empty, and the spells simply do not come any more. They keep the training and the scars — everything else was on loan. Note that official D&D is gentler: a paladin there usually seeks atonement and starts fresh, or becomes an Oathbreaker who trades holy power for a darker sort. This ruleset takes the harder line.",
       "abilities": [
         {
           "name": "Oathbroken",
