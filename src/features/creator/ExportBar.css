@@ -41,3 +41,34 @@
   font-size: 14px;
   color: #e88b7d;
 }
+
+/* --- Share code --------------------------------------------------------- */
+.share-box {
+  margin-top: 14px;
+  padding: 15px 17px;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.3);
+  animation: rise-in 0.25s ease both;
+}
+
+.share-intro {
+  margin: 0 0 10px;
+  max-width: 62ch;
+  font-size: 14px;
+  color: rgba(239, 224, 192, 0.75);
+}
+
+.share-code {
+  width: 100%;
+  min-height: 84px;
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+.share-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}

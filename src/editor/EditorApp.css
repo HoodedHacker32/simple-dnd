@@ -51,3 +51,38 @@
   max-width: 1560px;
   margin: 0 auto;
 }
+
+/* --- Mode switch -------------------------------------------------------- */
+.mode-switch {
+  display: flex;
+  gap: 3px;
+  padding: 3px;
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.32);
+}
+
+.mode-btn {
+  padding: 7px 15px;
+  cursor: pointer;
+  font-family: var(--font-heading);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(239, 224, 192, 0.55);
+  background: none;
+  border: none;
+  border-radius: 2px;
+  transition: color 0.2s ease, background 0.2s ease;
+}
+
+.mode-btn:hover {
+  color: var(--parchment-light);
+}
+
+.mode-active {
+  color: var(--wood-darkest);
+  background: linear-gradient(180deg, var(--gold-bright), var(--gold-deep));
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.4);
+}

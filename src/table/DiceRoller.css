@@ -1,0 +1,256 @@
+.dice-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: 22px;
+  align-items: start;
+}
+
+.dice-stage {
+  padding: 26px 28px 24px;
+  border: 1px solid var(--parchment-shadow);
+  border-radius: 3px;
+  box-shadow: var(--shadow-deep), inset 0 0 60px rgba(120, 85, 40, 0.28);
+  color: var(--ink);
+}
+
+/* --- The dice themselves ------------------------------------------------ */
+.dice-buttons {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.die-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 18px 12px 14px;
+  cursor: pointer;
+  color: var(--blood);
+  border: 1px solid var(--parchment-shadow);
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.22);
+  transition: transform 0.16s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.die-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  border-color: var(--blood);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.die-btn:disabled {
+  cursor: wait;
+}
+
+.die-face {
+  width: 76px;
+  height: 76px;
+  --die-fill: rgba(140, 47, 36, 0.1);
+}
+
+.die-rolling {
+  animation: die-tumble 0.38s cubic-bezier(0.3, 0.1, 0.3, 1);
+}
+
+@keyframes die-tumble {
+  0% { transform: rotate(0deg) scale(1); }
+  40% { transform: rotate(220deg) scale(1.12); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+
+.die-number {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.die-label {
+  font-family: var(--font-heading);
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.die-sub {
+  font-size: 12px;
+  font-style: italic;
+  color: var(--ink-faded);
+}
+
+/* --- Result ------------------------------------------------------------- */
+.dice-result {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 18px;
+  padding: 12px;
+  border-top: 2px solid rgba(43, 26, 14, 0.2);
+  animation: rise-in 0.3s ease both;
+}
+
+.dice-result-value {
+  font-family: var(--font-display);
+  font-size: 46px;
+  font-weight: 900;
+  line-height: 1;
+  color: var(--ink);
+}
+
+.dice-result-label {
+  font-size: 15px;
+  font-style: italic;
+  color: var(--ink-faded);
+}
+
+.dice-crit .dice-result-value {
+  color: #1e7a3c;
+  text-shadow: 0 0 18px rgba(47, 160, 80, 0.45);
+}
+
+.dice-fumble .dice-result-value {
+  color: var(--blood);
+  text-shadow: 0 0 18px rgba(140, 47, 36, 0.4);
+}
+
+.dice-note {
+  margin: 0;
+  text-align: center;
+  font-size: 14px;
+  font-style: italic;
+  color: var(--ink-faded);
+}
+
+/* --- Protect throw reference -------------------------------------------- */
+.dice-reference {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px dashed rgba(43, 26, 14, 0.3);
+}
+
+.dice-ref-title {
+  font-family: var(--font-heading);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--blood);
+  margin-bottom: 9px;
+}
+
+.dice-ref-rows {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 7px;
+  margin-bottom: 9px;
+}
+
+.dice-ref-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 7px 11px;
+  border-radius: 2px;
+  border: 1px solid transparent;
+  background: rgba(255, 255, 255, 0.22);
+  font-size: 14px;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.dice-ref-row em {
+  font-size: 12px;
+  color: var(--ink-faded);
+}
+
+.ref-pass {
+  border-color: rgba(47, 107, 66, 0.55);
+  background: rgba(47, 107, 66, 0.16);
+}
+
+.ref-miss {
+  border-color: rgba(140, 47, 36, 0.35);
+  background: rgba(140, 47, 36, 0.09);
+  opacity: 0.75;
+}
+
+/* --- History ------------------------------------------------------------ */
+.dice-history {
+  padding: 20px 22px;
+  border: 1px solid rgba(212, 175, 55, 0.22);
+  border-radius: 3px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(0, 0, 0, 0.32));
+}
+
+.dice-history-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.dice-history h4 {
+  font-family: var(--font-heading);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.dice-clear {
+  padding: 5px 12px;
+  font-size: 10px;
+}
+
+.dice-log {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 460px;
+  overflow-y: auto;
+}
+
+.dice-log li {
+  display: grid;
+  grid-template-columns: 34px 34px minmax(0, 1fr);
+  align-items: baseline;
+  gap: 9px;
+  padding: 7px 0;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+  font-size: 14px;
+  color: rgba(239, 224, 192, 0.85);
+  animation: rise-in 0.25s ease both;
+}
+
+.log-die {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: rgba(239, 224, 192, 0.4);
+}
+
+.log-value {
+  font-family: var(--font-heading);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--gold-bright);
+}
+
+.log-label {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.log-fail .log-value {
+  color: #e88b7d;
+}
+
+@media (max-width: 900px) {
+  .dice-panel {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

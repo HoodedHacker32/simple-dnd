@@ -128,7 +128,7 @@ export default function App() {
       <input
         ref={fileInputRef}
         type="file"
-        accept=".json,application/json"
+        accept=".dndchar,.json,application/json"
         style={{ display: 'none' }}
         onChange={(e) => {
           const file = e.target.files?.[0];

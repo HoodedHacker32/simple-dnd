@@ -1,0 +1,163 @@
+.table-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* --- Party bar ---------------------------------------------------------- */
+.party-bar {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 14px 18px;
+  border: 1px solid rgba(212, 175, 55, 0.22);
+  border-radius: 3px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.34));
+}
+
+.party-name-field {
+  flex: 1;
+  min-width: 190px;
+}
+
+.party-name-field .field-label {
+  color: var(--gold);
+}
+
+.party-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.party-actions .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* --- Share code --------------------------------------------------------- */
+.code-bar {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.code-bar .input {
+  flex: 1;
+  min-width: 200px;
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-size: 13px;
+}
+
+.table-message {
+  padding: 11px 15px;
+  border-left: 3px solid var(--emerald);
+  border-radius: 0 2px 2px 0;
+  background: rgba(47, 107, 66, 0.16);
+  font-size: 15px;
+  color: rgba(239, 224, 192, 0.9);
+  animation: rise-in 0.25s ease both;
+}
+
+.message-bad {
+  border-left-color: var(--blood);
+  background: rgba(140, 47, 36, 0.18);
+}
+
+/* --- Turn tracker ------------------------------------------------------- */
+.turn-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 13px 18px;
+  border: 1px solid var(--gold-deep);
+  border-radius: 3px;
+  background: linear-gradient(180deg, rgba(212, 175, 55, 0.12), rgba(0, 0, 0, 0.4));
+  box-shadow: inset 0 0 30px rgba(212, 175, 55, 0.1);
+}
+
+.turn-info {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.turn-round {
+  font-family: var(--font-heading);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(239, 224, 192, 0.5);
+}
+
+.turn-active {
+  font-family: var(--font-display);
+  font-size: 21px;
+  color: var(--gold-bright);
+  text-shadow: 0 0 16px var(--candle-glow);
+}
+
+.turn-active em {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: rgba(239, 224, 192, 0.5);
+  text-shadow: none;
+}
+
+.turn-controls {
+  display: flex;
+  gap: 8px;
+}
+
+.turn-controls .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+/* --- Board -------------------------------------------------------------- */
+.board-filigree {
+  margin: 8px 0 2px;
+  color: var(--gold);
+}
+
+.board-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+  gap: 13px;
+}
+
+.board-tools {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding-top: 14px;
+  border-top: 1px solid rgba(212, 175, 55, 0.15);
+}
+
+.board-tools .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.danger-btn {
+  margin-left: auto;
+  color: #e88b7d;
+  border-color: rgba(140, 47, 36, 0.4);
+}
+
+@media (max-width: 560px) {
+  .board-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .danger-btn {
+    margin-left: 0;
+  }
+}

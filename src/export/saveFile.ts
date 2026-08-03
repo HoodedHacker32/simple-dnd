@@ -23,7 +23,7 @@ export function serializeCharacter(character: Character): string {
 
 export function saveCharacterToFile(character: Character): void {
   const blob = new Blob([serializeCharacter(character)], { type: 'application/json;charset=utf-8' });
-  saveAs(blob, `${slugify(character.name)}.dndchar.json`);
+  saveAs(blob, `${slugify(character.name)}.dndchar`);
 }
 
 export function parseCharacterFile(text: string): Character {

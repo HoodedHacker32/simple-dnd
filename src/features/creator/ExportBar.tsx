@@ -2,6 +2,7 @@ import { useState, type RefObject } from 'react';
 import type { Character, DndClass, Race, StatBlock } from '../../types/character';
 import type { DerivedStats } from '../../engine/statCalculator';
 import { saveCharacterToFile } from '../../export/saveFile';
+import { encodeCharacter } from '../../export/shareCode';
 import { Icon, type IconName } from '../../components/Icon';
 import './ExportBar.css';
 
@@ -17,6 +18,8 @@ interface ExportBarProps {
 export function ExportBar({ character, race, dndClass, stats, derived, sheetRef }: ExportBarProps) {
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [shareCode, setShareCode] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
 
   const run = async (id: string, task: () => Promise<void> | void) => {
     setBusy(id);
@@ -40,6 +43,15 @@ export function ExportBar({ character, race, dndClass, stats, derived, sheetRef 
 
   const actions: { id: string; label: string; icon: IconName; run: () => Promise<void> | void }[] = [
     { id: 'save', label: 'Save', icon: 'save', run: () => saveCharacterToFile(character) },
+    {
+      id: 'share',
+      label: 'Send to DM',
+      icon: 'scroll',
+      run: async () => {
+        setShareCode(await encodeCharacter(character));
+        setCopied(false);
+      },
+    },
     {
       id: 'png',
       label: 'PNG',
@@ -83,6 +95,34 @@ export function ExportBar({ character, race, dndClass, stats, derived, sheetRef 
         ))}
       </div>
       {error && <p className="export-error">{error}</p>}
+
+      {shareCode && (
+        <div className="share-box">
+          <p className="share-intro">
+            Send this code to your DM however you like — chat, message, anything that carries text. They paste
+            it into their screen and your character appears in the party.
+          </p>
+          <textarea className="textarea share-code" readOnly value={shareCode} onFocus={(e) => e.target.select()} />
+          <div className="share-actions">
+            <button
+              className="btn btn-primary"
+              onClick={async () => {
+                try {
+                  await navigator.clipboard.writeText(shareCode);
+                  setCopied(true);
+                } catch {
+                  setError('Could not reach the clipboard — select the code and copy it by hand.');
+                }
+              }}
+            >
+              {copied ? 'Copied' : 'Copy code'}
+            </button>
+            <button className="btn btn-ghost" onClick={() => setShareCode(null)}>
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
