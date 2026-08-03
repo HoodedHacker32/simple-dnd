@@ -169,8 +169,10 @@ export async function exportCharacterAsDocx(payload: ExportPayload): Promise<voi
   children.push(heading('What that means in play'));
   children.push(labelValueTable(derivedRows(payload)));
 
-  children.push(heading('Dodging — roll a d20'));
-  children.push(labelValueTable(derived.dodgeTable.map((r) => [r.comparison, `${r.target}+`] as [string, string])));
+  children.push(heading('Protect throws — roll a d20'));
+  children.push(
+    labelValueTable(derived.protectThrows.map((r) => [`${r.label} (${r.speed})`, `${r.target}+`] as [string, string])),
+  );
 
   if (dndClass) {
     children.push(heading('Abilities'));
@@ -255,8 +257,8 @@ export async function exportCharacterAsXlsx(payload: ExportPayload): Promise<voi
   addSection('In play', derivedRows(payload));
 
   addSection(
-    'Dodging (d20)',
-    derived.dodgeTable.map((r) => [r.comparison, `${r.target}+`] as [string, string]),
+    'Protect throws (d20)',
+    derived.protectThrows.map((r) => [`${r.label} (${r.speed})`, `${r.target}+`] as [string, string]),
   );
 
   if (dndClass) {

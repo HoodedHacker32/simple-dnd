@@ -308,35 +308,37 @@ export function RulesEditor({ mechanics: m, onChange }: RulesEditorProps) {
         />
 
         <div className="rule-table">
-          <span className="field-label">Dodging — d20 target by speed difference</span>
+          <span className="field-label">Protect throws — dodging and defending</span>
           <p className="hint rule-hint">
-            "Difference" is your Speed minus your opponent's. 21 means it cannot be dodged at all.
+            The target depends on how fast the incoming attack is, not on the defender's own Speed. 21 means
+            it cannot be protected against at all.
           </p>
           <div className="dodge-rows">
-            {m.dodge.map((row, i) => (
-              <div className="dodge-row" key={i}>
+            {m.protectThrows.map((row, i) => (
+              <div className="dodge-row" key={row.speed}>
                 <div className="field">
-                  <label className="field-label" htmlFor={`dodge-d-${i}`}>
-                    Difference
+                  <label className="field-label" htmlFor={`pt-l-${i}`}>
+                    {row.speed} — name
                   </label>
                   <input
-                    id={`dodge-d-${i}`}
+                    id={`pt-l-${i}`}
                     className="input"
-                    type="number"
-                    value={row.delta}
+                    value={row.label}
                     onChange={(e) =>
                       patch({
-                        dodge: m.dodge.map((r, j) => (j === i ? { ...r, delta: Number(e.target.value) } : r)),
+                        protectThrows: m.protectThrows.map((r, j) =>
+                          j === i ? { ...r, label: e.target.value } : r,
+                        ),
                       })
                     }
                   />
                 </div>
                 <div className="field">
-                  <label className="field-label" htmlFor={`dodge-t-${i}`}>
-                    Need
+                  <label className="field-label" htmlFor={`pt-t-${i}`}>
+                    You need
                   </label>
                   <input
-                    id={`dodge-t-${i}`}
+                    id={`pt-t-${i}`}
                     className="input"
                     type="number"
                     min={1}
@@ -344,35 +346,47 @@ export function RulesEditor({ mechanics: m, onChange }: RulesEditorProps) {
                     value={row.target}
                     onChange={(e) =>
                       patch({
-                        dodge: m.dodge.map((r, j) =>
+                        protectThrows: m.protectThrows.map((r, j) =>
                           j === i ? { ...r, target: Math.max(1, Math.min(21, Number(e.target.value))) } : r,
                         ),
                       })
                     }
                   />
                 </div>
-                <button
-                  type="button"
-                  className="ability-delete"
-                  disabled={m.dodge.length <= 1}
-                  aria-label={`Remove dodge row ${i + 1}`}
-                  onClick={() => patch({ dodge: m.dodge.filter((_, j) => j !== i) })}
-                >
-                  <Icon name="close" size={12} />
-                </button>
               </div>
             ))}
           </div>
-          <button
-            type="button"
-            className="btn btn-ghost list-add"
-            onClick={() =>
-              patch({ dodge: [...m.dodge, { delta: (m.dodge.at(-1)?.delta ?? 0) + 1, target: 10 }] })
-            }
-          >
-            <Icon name="plus" size={13} />
-            Add a difference
-          </button>
+        </div>
+
+        <div className="rule-pair">
+          <div className="field">
+            <label className="field-label" htmlFor="mana-max">
+              Mana carried at a time
+            </label>
+            <input
+              id="mana-max"
+              className="input"
+              type="number"
+              min={0}
+              value={m.mana.max}
+              onChange={(e) => patch({ mana: { ...m.mana, max: Math.max(0, Number(e.target.value)) } })}
+            />
+          </div>
+          <div className="field">
+            <label className="field-label" htmlFor="mana-med">
+              Mana per turn meditating
+            </label>
+            <input
+              id="mana-med"
+              className="input"
+              type="number"
+              min={0}
+              value={m.mana.meditationPerTurn}
+              onChange={(e) =>
+                patch({ mana: { ...m.mana, meditationPerTurn: Math.max(0, Number(e.target.value)) } })
+              }
+            />
+          </div>
         </div>
       </section>
 

@@ -42,10 +42,19 @@ export function buildTables(stat: StatKey, m: Mechanics): BuiltTable[] {
           rows: tierRows(m.magic.multipliers, (n) => times(n, 'No magic at all')),
         },
         {
-          title: 'Casting limit',
-          intro: 'This applies to every caster, whatever their class.',
-          columns: ['Limit', 'Value'],
-          rows: [{ key: 'Spells per day', value: String(m.magic.spellsPerDay) }],
+          title: 'Mana',
+          intro:
+            'Most spells cost mana. You can carry a limited amount and get it back by sleeping, by taking it from monsters that drop it, or by meditating.',
+          columns: ['Source', 'Mana'],
+          rows: [
+            { key: 'Carried at a time', value: String(m.mana.max) },
+            { key: 'Sleeping', value: 'Full restore' },
+            { key: 'Killing monsters', value: 'Monsters can drop mana' },
+            {
+              key: 'Meditating',
+              value: `+${m.mana.meditationPerTurn} per turn — takes the whole turn, no moving or defending`,
+            },
+          ],
         },
       ];
 
@@ -57,16 +66,13 @@ export function buildTables(stat: StatKey, m: Mechanics): BuiltTable[] {
           rows: tierRows(m.movement.multipliers, (n) => (n === null ? 'Cannot move' : `${n}x the roll`)),
         },
         {
-          title: 'Agility — dodging with a d20',
+          title: 'Protect throws — dodging and defending',
           intro:
-            'Enemies and attacks have set Speeds. Work out how your Speed compares to theirs, then roll a d20 and try to hit the number.',
-          columns: ['Your Speed vs theirs', 'You need'],
-          rows: m.dodge.map((row) => ({
-            key:
-              row.delta === 0
-                ? 'Equal'
-                : `${Math.abs(row.delta)}${row.delta < -1 ? ' or more' : ''} ${row.delta > 0 ? 'higher' : 'lower'}`,
-            value: row.target >= 21 ? 'Impossible' : row.target === 20 ? 'Roll a 20' : `${row.target} or higher`,
+            'After you are attacked you may dodge or defend. Defending keeps you where you are; dodging moves you one square. Without a shield they are about equally effective. What you need depends on how fast the attack is, not on your own Speed.',
+          columns: ['Attack speed', 'You need'],
+          rows: m.protectThrows.map((row) => ({
+            key: `${row.label} (${row.speed})`,
+            value: row.target >= 21 ? 'Impossible' : `${row.target} or higher`,
           })),
         },
       ];

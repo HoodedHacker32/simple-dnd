@@ -1,6 +1,8 @@
 import type { Ability, CharacterField, ClassEffect, ClassEffectKind, DndClass, FieldType, Race, StatBlock, StatKey } from '../types/character';
 import { EFFECT_KINDS, FIELD_TYPES, STAT_ORDER } from '../types/character';
-import type { DodgeRow, Mechanics, RuleSection, Rounding, TierValues } from '../types/rules';
+import type { Mechanics, RuleSection, Rounding, TierValues } from '../types/rules';
+import type { AttackSpeed, ProtectThrow, Spell, SpellTier } from '../types/spells';
+import { ATTACK_SPEEDS } from '../types/spells';
 
 export const PACK_FORMAT = 'chroniclers-table-content';
 export const PACK_VERSION = 1;
@@ -16,6 +18,7 @@ export interface ContentPack {
   codex: RuleSection[];
   mechanics: Mechanics;
   characterFields: CharacterField[];
+  spells: Spell[];
 }
 
 export class PackError extends Error {}
@@ -97,6 +100,7 @@ function parseRace(value: unknown, i: number): Race {
     lifespan: str(r.lifespan, `${path}.lifespan`, { allowEmpty: true }),
     lore: str(r.lore, `${path}.lore`, { allowEmpty: true }),
     traits: arr(r.traits ?? [], `${path}.traits`).map((t, j) => str(t, `${path}.traits[${j}]`)),
+    abilities: abilities(r.abilities ?? [], `${path}.abilities`),
   };
 }
 
@@ -194,14 +198,22 @@ function parseMechanics(value: unknown): Mechanics {
       return n;
     });
 
-  const dodge: DodgeRow[] = arr(m.dodge, 'mechanics.dodge').map((r, i) => {
-    const row = obj(r, `mechanics.dodge[${i}]`);
+  const speeds = new Set(ATTACK_SPEEDS.map((s) => s.id));
+  const protectThrows: ProtectThrow[] = arr(m.protectThrows, 'mechanics.protectThrows').map((r, i) => {
+    const row = obj(r, `mechanics.protectThrows[${i}]`);
+    const speed = str(row.speed, `mechanics.protectThrows[${i}].speed`);
+    if (!speeds.has(speed as AttackSpeed)) {
+      fail(`mechanics.protectThrows[${i}].speed`, `must be one of: ${[...speeds].join(', ')}.`);
+    }
     return {
-      delta: num(row.delta, `mechanics.dodge[${i}].delta`),
-      target: d20([row.target], `mechanics.dodge[${i}].target`)[0],
+      speed: speed as AttackSpeed,
+      label: str(row.label, `mechanics.protectThrows[${i}].label`),
+      target: d20([row.target], `mechanics.protectThrows[${i}].target`)[0],
     };
   });
-  if (dodge.length === 0) fail('mechanics.dodge', 'needs at least one row.');
+  if (protectThrows.length === 0) fail('mechanics.protectThrows', 'needs at least one row.');
+
+  const mana = obj(m.mana, 'mechanics.mana');
 
   return {
     baseHp: num(m.baseHp, 'mechanics.baseHp'),
@@ -222,11 +234,77 @@ function parseMechanics(value: unknown): Mechanics {
     },
     charisma: { multipliers: tierValues(charisma.multipliers, 'mechanics.charisma.multipliers') },
     weaponAccess,
-    dodge: [...dodge].sort((a, b) => a.delta - b.delta),
+    protectThrows,
     stealth: {
       likely: d20(stealth.likely, 'mechanics.stealth.likely'),
       unlikely: d20(stealth.unlikely, 'mechanics.stealth.unlikely'),
     },
+    mana: {
+      max: num(mana.max, 'mechanics.mana.max'),
+      meditationPerTurn: num(mana.meditationPerTurn, 'mechanics.mana.meditationPerTurn'),
+    },
+  };
+}
+
+/* ------------------------------------------------------------------ spells */
+
+function parseSpell(value: unknown, i: number, classIds: Set<string>): Spell {
+  const path = `spells[${i}]`;
+  const sp = obj(value, path);
+  const speeds = new Set(ATTACK_SPEEDS.map((s) => s.id));
+
+  const owners = arr(sp.classIds, `${path}.classIds`).map((c, j) => id(c, `${path}.classIds[${j}]`));
+  for (const owner of owners) {
+    if (!classIds.has(owner)) fail(`${path}.classIds`, `names class "${owner}", which does not exist.`);
+  }
+
+  const keyStat = sp.keyStat === null || sp.keyStat === undefined ? null : str(sp.keyStat, `${path}.keyStat`);
+  if (keyStat !== null && !STAT_ORDER.includes(keyStat as StatKey)) {
+    fail(`${path}.keyStat`, `must be null or one of: ${STAT_ORDER.join(', ')}.`);
+  }
+
+  const tiers: SpellTier[] = arr(sp.tiers ?? [], `${path}.tiers`).map((t, j) => {
+    const tp = `${path}.tiers[${j}]`;
+    const tier = obj(t, tp);
+    return {
+      score: num(tier.score, `${tp}.score`),
+      bands: arr(tier.bands, `${tp}.bands`).map((b, k) => {
+        const bp = `${tp}.bands[${k}]`;
+        const band = obj(b, bp);
+        const min = num(band.min, `${bp}.min`);
+        const max = num(band.max, `${bp}.max`);
+        if (min > max) fail(bp, 'has a minimum above its maximum.');
+        return { min, max, text: str(band.text, `${bp}.text`), fail: Boolean(band.fail) };
+      }),
+    };
+  });
+
+  const speed = sp.speed === null || sp.speed === undefined ? undefined : str(sp.speed, `${path}.speed`);
+  if (speed !== undefined && !speeds.has(speed as AttackSpeed)) {
+    fail(`${path}.speed`, `must be one of: ${[...speeds].join(', ')}.`);
+  }
+
+  const damage = sp.damage ? obj(sp.damage, `${path}.damage`) : undefined;
+  const healing = sp.healing ? obj(sp.healing, `${path}.healing`) : undefined;
+
+  return {
+    id: id(sp.id, `${path}.id`),
+    name: str(sp.name, `${path}.name`),
+    classIds: owners,
+    manaCost: num(sp.manaCost, `${path}.manaCost`),
+    description: str(sp.description, `${path}.description`, { allowEmpty: true }),
+    keyStat: keyStat as StatKey | null,
+    tiers,
+    guaranteed: Boolean(sp.guaranteed),
+    damage: damage
+      ? { base: num(damage.base, `${path}.damage.base`), note: damage.note ? str(damage.note, `${path}.damage.note`) : undefined }
+      : undefined,
+    healing: healing
+      ? { die: num(healing.die, `${path}.healing.die`), multiplier: num(healing.multiplier, `${path}.healing.multiplier`) }
+      : undefined,
+    speed: speed as AttackSpeed | undefined,
+    oncePerDay: Boolean(sp.oncePerDay),
+    notes: arr(sp.notes ?? [], `${path}.notes`).map((n, j) => str(n, `${path}.notes[${j}]`)),
   };
 }
 
@@ -273,6 +351,10 @@ export function parseContentPack(input: unknown): ContentPack {
   const characterFields = arr(pack.characterFields, 'characterFields').map(parseField);
   assertUniqueIds(characterFields, 'character field');
 
+  const classIdSet = new Set(classes.map((c) => c.id));
+  const spells = arr(pack.spells ?? [], 'spells').map((sp, i) => parseSpell(sp, i, classIdSet));
+  assertUniqueIds(spells, 'spell');
+
   if (races.length === 0) throw new PackError('A pack needs at least one race.');
   if (classes.length === 0) throw new PackError('A pack needs at least one class.');
 
@@ -299,6 +381,7 @@ export function parseContentPack(input: unknown): ContentPack {
     codex,
     mechanics,
     characterFields,
+    spells,
   };
 }
 

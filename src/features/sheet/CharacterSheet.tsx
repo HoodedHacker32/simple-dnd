@@ -44,6 +44,9 @@ export const CharacterSheet = forwardRef<HTMLDivElement, CharacterSheetProps>(fu
   ref,
 ) {
   const accent = dndClass?.accent ?? race?.accent ?? 'var(--gold)';
+  // A race can grant abilities too, and they belong beside the class's.
+  const allAbilities = [...(race?.abilities ?? []), ...(dndClass?.abilities ?? [])];
+  const spells = dndClass ? CONTENT.spells.filter((s) => s.classIds.includes(dndClass.id)) : [];
 
   return (
     <article className="sheet parchment-surface" ref={ref} style={{ '--sheet-accent': accent } as React.CSSProperties}>
@@ -152,25 +155,43 @@ export const CharacterSheet = forwardRef<HTMLDivElement, CharacterSheetProps>(fu
       </section>
 
       <section className="sheet-dodge">
-        <span className="dodge-title">Dodging — roll a d20</span>
+        <span className="dodge-title">Protect throws — dodge or defend with a d20</span>
         <div className="dodge-grid">
-          {derived.dodgeTable.map((row) => (
-            <div className="dodge-cell" key={row.comparison}>
-              <span className="dodge-comparison">{row.comparison}</span>
+          {derived.protectThrows.map((row) => (
+            <div className="dodge-cell" key={row.speed}>
+              <span className="dodge-comparison">
+                {row.label} attack ({row.speed})
+              </span>
               <span className="dodge-target">{row.target}+</span>
             </div>
           ))}
         </div>
       </section>
 
-      {dndClass && (
+      {allAbilities.length > 0 && (
         <>
           <span className="filigree sheet-filigree">Abilities</span>
           <section className="sheet-abilities">
-            {dndClass.abilities.map((ability) => (
+            {allAbilities.map((ability) => (
               <div className="sheet-ability" key={ability.name}>
                 <h4>{ability.name}</h4>
                 <p>{ability.description}</p>
+              </div>
+            ))}
+          </section>
+        </>
+      )}
+
+      {spells.length > 0 && (
+        <>
+          <span className="filigree sheet-filigree">Spells</span>
+          <section className="sheet-abilities">
+            {spells.map((spell) => (
+              <div className="sheet-ability" key={spell.id}>
+                <h4>
+                  {spell.name} — {spell.manaCost === 0 ? 'free' : `${spell.manaCost} mana`}
+                </h4>
+                <p>{spell.description}</p>
               </div>
             ))}
           </section>

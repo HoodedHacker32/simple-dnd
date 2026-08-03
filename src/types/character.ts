@@ -149,6 +149,8 @@ export interface Race {
   lifespan: string;
   lore: string;
   traits: string[];
+  /** Named racial abilities, shown on the sheet the way class abilities are. */
+  abilities?: Ability[];
 }
 
 export interface DndClass {

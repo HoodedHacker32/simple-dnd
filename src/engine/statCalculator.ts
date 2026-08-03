@@ -93,19 +93,13 @@ export interface DerivedStats {
   stealthLikely: number;
   /** How many spells any caster may cast in a day. */
   spellsPerDay: number;
-  dodgeTable: { comparison: string; target: number }[];
+  /** The d20 you need to dodge or defend, by how fast the attack is. */
+  protectThrows: { label: string; speed: string; target: number }[];
+  manaMax: number;
   /** Class effects that add a line rather than replacing a base value. */
   extraEffects: EffectResult[];
   /** Labels for base values a class effect overrode, keyed by what it replaced. */
   overrides: Partial<Record<ClassEffectKind, string>>;
-}
-
-function dodgeLabel(delta: number): string {
-  if (delta === 0) return 'Same speed';
-  const n = Math.abs(delta);
-  const direction = delta > 0 ? 'faster' : 'slower';
-  const suffix = delta < -1 ? '+ ' : ' ';
-  return `${n}${suffix}${direction} than them`;
 }
 
 export function deriveStats(
@@ -166,10 +160,12 @@ export function deriveStats(
     stealthUnlikely: stealthTier(unlikelyTable),
     stealthLikely: stealthTier(mechanics.stealth.likely),
     spellsPerDay: mechanics.magic.spellsPerDay,
-    dodgeTable: mechanics.dodge.map((row) => ({
-      comparison: dodgeLabel(row.delta),
+    protectThrows: mechanics.protectThrows.map((row) => ({
+      label: row.label,
+      speed: row.speed,
       target: row.target,
     })),
+    manaMax: mechanics.mana.max,
     extraEffects: effects
       .filter((e) => e.kind === 'unarmedDamage')
       .map((e) => ({

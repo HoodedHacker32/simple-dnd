@@ -1,4 +1,5 @@
 import type { StatKey } from './character';
+import type { ManaRules, ProtectThrow } from './spells';
 
 /** How a multiplied result is turned back into a whole number. */
 export type Rounding = 'floor' | 'ceil' | 'round';
@@ -8,13 +9,6 @@ export type Rounding = 'floor' | 'ceil' | 'round';
  * — Magic 0 casts nothing, Dexterity 0 cannot draw a bow.
  */
 export type TierValues = (number | null)[];
-
-export interface DodgeRow {
-  /** Your speed minus theirs. */
-  delta: number;
-  /** Lowest d20 roll that succeeds. */
-  target: number;
-}
 
 export interface Mechanics {
   baseHp: number;
@@ -34,8 +28,13 @@ export interface Mechanics {
   /** What you may wield at each Strength score. */
   weaponAccess: string[];
 
-  dodge: DodgeRow[];
+  /**
+   * Dodging and defending are both "protect throws" and roll against the speed
+   * of the incoming attack, not against your own Speed score.
+   */
+  protectThrows: ProtectThrow[];
   stealth: { likely: number[]; unlikely: number[] };
+  mana: ManaRules;
 }
 
 /** Prose for one Codex section. The tables beneath it are generated from Mechanics. */

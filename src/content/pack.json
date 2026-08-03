@@ -1,7 +1,7 @@
 {
   "format": "chroniclers-table-content",
   "version": 1,
-  "label": "Rangers never run out of arrows",
+  "label": "Combat rules, mana and the full spell list",
   "updatedAt": "2026-08-01T15:47:04.948Z",
   "races": [
     {
@@ -209,7 +209,13 @@
         "Short-lived, sky-bound perspective"
       ],
       "minAge": 1,
-      "maxAge": 30
+      "maxAge": 30,
+      "abilities": [
+        {
+          "name": "Flight",
+          "description": "Aarakocra can fly. Movement may be spent in the air rather than along the ground, over anything in the way — walls, chasms, water, or a fight happening underneath."
+        }
+      ]
     }
   ],
   "classes": [
@@ -589,7 +595,7 @@
     "bow": {
       "multipliers": [
         null,
-        0.75,
+        0.5,
         1,
         1.5
       ],
@@ -609,32 +615,6 @@
       "All weapons",
       "All weapons, heavy can be thrown"
     ],
-    "dodge": [
-      {
-        "delta": -2,
-        "target": 20
-      },
-      {
-        "delta": -1,
-        "target": 16
-      },
-      {
-        "delta": 0,
-        "target": 11
-      },
-      {
-        "delta": 1,
-        "target": 8
-      },
-      {
-        "delta": 2,
-        "target": 5
-      },
-      {
-        "delta": 3,
-        "target": 3
-      }
-    ],
     "stealth": {
       "likely": [
         16,
@@ -648,6 +628,27 @@
         11,
         8
       ]
+    },
+    "protectThrows": [
+      {
+        "speed": "SS",
+        "label": "Slow",
+        "target": 7
+      },
+      {
+        "speed": "SN",
+        "label": "Normal",
+        "target": 11
+      },
+      {
+        "speed": "SF",
+        "label": "Fast",
+        "target": 18
+      }
+    ],
+    "mana": {
+      "max": 10,
+      "meditationPerTurn": 1
     }
   },
   "characterFields": [
@@ -702,6 +703,754 @@
       "showOnSheet": false,
       "width": "full",
       "placeholder": "Where did they come from, and what are they running towards? Or away from?"
+    }
+  ],
+  "spells": [
+    {
+      "id": "hold-monster",
+      "name": "Hold Monster",
+      "classIds": [
+        "sorcerer"
+      ],
+      "manaCost": 2,
+      "speed": "SN",
+      "description": "The target cannot do anything on its next turn.",
+      "keyStat": "magic",
+      "guaranteed": false,
+      "tiers": [
+        {
+          "score": 1,
+          "bands": [
+            {
+              "min": 1,
+              "max": 15,
+              "text": "Fails",
+              "fail": true
+            },
+            {
+              "min": 16,
+              "max": 20,
+              "text": "Target cannot act next turn",
+              "fail": false
+            }
+          ]
+        },
+        {
+          "score": 2,
+          "bands": [
+            {
+              "min": 1,
+              "max": 10,
+              "text": "Fails",
+              "fail": true
+            },
+            {
+              "min": 11,
+              "max": 20,
+              "text": "Target cannot act next turn",
+              "fail": false
+            }
+          ]
+        },
+        {
+          "score": 3,
+          "bands": [
+            {
+              "min": 1,
+              "max": 5,
+              "text": "Fails",
+              "fail": true
+            },
+            {
+              "min": 6,
+              "max": 20,
+              "text": "Target cannot act next turn",
+              "fail": false
+            }
+          ]
+        }
+      ],
+      "notes": []
+    },
+    {
+      "id": "ice-storm",
+      "name": "Ice Storm",
+      "classIds": [
+        "sorcerer"
+      ],
+      "manaCost": 3,
+      "speed": "SN",
+      "description": "Icicles fall from the ceiling onto everything in a 4x4 area.",
+      "keyStat": "magic",
+      "guaranteed": false,
+      "damage": {
+        "base": 40,
+        "note": "to everything in a 4x4 area"
+      },
+      "tiers": [
+        {
+          "score": 1,
+          "bands": [
+            {
+              "min": 1,
+              "max": 15,
+              "text": "Fails",
+              "fail": true
+            },
+            {
+              "min": 16,
+              "max": 20,
+              "text": "Icicles land on the target area",
+              "fail": false
+            }
+          ]
+        },
+        {
+          "score": 2,
+          "bands": [
+            {
+              "min": 1,
+              "max": 10,
+              "text": "Fails",
+              "fail": true
+            },
+            {
+              "min": 11,
+              "max": 20,
+              "text": "Icicles land on the target area",
+              "fail": false
+            }
+          ]
+        },
+        {
+          "score": 3,
+          "bands": [
+            {
+              "min": 1,
+              "max": 5,
+              "text": "Fails",
+              "fail": true
+            },
+            {
+              "min": 6,
+              "max": 20,
+              "text": "Icicles land on the target area",
+              "fail": false
+            }
+          ]
+        }
+      ],
+      "notes": [
+        "On a failure the storm spawns above the caster instead."
+      ]
+    },
+    {
+      "id": "invisibility",
+      "name": "Invisibility",
+      "classIds": [
+        "sorcerer"
+      ],
+      "manaCost": 1,
+      "description": "The character cannot be seen unless an observer rolls a natural 1.",
+      "keyStat": null,
+      "guaranteed": true,
+      "tiers": [],
+      "notes": [
+        "Wears off when they attack, are attacked, or cast a spell."
+      ]
+    },
+    {
+      "id": "magic-blast",
+      "name": "Magic Blast",
+      "classIds": [
+        "sorcerer"
+      ],
+      "manaCost": 1,
+      "speed": "SS",
+      "description": "A projectile of raw force. Up to three may be fired at once, at one target or several — each costs 1 mana.",
+      "keyStat": null,
+      "guaranteed": true,
+      "damage": {
+        "base": 20,
+        "note": "per projectile"
+      },
+      "tiers": [],
+      "notes": [
+        "Always hits, but the target may still dodge, defend or block with a shield.",
+        "The sheets list its speed as \"Speed 1\", read here as slow."
+      ]
+    },
+    {
+      "id": "fire-ball",
+      "name": "Fire Ball",
+      "classIds": [
+        "sorcerer",
+        "cleric"
+      ],
+      "manaCost": 3,
+      "speed": "SN",
+      "description": "Hurl a fiery projectile at an enemy. It takes the full damage; everything else in a 3x3 area takes half.",
+      "keyStat": "magic",
+      "guaranteed": false,
+      "damage": {
+        "base": 60,
+        "note": "direct hit; half to the rest of the 3x3"
+      },
+      "tiers": [
+        {
+          "score": 1,
+          "bands": [
+            {
+              "min": 1,
+              "max": 7,
+              "text": "Fails",
+              "fail": true
+            },
+            {
+              "min": 8,
+              "max": 20,
+              "text": "Hits the target",
+              "fail": false
+            }
+          ]
+        },
+        {
+          "score": 2,
+          "bands": [
+            {
+              "min": 1,
+              "max": 4,
+              "text": "Fails",
+              "fail": true
+            },
+            {
+              "min": 5,
+              "max": 20,
+              "text": "Hits the target",
+              "fail": false
+            }
+          ]
+        },
+        {
+          "score": 3,
+          "bands": [
+            {
+              "min": 1,
+              "max": 1,
+              "text": "Fails",
+              "fail": true
+            },
+            {
+              "min": 2,
+              "max": 20,
+              "text": "Hits the target",
+              "fail": false
+            }
+          ]
+        }
+      ],
+      "notes": [
+        "Everything caught in the blast catches fire, taking 10 damage on its turn.",
+        "A natural 20 is a critical hit on everything in the blast zone."
+      ]
+    },
+    {
+      "id": "good-heal",
+      "name": "Good Heal",
+      "classIds": [
+        "druid",
+        "cleric"
+      ],
+      "manaCost": 2,
+      "description": "A strong healing spell.",
+      "keyStat": null,
+      "guaranteed": true,
+      "healing": {
+        "die": 20,
+        "multiplier": 5
+      },
+      "tiers": [],
+      "notes": []
+    },
+    {
+      "id": "thorn-hold",
+      "name": "Thorn Hold",
+      "classIds": [
+        "druid"
+      ],
+      "manaCost": 2,
+      "speed": "SN",
+      "description": "Holds an enemy in place for up to 4 turns and halves their attack speed.",
+      "keyStat": "magic",
+      "guaranteed": false,
+      "damage": {
+        "base": 15,
+        "note": "at the end of the trapped turn"
+      },
+      "tiers": [
+        {
+          "score": 1,
+          "bands": [
+            {
+              "min": 1,
+              "max": 15,
+              "text": "Fails",
+              "fail": true
+            },
+            {
+              "min": 16,
+              "max": 20,
+              "text": "The enemy is held",
+              "fail": false
+            }
+          ]
+        },
+        {
+          "score": 2,
+          "bands": [
+            {
+              "min": 1,
+              "max": 10,
+              "text": "Fails",
+              "fail": true
+            },
+            {
+              "min": 11,
+              "max": 20,
+              "text": "The enemy is held",
+              "fail": false
+            }
+          ]
+        },
+        {
+          "score": 3,
+          "bands": [
+            {
+              "min": 1,
+              "max": 5,
+              "text": "Fails",
+              "fail": true
+            },
+            {
+              "min": 6,
+              "max": 20,
+              "text": "The enemy is held",
+              "fail": false
+            }
+          ]
+        }
+      ],
+      "notes": [
+        "The thorns break after 60 damage. That damage lands whenever the trapped enemy attacks, or when an ally attacks the thorns for them."
+      ]
+    },
+    {
+      "id": "thorn-wall",
+      "name": "Thorn Wall",
+      "classIds": [
+        "druid"
+      ],
+      "manaCost": 3,
+      "speed": "SN",
+      "description": "A one-tile wall of thorns with 120 health that deals 15 damage to anything striking it in melee.",
+      "keyStat": "magic",
+      "guaranteed": false,
+      "damage": {
+        "base": 40,
+        "note": "if summoned underneath an enemy"
+      },
+      "tiers": [
+        {
+          "score": 1,
+          "bands": [
+            {
+              "min": 1,
+              "max": 10,
+              "text": "Fails",
+              "fail": true
+            },
+            {
+              "min": 11,
+              "max": 20,
+              "text": "The wall rises",
+              "fail": false
+            }
+          ]
+        },
+        {
+          "score": 2,
+          "bands": [
+            {
+              "min": 1,
+              "max": 5,
+              "text": "Fails",
+              "fail": true
+            },
+            {
+              "min": 6,
+              "max": 20,
+              "text": "The wall rises",
+              "fail": false
+            }
+          ]
+        },
+        {
+          "score": 3,
+          "bands": [
+            {
+              "min": 1,
+              "max": 1,
+              "text": "Fails",
+              "fail": true
+            },
+            {
+              "min": 2,
+              "max": 20,
+              "text": "The wall rises",
+              "fail": false
+            }
+          ]
+        }
+      ],
+      "notes": [
+        "The wall has 120 health and deals 15 damage when hit in melee."
+      ]
+    },
+    {
+      "id": "elemental-blade",
+      "name": "Elemental Blade",
+      "classIds": [
+        "paladin-oathsworn"
+      ],
+      "manaCost": 1,
+      "description": "Applies an elemental effect to a weapon, but only if that element is nearby — you can set a blade alight next to a fire.",
+      "keyStat": null,
+      "guaranteed": true,
+      "tiers": [],
+      "notes": [
+        "Lasts until the weapon is dropped, put in a satchel, or meets a counter-element — water puts out fire.",
+        "Fire: enemies burn for 10 damage at the start of every turn.",
+        "Water: makes enemies wet.",
+        "Electricity: +15 damage on every attack unless the target is immune.",
+        "Ice: can also freeze a wet enemy.",
+        "Wind: enemies are knocked back."
+      ]
+    },
+    {
+      "id": "ok-heal",
+      "name": "Ok Heal",
+      "classIds": [
+        "paladin-oathsworn"
+      ],
+      "manaCost": 1,
+      "description": "A modest healing spell.",
+      "keyStat": null,
+      "guaranteed": true,
+      "healing": {
+        "die": 20,
+        "multiplier": 3
+      },
+      "tiers": [],
+      "notes": []
+    },
+    {
+      "id": "light-blade",
+      "name": "Light Blade",
+      "classIds": [
+        "paladin-oathsworn"
+      ],
+      "manaCost": 5,
+      "oncePerDay": true,
+      "description": "The paladin channels holy light into their weapon, making it deal 6x damage for 5 turns.",
+      "keyStat": null,
+      "guaranteed": true,
+      "tiers": [],
+      "notes": [
+        "Once per day."
+      ]
+    },
+    {
+      "id": "taunt",
+      "name": "Taunt",
+      "classIds": [
+        "bard"
+      ],
+      "manaCost": 0,
+      "description": "A volley of insults that pulls a chosen enemy onto the bard.",
+      "keyStat": "charisma",
+      "guaranteed": false,
+      "tiers": [
+        {
+          "score": 2,
+          "bands": [
+            {
+              "min": 1,
+              "max": 7,
+              "text": "Fails",
+              "fail": true
+            },
+            {
+              "min": 8,
+              "max": 12,
+              "text": "Attacks the bard for 2 turns",
+              "fail": false
+            },
+            {
+              "min": 13,
+              "max": 19,
+              "text": "Attacks the bard for 4 turns",
+              "fail": false
+            },
+            {
+              "min": 20,
+              "max": 20,
+              "text": "Attacks until you apologise",
+              "fail": false
+            }
+          ]
+        },
+        {
+          "score": 3,
+          "bands": [
+            {
+              "min": 1,
+              "max": 5,
+              "text": "Fails",
+              "fail": true
+            },
+            {
+              "min": 6,
+              "max": 8,
+              "text": "Attacks the bard for 2 turns",
+              "fail": false
+            },
+            {
+              "min": 9,
+              "max": 16,
+              "text": "Attacks the bard for 4 turns",
+              "fail": false
+            },
+            {
+              "min": 17,
+              "max": 20,
+              "text": "Attacks until you apologise",
+              "fail": false
+            }
+          ]
+        }
+      ],
+      "notes": [
+        "An apology must be of equal or greater force than the taunt.",
+        "The sheets give no table below Charisma 2."
+      ]
+    },
+    {
+      "id": "bardic-inspiration",
+      "name": "Bardic Inspiration",
+      "classIds": [
+        "bard"
+      ],
+      "manaCost": 0,
+      "description": "A rousing speech that doubles attack damage for every ally for 3 turns, counting the turn it is cast.",
+      "keyStat": "charisma",
+      "guaranteed": false,
+      "tiers": [
+        {
+          "score": 2,
+          "bands": [
+            {
+              "min": 1,
+              "max": 11,
+              "text": "Fails",
+              "fail": true
+            },
+            {
+              "min": 12,
+              "max": 20,
+              "text": "Allies deal double damage for 3 turns",
+              "fail": false
+            }
+          ]
+        },
+        {
+          "score": 3,
+          "bands": [
+            {
+              "min": 1,
+              "max": 7,
+              "text": "Fails",
+              "fail": true
+            },
+            {
+              "min": 8,
+              "max": 20,
+              "text": "Allies deal double damage for 3 turns",
+              "fail": false
+            }
+          ]
+        }
+      ],
+      "notes": [
+        "The sheets give no table below Charisma 2."
+      ]
+    },
+    {
+      "id": "vicious-mockery",
+      "name": "Vicious Mockery",
+      "classIds": [
+        "bard"
+      ],
+      "manaCost": 3,
+      "description": "Roast an enemy so severely it hurts. The target loses all priority and moves last on its next turn.",
+      "keyStat": null,
+      "guaranteed": false,
+      "damage": {
+        "base": 60
+      },
+      "tiers": [
+        {
+          "score": 0,
+          "bands": [
+            {
+              "min": 1,
+              "max": 10,
+              "text": "Fails",
+              "fail": true
+            },
+            {
+              "min": 11,
+              "max": 20,
+              "text": "Hits — the target moves last next turn",
+              "fail": false
+            }
+          ]
+        }
+      ],
+      "notes": [
+        "The target cannot dodge or defend against this if it hits.",
+        "A target knocked out by this falls unconscious rather than dying."
+      ]
+    },
+    {
+      "id": "wind-blast",
+      "name": "Wind Blast",
+      "classIds": [
+        "cleric"
+      ],
+      "manaCost": 2,
+      "speed": "SN",
+      "description": "A concentrated blast of wind that can knock the target backwards.",
+      "keyStat": "magic",
+      "guaranteed": false,
+      "damage": {
+        "base": 30,
+        "note": "plus 20 more if they hit something"
+      },
+      "tiers": [
+        {
+          "score": 1,
+          "bands": [
+            {
+              "min": 1,
+              "max": 7,
+              "text": "Misses",
+              "fail": true
+            },
+            {
+              "min": 8,
+              "max": 12,
+              "text": "Hits, no knockback",
+              "fail": false
+            },
+            {
+              "min": 13,
+              "max": 20,
+              "text": "Hits, 1 tile knockback",
+              "fail": false
+            }
+          ]
+        },
+        {
+          "score": 2,
+          "bands": [
+            {
+              "min": 1,
+              "max": 4,
+              "text": "Misses",
+              "fail": true
+            },
+            {
+              "min": 5,
+              "max": 9,
+              "text": "Hits, 1 tile knockback",
+              "fail": false
+            },
+            {
+              "min": 10,
+              "max": 14,
+              "text": "Hits, 2 tile knockback",
+              "fail": false
+            },
+            {
+              "min": 15,
+              "max": 20,
+              "text": "Hits, 3 tile knockback",
+              "fail": false
+            }
+          ]
+        },
+        {
+          "score": 3,
+          "bands": [
+            {
+              "min": 1,
+              "max": 4,
+              "text": "Misses",
+              "fail": true
+            },
+            {
+              "min": 5,
+              "max": 9,
+              "text": "Hits, 1 tile knockback",
+              "fail": false
+            },
+            {
+              "min": 10,
+              "max": 14,
+              "text": "Hits, 2 tile knockback",
+              "fail": false
+            },
+            {
+              "min": 15,
+              "max": 20,
+              "text": "Hits, 3 tile knockback",
+              "fail": false
+            }
+          ]
+        }
+      ],
+      "notes": [
+        "A non-monster enemy killed by this falls unconscious instead."
+      ]
+    },
+    {
+      "id": "protect",
+      "name": "Protect",
+      "classIds": [
+        "sorcerer",
+        "druid",
+        "paladin-oathsworn",
+        "bard",
+        "cleric"
+      ],
+      "manaCost": 2,
+      "description": "You or an ally is immune to attack for this turn and the next, or until they are hit.",
+      "keyStat": null,
+      "guaranteed": true,
+      "tiers": [],
+      "notes": [
+        "Available to every caster."
+      ]
     }
   ]
 }
