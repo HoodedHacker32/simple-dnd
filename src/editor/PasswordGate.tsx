@@ -52,6 +52,7 @@ export function PasswordGate({ onUnlock }: PasswordGateProps) {
   const [value, setValue] = useState('');
   const [error, setError] = useState(false);
   const [remember, setRemember] = useState(true);
+  const [shown, setShown] = useState(false);
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -84,18 +85,30 @@ export function PasswordGate({ onUnlock }: PasswordGateProps) {
         <label className="field-label gate-label" htmlFor="gate-input">
           Passphrase
         </label>
-        <input
-          id="gate-input"
-          className="input"
-          type="password"
-          autoFocus
-          value={value}
-          onChange={(e) => {
-            setValue(e.target.value);
-            setError(false);
-          }}
-          placeholder="…"
-        />
+        <div className="gate-input-wrap">
+          <input
+            id="gate-input"
+            className="input"
+            type={shown ? 'text' : 'password'}
+            autoFocus
+            value={value}
+            onChange={(e) => {
+              setValue(e.target.value);
+              setError(false);
+            }}
+            placeholder="…"
+          />
+          <button
+            type="button"
+            className="gate-peek"
+            onClick={() => setShown(!shown)}
+            aria-label={shown ? 'Hide the passphrase' : 'Show the passphrase'}
+            aria-pressed={shown}
+            title={shown ? 'Hide' : 'Show'}
+          >
+            <Icon name={shown ? 'eyeOff' : 'eye'} size={17} />
+          </button>
+        </div>
 
         {error && <p className="gate-error">Those are not the words.</p>}
 

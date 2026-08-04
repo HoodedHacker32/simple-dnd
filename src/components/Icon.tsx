@@ -13,7 +13,9 @@ export type IconName =
   | 'chevronLeft'
   | 'chevronRight'
   | 'fleuron'
-  | 'star';
+  | 'star'
+  | 'eye'
+  | 'eyeOff';
 
 /** Icons drawn on a 24x24 grid. Stroked unless listed in FILLED. */
 const PATHS: Record<IconName, ReactNode> = {
@@ -84,6 +86,19 @@ const PATHS: Record<IconName, ReactNode> = {
   chevronRight: <path d="m9 18 6-6-6-6" />,
   fleuron: <path d="M12 3c3.2 4.2 6 6.3 6 9.3A6 6 0 0 1 6 12.3C6 9.3 8.8 7.2 12 3z" />,
   star: <path d="M12 2l2.2 7.8L22 12l-7.8 2.2L12 22l-2.2-7.8L2 12l7.8-2.2z" />,
+  eye: (
+    <>
+      <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7z" />
+      <circle cx="12" cy="12" r="3" />
+    </>
+  ),
+  eyeOff: (
+    <>
+      <path d="M10.6 6.2A9.9 9.9 0 0 1 12 6c6.4 0 10 7 10 7a17 17 0 0 1-3.1 3.9M6.5 7.6A17 17 0 0 0 2 13s3.6 7 10 7a9.6 9.6 0 0 0 4.5-1.1" />
+      <path d="M9.9 10.1a3 3 0 0 0 4.2 4.2" />
+      <path d="m3 3 18 18" />
+    </>
+  ),
 };
 
 const FILLED = new Set<IconName>(['fleuron', 'star']);

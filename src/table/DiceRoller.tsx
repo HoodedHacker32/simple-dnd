@@ -1,55 +1,55 @@
-import { useState } from 'react';
+import { Suspense, lazy, useState } from 'react';
 import { CONTENT } from '../content';
 import { makeRoll, type Roll } from './dice';
 import './DiceRoller.css';
 
-const D4 = 'M32 3 L60 56 L4 56 Z';
-const D20 = 'M32 2 L58 17 L58 47 L32 62 L6 47 L6 17 Z';
+// Three.js is a few hundred kilobytes, so the dice arrive after the screen does.
+const Die3D = lazy(() => import('./Die3D').then((m) => ({ default: m.Die3D })));
 
-function Die({ sides, value, rolling }: { sides: number; value: number | null; rolling: boolean }) {
+function DieSlot({ sides, value, rolling }: { sides: 4 | 20; value: number | null; rolling: boolean }) {
   return (
-    <svg viewBox="0 0 64 64" className={`die-face${rolling ? ' die-rolling' : ''}`} aria-hidden="true">
-      <path
-        d={sides === 4 ? D4 : D20}
-        fill="var(--die-fill, rgba(0,0,0,0.35))"
-        stroke="currentColor"
-        strokeWidth="2.5"
-        strokeLinejoin="round"
-      />
-      <text x="32" y={sides === 4 ? 46 : 40} textAnchor="middle" className="die-number" fill="currentColor">
-        {value ?? sides}
-      </text>
-    </svg>
+    <Suspense fallback={<div className="die-3d die-loading" style={{ width: 96, height: 96 }} />}>
+      <Die3D sides={sides} value={value} rolling={rolling} />
+    </Suspense>
   );
 }
 
 /** The dice themselves, with the protect-throw targets reacting to the last d20. */
 export function DicePad({ onRoll }: { onRoll: (roll: Roll) => void }) {
   const [last, setLast] = useState<Roll | null>(null);
-  const [rolling, setRolling] = useState(false);
+  const [rolling, setRolling] = useState<4 | 20 | null>(null);
+  const [pending, setPending] = useState<Roll | null>(null);
 
-  const roll = (sides: number, label: string) => {
-    setRolling(true);
+  const roll = (sides: 4 | 20, label: string) => {
     const result = makeRoll(sides, label);
-    // Let the tumble play before the number lands.
+    // The die knows its result immediately so it can land on the right face;
+    // the readout waits until it has stopped tumbling.
+    setPending(result);
+    setRolling(sides);
     window.setTimeout(() => {
       setLast(result);
-      setRolling(false);
+      setPending(null);
+      setRolling(null);
       onRoll(result);
-    }, 380);
+    }, 950);
+  };
+
+  const faceFor = (sides: 4 | 20) => {
+    if (pending?.die === sides) return pending.value;
+    return last?.die === sides ? last.value : null;
   };
 
   return (
     <div className="dice-stage parchment-surface">
       <div className="dice-buttons">
-        <button className="die-btn" onClick={() => roll(4, 'Movement')} disabled={rolling}>
-          <Die sides={4} value={rolling ? null : last?.die === 4 ? last.value : null} rolling={rolling} />
+        <button className="die-btn" onClick={() => roll(4, 'Movement')} disabled={rolling !== null}>
+          <DieSlot sides={4} value={faceFor(4)} rolling={rolling === 4} />
           <span className="die-label">d4</span>
           <span className="die-sub">Movement</span>
         </button>
 
-        <button className="die-btn" onClick={() => roll(20, 'd20')} disabled={rolling}>
-          <Die sides={20} value={rolling ? null : last?.die === 20 ? last.value : null} rolling={rolling} />
+        <button className="die-btn" onClick={() => roll(20, 'd20')} disabled={rolling !== null}>
+          <DieSlot sides={20} value={faceFor(20)} rolling={rolling === 20} />
           <span className="die-label">d20</span>
           <span className="die-sub">Everything else</span>
         </button>
@@ -78,7 +78,7 @@ export function DicePad({ onRoll }: { onRoll: (roll: Roll) => void }) {
           {CONTENT.mechanics.protectThrows.map((t) => (
             <div
               className={`dice-ref-row${
-                last?.die === 20 && !rolling ? (last.value >= t.target ? ' ref-pass' : ' ref-miss') : ''
+                last?.die === 20 && rolling === null ? (last.value >= t.target ? ' ref-pass' : ' ref-miss') : ''
               }`}
               key={t.speed}
             >
