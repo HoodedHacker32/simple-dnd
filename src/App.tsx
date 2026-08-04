@@ -7,6 +7,7 @@ import { Codex } from './features/codex/Codex';
 import { Roster } from './features/roster/Roster';
 import { readCharacterFile } from './export/saveFile';
 import { loadRoster, saveRoster } from './storage/roster';
+import { clearSharedCode, decodeCharacter, readSharedCode } from './export/shareCode';
 import './App.css';
 
 const TABS: TabDef[] = [
@@ -38,6 +39,24 @@ export default function App() {
   useEffect(() => {
     saveRoster(roster);
   }, [roster]);
+
+  // A share link opened here adopts the character, so a player can move one
+  // between their own devices as easily as sending it to the DM.
+  const adopted = useRef(false);
+  useEffect(() => {
+    const code = readSharedCode();
+    if (!code || adopted.current) return;
+    adopted.current = true;
+    decodeCharacter(code)
+      .then((incoming) => {
+        const fresh: Character = { ...incoming, id: crypto.randomUUID(), updatedAt: new Date().toISOString() };
+        setRoster((list) => [...list, fresh]);
+        setCharacter(fresh);
+        setNotice(`Loaded ${fresh.name || 'an unnamed wanderer'} from a share link.`);
+      })
+      .catch((err: unknown) => setNotice(err instanceof Error ? err.message : 'That link could not be read.'))
+      .finally(clearSharedCode);
+  }, []);
 
   useEffect(() => {
     if (!notice) return;

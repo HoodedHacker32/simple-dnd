@@ -12,6 +12,38 @@ import './PasswordGate.css';
  */
 const PASSPHRASE = 'Dungeons & Dragons';
 
+/**
+ * A stable marker for "this browser has been through the gate", derived from the
+ * phrase itself so that changing the phrase invalidates every remembered unlock.
+ * It is not a secret and is not meant to be one — see the note above.
+ */
+export const UNLOCK_TOKEN = (() => {
+  let h = 0x811c9dc5;
+  for (const ch of PASSPHRASE) {
+    h ^= ch.charCodeAt(0);
+    h = Math.imul(h, 0x01000193) >>> 0;
+  }
+  return `v1-${h.toString(36)}`;
+})();
+
+export const UNLOCK_KEY = 'chroniclers-table.unlocked';
+
+export function isRemembered(): boolean {
+  try {
+    return localStorage.getItem(UNLOCK_KEY) === UNLOCK_TOKEN;
+  } catch {
+    return false;
+  }
+}
+
+export function forgetUnlock(): void {
+  try {
+    localStorage.removeItem(UNLOCK_KEY);
+  } catch {
+    /* nothing to clean up if storage is unavailable */
+  }
+}
+
 interface PasswordGateProps {
   onUnlock: () => void;
 }
@@ -19,15 +51,22 @@ interface PasswordGateProps {
 export function PasswordGate({ onUnlock }: PasswordGateProps) {
   const [value, setValue] = useState('');
   const [error, setError] = useState(false);
+  const [remember, setRemember] = useState(true);
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (value === PASSPHRASE) {
-      onUnlock();
-    } else {
+    if (value !== PASSPHRASE) {
       setError(true);
       setValue('');
+      return;
     }
+    try {
+      if (remember) localStorage.setItem(UNLOCK_KEY, UNLOCK_TOKEN);
+      else localStorage.removeItem(UNLOCK_KEY);
+    } catch {
+      // Private browsing can refuse storage; the unlock still holds for this visit.
+    }
+    onUnlock();
   };
 
   return (
@@ -59,6 +98,11 @@ export function PasswordGate({ onUnlock }: PasswordGateProps) {
         />
 
         {error && <p className="gate-error">Those are not the words.</p>}
+
+        <label className="gate-remember">
+          <input type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)} />
+          Remember me on this device
+        </label>
 
         <button className="btn btn-primary gate-submit" type="submit">
           Enter

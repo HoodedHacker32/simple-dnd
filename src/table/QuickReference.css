@@ -1,0 +1,91 @@
+.quick-ref {
+  padding: 16px 18px;
+  border: 1px solid rgba(212, 175, 55, 0.22);
+  border-radius: 3px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(0, 0, 0, 0.32));
+}
+
+.qr-title {
+  font-family: var(--font-heading);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 10px;
+}
+
+.qr-section + .qr-section {
+  border-top: 1px solid rgba(212, 175, 55, 0.12);
+}
+
+.qr-head {
+  width: 100%;
+  padding: 9px 0;
+  cursor: pointer;
+  text-align: left;
+  background: none;
+  border: none;
+  font-family: var(--font-heading);
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(239, 224, 192, 0.8);
+  transition: color 0.18s ease;
+}
+
+.qr-head::before {
+  content: '▸';
+  display: inline-block;
+  width: 15px;
+  color: var(--gold-deep);
+  transition: transform 0.18s ease;
+}
+
+.qr-open .qr-head {
+  color: var(--gold-bright);
+}
+
+.qr-open .qr-head::before {
+  transform: rotate(90deg);
+}
+
+.qr-body {
+  padding: 2px 0 12px 15px;
+  animation: rise-in 0.2s ease both;
+}
+
+.qr-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 4px 0;
+  font-size: 13.5px;
+  color: rgba(239, 224, 192, 0.7);
+  border-bottom: 1px dotted rgba(212, 175, 55, 0.12);
+}
+
+.qr-row strong {
+  flex-shrink: 0;
+  font-family: var(--font-heading);
+  color: var(--parchment-light);
+}
+
+.qr-list {
+  margin: 0;
+  padding-left: 16px;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: rgba(239, 224, 192, 0.72);
+}
+
+.qr-list li {
+  margin-bottom: 6px;
+}
+
+.qr-note {
+  margin: 8px 0 0;
+  font-size: 12.5px;
+  font-style: italic;
+  color: rgba(239, 224, 192, 0.45);
+}

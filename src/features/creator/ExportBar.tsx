@@ -2,7 +2,7 @@ import { useState, type RefObject } from 'react';
 import type { Character, DndClass, Race, StatBlock } from '../../types/character';
 import type { DerivedStats } from '../../engine/statCalculator';
 import { saveCharacterToFile } from '../../export/saveFile';
-import { encodeCharacter } from '../../export/shareCode';
+import { encodeCharacter, shareLink } from '../../export/shareCode';
 import { Icon, type IconName } from '../../components/Icon';
 import './ExportBar.css';
 
@@ -19,7 +19,8 @@ export function ExportBar({ character, race, dndClass, stats, derived, sheetRef 
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [shareCode, setShareCode] = useState<string | null>(null);
-  const [copied, setCopied] = useState(false);
+  const [link, setLink] = useState<string | null>(null);
+  const [copied, setCopied] = useState<'link' | 'code' | null>(null);
 
   const run = async (id: string, task: () => Promise<void> | void) => {
     setBusy(id);
@@ -49,7 +50,8 @@ export function ExportBar({ character, race, dndClass, stats, derived, sheetRef 
       icon: 'scroll',
       run: async () => {
         setShareCode(await encodeCharacter(character));
-        setCopied(false);
+        setLink(await shareLink(character));
+        setCopied(null);
       },
     },
     {
@@ -99,28 +101,56 @@ export function ExportBar({ character, race, dndClass, stats, derived, sheetRef 
       {shareCode && (
         <div className="share-box">
           <p className="share-intro">
-            Send this code to your DM however you like — chat, message, anything that carries text. They paste
-            it into their screen and your character appears in the party.
+            Send your DM this link. Opening it drops your character straight into their party — the character
+            travels inside the address itself, so nothing is uploaded anywhere.
           </p>
-          <textarea className="textarea share-code" readOnly value={shareCode} onFocus={(e) => e.target.select()} />
+
+          <textarea
+            className="textarea share-code"
+            readOnly
+            value={link ?? ''}
+            onFocus={(e) => e.target.select()}
+          />
+
           <div className="share-actions">
             <button
               className="btn btn-primary"
               onClick={async () => {
                 try {
-                  await navigator.clipboard.writeText(shareCode);
-                  setCopied(true);
+                  await navigator.clipboard.writeText(link ?? '');
+                  setCopied('link');
                 } catch {
-                  setError('Could not reach the clipboard — select the code and copy it by hand.');
+                  setError('Could not reach the clipboard — select the link and copy it by hand.');
                 }
               }}
             >
-              {copied ? 'Copied' : 'Copy code'}
+              {copied === 'link' ? 'Copied' : 'Copy link'}
             </button>
             <button className="btn btn-ghost" onClick={() => setShareCode(null)}>
               Close
             </button>
           </div>
+
+          <details className="share-fallback">
+            <summary>Or send the plain code</summary>
+            <p className="hint">
+              Use this if the link gets mangled on the way — your DM can paste it into the box on their screen.
+            </p>
+            <textarea className="textarea share-code" readOnly value={shareCode} onFocus={(e) => e.target.select()} />
+            <button
+              className="btn"
+              onClick={async () => {
+                try {
+                  await navigator.clipboard.writeText(shareCode);
+                  setCopied('code');
+                } catch {
+                  setError('Could not reach the clipboard — select the code and copy it by hand.');
+                }
+              }}
+            >
+              {copied === 'code' ? 'Copied' : 'Copy code'}
+            </button>
+          </details>
         </div>
       )}
     </div>

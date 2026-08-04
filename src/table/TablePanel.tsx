@@ -4,7 +4,7 @@ import { RACE_BY_ID } from '../data/races';
 import { CLASS_BY_ID } from '../data/classes';
 import { calculateStats } from '../engine/statCalculator';
 import { downloadParty, readAnyFile } from '../export/partyFile';
-import { decodeCharacter } from '../export/shareCode';
+import { clearSharedCode, decodeCharacter } from '../export/shareCode';
 import type { Character } from '../types/character';
 import type { Roll } from './dice';
 import {
@@ -17,10 +17,16 @@ import {
   type EncounterState,
 } from './encounter';
 import { CombatantCard } from './CombatantCard';
+import { DicePad, RollLog } from './DiceRoller';
+import { QuickReference } from './QuickReference';
 import './TablePanel.css';
 
 interface TablePanelProps {
   onLog: (roll: Roll) => void;
+  rolls: Roll[];
+  onClearRolls: () => void;
+  /** A character that arrived in the address bar, if the DM opened a share link. */
+  incomingCode?: string | null;
 }
 
 /** Stat scores for a player, so their spells resolve on the right number. */
@@ -32,7 +38,7 @@ function scoresFor(c: Combatant, characters: Map<string, Character>): Record<str
   return calculateStats(race, dndClass, character.statMode, character);
 }
 
-export function TablePanel({ onLog }: TablePanelProps) {
+export function TablePanel({ onLog, rolls, onClearRolls, incomingCode }: TablePanelProps) {
   const [state, setState] = useState<EncounterState>(loadEncounter);
   const [code, setCode] = useState('');
   const [message, setMessage] = useState<{ text: string; bad?: boolean } | null>(null);
@@ -40,6 +46,22 @@ export function TablePanel({ onLog }: TablePanelProps) {
   const fileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => saveEncounter(state), [state]);
+
+  // A share link only counts once — the address is cleared so a refresh does not
+  // add the same character to the party a second time.
+  const consumed = useRef(false);
+  useEffect(() => {
+    if (!incomingCode || consumed.current) return;
+    consumed.current = true;
+    decodeCharacter(incomingCode)
+      .then((character) => addCharacters([character], 'from a share link'))
+      .catch((err: unknown) =>
+        setMessage({ text: err instanceof Error ? err.message : 'That link could not be read.', bad: true }),
+      )
+      .finally(clearSharedCode);
+    // addCharacters is stable enough here: it only ever appends.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [incomingCode]);
 
   useEffect(() => {
     if (!message) return;
@@ -88,8 +110,18 @@ export function TablePanel({ onLog }: TablePanelProps) {
   const players = state.combatants.filter((c) => c.kind === 'player');
   const others = state.combatants.filter((c) => c.kind !== 'player');
 
+  /** Sleeping restores everything, per the mana rules. */
+  const rest = () =>
+    setState((s) => ({
+      ...s,
+      round: 1,
+      activeIndex: 0,
+      combatants: s.combatants.map((c) => ({ ...c, hp: c.maxHp, mana: c.maxMana, downed: false })),
+    }));
+
   return (
-    <div className="table-panel">
+    <div className="dm-dashboard">
+      <div className="dash-main">
       {/* ------------------------------------------------------ Party bar */}
       <div className="party-bar">
         <div className="party-name-field">
@@ -269,6 +301,12 @@ export function TablePanel({ onLog }: TablePanelProps) {
           Add a prop
         </button>
         {state.combatants.length > 0 && (
+          <button className="btn" onClick={rest} title="Sleeping restores health and mana in full">
+            <Icon name="star" size={14} />
+            Rest
+          </button>
+        )}
+        {state.combatants.length > 0 && (
           <button
             className="btn btn-ghost danger-btn"
             onClick={() => {
@@ -293,6 +331,13 @@ export function TablePanel({ onLog }: TablePanelProps) {
           e.target.value = '';
         }}
       />
+      </div>
+
+      <aside className="dash-side">
+        <DicePad onRoll={onLog} />
+        <QuickReference />
+        <RollLog history={rolls} onClear={onClearRolls} />
+      </aside>
     </div>
   );
 }

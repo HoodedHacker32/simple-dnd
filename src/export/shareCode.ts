@@ -34,6 +34,39 @@ async function unsqueeze(bytes: Uint8Array, format: 'deflate-raw'): Promise<Uint
   return new Uint8Array(await new Response(stream).arrayBuffer());
 }
 
+/**
+ * Builds a link that loads the character on open.
+ *
+ * The payload rides in the hash fragment rather than the query string, because
+ * fragments are never sent to the server — the character never leaves the two
+ * browsers involved, and GitHub Pages never sees it.
+ */
+export async function shareLink(character: Character, page: 'editor' | 'player' = 'editor'): Promise<string> {
+  const code = await encodeCharacter(character);
+  const base = import.meta.env.BASE_URL || '/';
+  const path = page === 'editor' ? `${base}editor/` : base;
+  return `${location.origin}${path.replace(/\/{2,}/g, '/')}#c=${encodeURIComponent(code)}`;
+}
+
+/**
+ * Reads a character out of the current address, if one is there. Accepts the
+ * fragment form this app generates, and the query form in case a chat client
+ * rewrote the link. Returns null when there is nothing to load.
+ */
+export function readSharedCode(): string | null {
+  const fromHash = new URLSearchParams(location.hash.replace(/^#/, '')).get('c');
+  if (fromHash) return fromHash;
+  return new URLSearchParams(location.search).get('c');
+}
+
+/** Drops the payload from the address so a refresh does not import it twice. */
+export function clearSharedCode(): void {
+  const url = new URL(location.href);
+  url.hash = '';
+  url.searchParams.delete('c');
+  history.replaceState(null, '', url.toString());
+}
+
 /** Turns a character into a paste-able code. */
 export async function encodeCharacter(character: Character): Promise<string> {
   const json = new TextEncoder().encode(JSON.stringify(character));

@@ -86,3 +86,17 @@
   background: linear-gradient(180deg, var(--gold-bright), var(--gold-deep));
   box-shadow: 0 1px 6px rgba(0, 0, 0, 0.4);
 }
+
+.bar-links {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.lock-btn {
+  cursor: pointer;
+  background: none;
+  font-family: var(--font-heading);
+  border: none;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.35);
+}

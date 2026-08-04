@@ -161,3 +161,55 @@
     margin-left: 0;
   }
 }
+
+/* --- Dashboard shell ---------------------------------------------------- */
+/* Everything a DM needs mid-turn sits on one screen: the board on the left,
+   dice and reference always visible on the right. */
+.dm-dashboard {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 20px;
+  align-items: start;
+}
+
+.dash-main {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.dash-side {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  position: sticky;
+  top: 16px;
+  min-width: 0;
+}
+
+.dash-side .dice-stage {
+  padding: 18px 18px 16px;
+}
+
+.dash-side .die-face {
+  width: 60px;
+  height: 60px;
+}
+
+.dash-side .dice-result-value {
+  font-size: 38px;
+}
+
+.dash-side .dice-log {
+  max-height: 260px;
+}
+
+@media (max-width: 1120px) {
+  .dm-dashboard {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .dash-side {
+    position: static;
+  }
+}

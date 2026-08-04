@@ -5,8 +5,8 @@ import { Icon } from '../components/Icon';
 import type { ContentPack } from '../content';
 import type { Roll } from '../table/dice';
 import { TablePanel } from '../table/TablePanel';
-import { DiceRoller } from '../table/DiceRoller';
-import { PasswordGate } from './PasswordGate';
+import { PasswordGate, forgetUnlock, isRemembered } from './PasswordGate';
+import { readSharedCode } from '../export/shareCode';
 import { useContentDraft } from './useContentDraft';
 import { RaceEditor } from './RaceEditor';
 import { ClassEditor } from './ClassEditor';
@@ -19,11 +19,6 @@ import './EditorApp.css';
 /** Running a session and authoring the game are different jobs, so they get different rooms. */
 type Mode = 'table' | 'forge';
 
-const TABLE_TABS: TabDef[] = [
-  { id: 'party', label: 'Party', icon: 'sword' },
-  { id: 'dice', label: 'Dice', icon: 'table' },
-];
-
 const FORGE_TABS: TabDef[] = [
   { id: 'races', label: 'Races', icon: 'star' },
   { id: 'classes', label: 'Classes', icon: 'sword' },
@@ -33,14 +28,14 @@ const FORGE_TABS: TabDef[] = [
   { id: 'publish', label: 'Publish', icon: 'scroll' },
 ];
 
-const UNLOCK_KEY = 'chroniclers-table.unlocked';
 const ROLLS_KEY = 'chroniclers-table.rolls.v1';
 
 export function EditorApp() {
-  // Persisted so a mid-session refresh does not lock the DM out of their own table.
-  const [unlocked, setUnlocked] = useState(() => sessionStorage.getItem(UNLOCK_KEY) === 'yes');
+  // Remembered across visits, so the DM is not challenged every time they sit down.
+  const [unlocked, setUnlocked] = useState(isRemembered);
+  // A share link may have arrived; hold it until the gate is open.
+  const [incoming] = useState<string | null>(readSharedCode);
   const [mode, setMode] = useState<Mode>('table');
-  const [tableTab, setTableTab] = useState('party');
   const [forgeTab, setForgeTab] = useState('races');
 
   const [raceId, setRaceId] = useState<string | null>(null);
@@ -80,19 +75,11 @@ export function EditorApp() {
     return (
       <div className="app wood-surface">
         <TextureDefs />
-        <PasswordGate
-          onUnlock={() => {
-            sessionStorage.setItem(UNLOCK_KEY, 'yes');
-            setUnlocked(true);
-          }}
-        />
+        <PasswordGate onUnlock={() => setUnlocked(true)} />
       </div>
     );
   }
 
-  const tabs = mode === 'table' ? TABLE_TABS : FORGE_TABS;
-  const activeTab = mode === 'table' ? tableTab : forgeTab;
-  const setActiveTab = mode === 'table' ? setTableTab : setForgeTab;
 
   return (
     <div className="app wood-surface">
@@ -105,7 +92,8 @@ export function EditorApp() {
             {mode === 'table' ? 'Run the session' : 'Rewrite the races, the classes and the rules'}
           </p>
         </div>
-        <Tabs tabs={tabs} active={activeTab} onChange={setActiveTab} />
+        {/* The table is one screen — only the forge is split into tabs. */}
+        {mode === 'forge' && <Tabs tabs={FORGE_TABS} active={forgeTab} onChange={setForgeTab} />}
       </header>
 
       <div className="editor-bar">
@@ -135,15 +123,30 @@ export function EditorApp() {
           </span>
         )}
 
-        <a className="live-link" href="../" target="_blank" rel="noreferrer">
-          View the live game
-        </a>
+        <div className="bar-links">
+          <a className="live-link" href="../" target="_blank" rel="noreferrer">
+            View the live game
+          </a>
+          <button
+            className="live-link lock-btn"
+            onClick={() => {
+              forgetUnlock();
+              setUnlocked(false);
+            }}
+          >
+            Lock
+          </button>
+        </div>
       </div>
 
       <main className="editor-main">
-        {mode === 'table' && tableTab === 'party' && <TablePanel onLog={logRoll} />}
-        {mode === 'table' && tableTab === 'dice' && (
-          <DiceRoller history={rolls} onRoll={logRoll} onClear={() => setRolls([])} />
+        {mode === 'table' && (
+          <TablePanel
+            onLog={logRoll}
+            rolls={rolls}
+            onClearRolls={() => setRolls([])}
+            incomingCode={incoming}
+          />
         )}
 
         {mode === 'forge' && forgeTab === 'races' && (

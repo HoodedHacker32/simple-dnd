@@ -72,3 +72,27 @@
   gap: 8px;
   margin-top: 10px;
 }
+
+.share-fallback {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px dashed rgba(212, 175, 55, 0.25);
+}
+
+.share-fallback summary {
+  cursor: pointer;
+  font-family: var(--font-heading);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.share-fallback .hint {
+  margin: 10px 0 8px;
+}
+
+.share-fallback .btn {
+  margin-top: 8px;
+}
