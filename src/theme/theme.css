@@ -78,53 +78,72 @@ body {
 /* --------------------------------------------------------------------------
    Procedural wood grain — layered repeating gradients with a turbulence warp
    -------------------------------------------------------------------------- */
+/*
+ * Boards laid across the screen, not stripes down it.
+ *
+ * The previous version ran every layer vertically on one soft repeating ramp,
+ * which is exactly how a hanging curtain is shaded. Timber reads differently:
+ * boards run one way with hard seams between them, the grain inside a board is
+ * irregular rather than evenly spaced, and knots interrupt it.
+ */
 .wood-surface {
   position: relative;
   background-color: var(--wood-mid);
   background-image:
-    /* fine grain lines */
+    /* knots — small and faint. A large one floating in open space stops
+       reading as timber and starts reading as a smudge on the screen. */
+    radial-gradient(ellipse 15px 8px at 17% 22%, rgba(26, 12, 3, 0.42), rgba(26, 12, 3, 0.14) 58%, transparent 80%),
+    radial-gradient(ellipse 34px 17px at 17% 22%, transparent 58%, rgba(0, 0, 0, 0.07) 74%, transparent 90%),
+    radial-gradient(ellipse 12px 7px at 74% 61%, rgba(26, 12, 3, 0.36), rgba(26, 12, 3, 0.12) 58%, transparent 80%),
+    radial-gradient(ellipse 28px 15px at 74% 61%, transparent 58%, rgba(0, 0, 0, 0.06) 74%, transparent 90%),
+    /* cathedral figure — long flat arcs, the way a sawn board shows its rings */
+    radial-gradient(ellipse 1100px 130px at 26% 14%, rgba(255, 226, 178, 0.05), transparent 74%),
+    radial-gradient(ellipse 1300px 110px at 72% 47%, rgba(0, 0, 0, 0.2), transparent 72%),
+    radial-gradient(ellipse 900px 96px at 38% 82%, rgba(255, 226, 178, 0.04), transparent 72%),
+    /* seams between boards: a cut groove with the lit edge of the next board
+       under it. Hard stops — a soft ramp here is what read as fabric. */
     repeating-linear-gradient(
-      92deg,
-      rgba(0, 0, 0, 0.22) 0px,
-      rgba(0, 0, 0, 0.22) 1px,
-      transparent 1px,
-      transparent 4px,
-      rgba(255, 255, 255, 0.035) 4px,
-      rgba(255, 255, 255, 0.035) 5px,
-      transparent 5px,
-      transparent 11px
+      to bottom,
+      transparent 0px,
+      transparent 114px,
+      rgba(0, 0, 0, 0.58) 114px,
+      rgba(0, 0, 0, 0.58) 116px,
+      rgba(255, 214, 160, 0.085) 116px,
+      rgba(255, 214, 160, 0.085) 118px,
+      transparent 118px,
+      transparent 121px
     ),
-    /* broad plank shading */
+    /* tone drifting across groups of boards, on a period that does not divide
+       into the seam spacing, so no two neighbours look stamped from one mould */
     repeating-linear-gradient(
-      88deg,
-      rgba(0, 0, 0, 0.32) 0px,
-      rgba(0, 0, 0, 0) 30px,
-      rgba(255, 255, 255, 0.03) 60px,
-      rgba(0, 0, 0, 0.28) 96px
+      to bottom,
+      rgba(255, 255, 255, 0.028) 0px,
+      transparent 167px,
+      rgba(0, 0, 0, 0.055) 334px
     ),
-    /* knots and warmth */
-    radial-gradient(ellipse 140px 40px at 18% 30%, rgba(0, 0, 0, 0.4), transparent 70%),
-    radial-gradient(ellipse 180px 50px at 72% 68%, rgba(0, 0, 0, 0.35), transparent 70%),
-    linear-gradient(160deg, var(--wood-light), var(--wood-dark) 60%, var(--wood-darkest));
-  background-blend-mode: overlay, overlay, multiply, multiply, normal;
+    /* Warmth along the length of the boards, so they are not flat bands. */
+    linear-gradient(
+      93deg,
+      var(--wood-dark) 0%,
+      var(--wood-mid) 22%,
+      var(--wood-light) 46%,
+      var(--wood-mid) 68%,
+      var(--wood-dark) 100%
+    ),
+    linear-gradient(174deg, var(--wood-light), var(--wood-mid) 42%, var(--wood-dark) 78%, var(--wood-darkest));
 }
 
+/* The grain itself, generated as noise and stretched along the boards. */
 .wood-surface::after {
   content: '';
   position: absolute;
   inset: 0;
   pointer-events: none;
-  filter: url(#grain-warp);
-  opacity: 0.5;
-  background: repeating-linear-gradient(
-    90deg,
-    rgba(0, 0, 0, 0.14) 0px,
-    transparent 2px,
-    transparent 7px,
-    rgba(0, 0, 0, 0.1) 9px
-  );
+  filter: url(#wood-grain);
+  opacity: 0.55;
   mix-blend-mode: multiply;
 }
+
 
 /* --------------------------------------------------------------------------
    Parchment

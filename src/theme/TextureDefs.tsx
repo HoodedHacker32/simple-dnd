@@ -16,6 +16,46 @@ export function TextureDefs() {
           <feDisplacementMap in="SourceGraphic" in2="noise" scale="14" xChannelSelector="R" yChannelSelector="G" />
         </filter>
 
+        {/*
+          Grain generated rather than drawn. The frequency is deliberately
+          lopsided — very low across, much higher down — which stretches the
+          noise into long streaks that run the length of a board. Even stripes
+          read as fabric; irregular ones read as timber.
+        */}
+        <filter id="wood-grain" x="0" y="0" width="100%" height="100%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.0022 0.075" numOctaves="4" seed="11" result="long" />
+          {/* Tint dark brown and take alpha from the red channel, so only the
+              peaks show as streaks instead of a flat wash over everything. */}
+          <feColorMatrix
+            in="long"
+            type="matrix"
+            values="0 0 0 0 0.09
+                    0 0 0 0 0.05
+                    0 0 0 0 0.02
+                    0.9 0 0 0 -0.36"
+            result="longStreaks"
+          />
+
+          {/* Coarse cross-grain, so the streaks are not all parallel. Both live
+              in one filter because .wood-surface shares its element with .app,
+              whose ::before is already the candlelight. */}
+          <feTurbulence type="fractalNoise" baseFrequency="0.05 0.012" numOctaves="3" seed="23" result="cross" />
+          <feColorMatrix
+            in="cross"
+            type="matrix"
+            values="0 0 0 0 0.10
+                    0 0 0 0 0.06
+                    0 0 0 0 0.03
+                    0.32 0 0 0 -0.22"
+            result="crossGrain"
+          />
+
+          <feMerge>
+            <feMergeNode in="longStreaks" />
+            <feMergeNode in="crossGrain" />
+          </feMerge>
+        </filter>
+
         {/* Paper fibre speckle */}
         <filter id="parchment-fibres" x="0" y="0" width="100%" height="100%">
           <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" seed="12" result="fibres" />
