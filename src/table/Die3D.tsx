@@ -108,7 +108,7 @@ function landingFor(
 
   // Once the face is square on, spin about the view axis until its apex is up.
   const apex = apexes[faceIndex].clone().applyQuaternion(squareOn);
-  const twist = new THREE.Quaternion().setFromAxisAngle(forward, -Math.atan2(apex.x, apex.y));
+  const twist = new THREE.Quaternion().setFromAxisAngle(forward, Math.atan2(apex.x, apex.y));
 
   return squareOn.premultiply(twist).premultiply(tilt);
 }
@@ -124,6 +124,9 @@ export function Die3D({ sides, value, rolling, size = 96 }: Die3DProps) {
   const tiltRef = useRef(new THREE.Quaternion());
   const rollingRef = useRef(rolling);
   rollingRef.current = rolling;
+  // Read when the scene is built, so a remount keeps whatever was last shown.
+  const valueRef = useRef(value);
+  valueRef.current = value;
 
   // Build the scene once. Rolls only nudge the mesh that already exists.
   useEffect(() => {
@@ -190,7 +193,11 @@ export function Die3D({ sides, value, rolling, size = 96 }: Die3DProps) {
       texture.needsUpdate = true;
     };
     paintRef.current = paint;
-    paint(null, null);
+
+    // A die on a table always shows a face. Before anything has been rolled it
+    // rests on its highest number, which doubles as a label for which die it is.
+    // Face 0 is the one the resting orientation presents, so the number goes there.
+    paint(0, valueRef.current ?? sides);
 
     const material = new THREE.MeshStandardMaterial({
       map: texture,
@@ -255,6 +262,7 @@ export function Die3D({ sides, value, rolling, size = 96 }: Die3DProps) {
     if (!die || !rolling || value === null || normals.length === 0) return;
 
     const faceIndex = (value - 1) % normals.length;
+    // Blank it for the tumble; the result is written back on when it settles.
     paintRef.current(null, null);
 
     const target = landingFor(faceIndex, normals, apexRef.current, tiltRef.current);
