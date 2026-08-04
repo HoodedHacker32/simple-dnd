@@ -14,8 +14,11 @@ function DieSlot({ sides, value, rolling }: { sides: 4 | 20; value: number | nul
   );
 }
 
-/** The dice themselves, with the protect-throw targets reacting to the last d20. */
-export function DicePad({ onRoll }: { onRoll: (roll: Roll) => void }) {
+/**
+ * The dice themselves. `bare` drops the protect-throw table, which is a
+ * reference chart and belongs on the detailed screen rather than the plain one.
+ */
+export function DicePad({ onRoll, bare = false }: { onRoll: (roll: Roll) => void; bare?: boolean }) {
   const [last, setLast] = useState<Roll | null>(null);
   const [rolling, setRolling] = useState<4 | 20 | null>(null);
   const [pending, setPending] = useState<Roll | null>(null);
@@ -72,6 +75,7 @@ export function DicePad({ onRoll }: { onRoll: (roll: Roll) => void }) {
         <p className="dice-note">Multiply by the mover's Speed multiplier, then round down.</p>
       )}
 
+      {!bare && (
       <div className="dice-reference">
         <h4 className="dice-ref-title">Protect throws</h4>
         <div className="dice-ref-rows">
@@ -90,6 +94,7 @@ export function DicePad({ onRoll }: { onRoll: (roll: Roll) => void }) {
           ))}
         </div>
       </div>
+      )}
     </div>
   );
 }

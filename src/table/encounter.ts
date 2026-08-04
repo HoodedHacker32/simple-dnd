@@ -134,6 +134,17 @@ export function applyDamage(c: Combatant, amount: number): Combatant {
   return { ...c, hp, downed: hp === 0 };
 }
 
+/**
+ * Changes a creature's maximum health. One that has not been hurt yet follows
+ * its new maximum, so typing 40 onto a fresh enemy gives 40/40 rather than
+ * leaving it on death's door. A wounded one keeps its wounds.
+ */
+export function setMaxHp(c: Combatant, maxHp: number): Combatant {
+  const max = Math.max(1, Math.round(maxHp));
+  const untouched = c.hp >= c.maxHp;
+  return { ...c, maxHp: max, hp: untouched ? max : Math.min(c.hp, max), downed: false };
+}
+
 export function applyHealing(c: Combatant, amount: number): Combatant {
   const hp = clampHp(c.hp + amount, c.maxHp);
   return { ...c, hp, downed: hp === 0 ? c.downed : false };

@@ -286,3 +286,168 @@
   color: #e88b7d;
   background: rgba(140, 47, 36, 0.25);
 }
+
+/* ==========================================================================
+   Pinned layout
+   --------------------------------------------------------------------------
+   At the table the screen is the tool, so above tablet width the page itself
+   never scrolls. The shell is pinned to the viewport and only the two regions
+   that genuinely grow — the board and the roll log — scroll inside themselves.
+   The reference target is a 9th-generation iPad in landscape: 1080x810 CSS
+   pixels, of which Safari leaves roughly 720 once its chrome is accounted for.
+   ========================================================================== */
+@media (min-width: 900px) {
+  .app-pinned {
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
+    padding-bottom: 14px;
+    overflow: hidden;
+  }
+
+  .header-tight {
+    gap: 16px;
+    margin-bottom: 10px;
+  }
+
+  .header-tight .brand {
+    padding-bottom: 8px;
+  }
+
+  .header-tight .brand-title {
+    font-size: clamp(22px, 2.4vw, 30px);
+  }
+
+  .header-tight .brand-sub {
+    font-size: 13px;
+  }
+
+  .app-pinned .editor-bar {
+    padding: 7px 14px;
+    margin-bottom: 12px;
+  }
+
+  /* Let the dashboard claim whatever height is left, and no more. The explicit
+     width matters: `margin: 0 auto` on a flex item makes it shrink to its
+     content instead of filling the row. */
+  .main-fill {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    width: 100%;
+    align-self: center;
+  }
+
+  .main-fill .dm-dashboard {
+    flex: 1;
+    min-height: 0;
+    height: 100%;
+  }
+
+  .dash-main,
+  .dash-side {
+    min-height: 0;
+    height: 100%;
+  }
+
+  .dash-side {
+    overflow: hidden;
+  }
+
+  /* The board is the part that grows with the encounter. */
+  .board-scroll {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding-right: 4px;
+  }
+
+  .board-scroll .board-filigree:first-child {
+    margin-top: 0;
+  }
+
+  /* So does the roll log. */
+  .dash-side .dice-history {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .dash-side .dice-log {
+    flex: 1;
+    min-height: 0;
+    max-height: none;
+  }
+
+  .dash-side .quick-ref {
+    max-height: 34vh;
+    overflow-y: auto;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Short landscape screens. An iPad in landscape is wide but not tall, so the
+   vertical budget is what needs defending.
+   -------------------------------------------------------------------------- */
+@media (min-width: 900px) and (max-height: 860px) {
+  .dm-dashboard {
+    grid-template-columns: minmax(0, 1fr) 296px;
+    gap: 14px;
+  }
+
+  .dash-main {
+    gap: 10px;
+  }
+
+  .dash-side {
+    gap: 10px;
+  }
+
+  .party-bar {
+    padding: 8px 12px;
+    gap: 10px;
+  }
+
+  .party-bar .input {
+    padding: 7px 10px;
+    font-size: 14px;
+  }
+
+  .party-bar .btn {
+    padding: 8px 12px;
+    font-size: 10px;
+  }
+
+  .turn-bar {
+    padding: 8px 14px;
+  }
+
+  .turn-active {
+    font-size: 18px;
+  }
+
+  .board-grid {
+    grid-template-columns: repeat(auto-fill, minmax(238px, 1fr));
+    gap: 10px;
+  }
+
+  .board-filigree {
+    margin: 2px 0 0;
+    font-size: 10px;
+  }
+
+  .board-tools {
+    padding-top: 10px;
+    gap: 6px;
+  }
+
+  .board-tools .btn {
+    padding: 8px 11px;
+    font-size: 10px;
+  }
+
+  .bestiary {
+    padding: 8px 12px;
+  }
+}

@@ -81,15 +81,20 @@ export function EditorApp() {
   }
 
 
+  // At the table the whole screen is the tool, so it is pinned to the viewport
+  // and only the parts that grow are allowed to scroll. The forge is an
+  // authoring surface and scrolls normally.
+  const atTable = mode === 'table';
+
   return (
-    <div className="app wood-surface">
+    <div className={`app wood-surface${atTable ? ' app-pinned' : ''}`}>
       <TextureDefs />
 
-      <header className="app-header">
+      <header className={`app-header${atTable ? ' header-tight' : ''}`}>
         <div className="brand">
           <h1 className="display-title brand-title">DM Screen</h1>
           <p className="brand-sub">
-            {mode === 'table' ? 'Run the session' : 'Rewrite the races, the classes and the rules'}
+            {atTable ? 'Run the session' : 'Rewrite the races, the classes and the rules'}
           </p>
         </div>
         {/* The table is one screen — only the forge is split into tabs. */}
@@ -139,7 +144,7 @@ export function EditorApp() {
         </div>
       </div>
 
-      <main className="editor-main">
+      <main className={`editor-main${atTable ? ' main-fill' : ''}`}>
         {mode === 'table' && (
           <TablePanel
             onLog={logRoll}

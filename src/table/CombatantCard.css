@@ -416,3 +416,47 @@ button.attack-chip:hover {
   color: var(--gold);
   border-color: rgba(212, 175, 55, 0.4);
 }
+
+/* Denser cards so a full party fits the board without scrolling it. */
+@media (min-width: 900px) and (max-height: 860px) {
+  .combatant {
+    gap: 6px;
+    padding: 10px 12px 10px;
+  }
+
+  .combatant-name {
+    font-size: 15px;
+  }
+
+  .combatant-sub {
+    font-size: 11px;
+  }
+
+  .bar {
+    height: 20px;
+  }
+
+  .bar-text {
+    font-size: 11px;
+  }
+
+  .mana-bar {
+    height: 15px;
+  }
+
+  .hp-controls .btn {
+    padding: 5px 6px;
+    font-size: 9.5px;
+  }
+
+  .amount-input {
+    width: 58px;
+    padding: 5px 6px;
+    font-size: 14px;
+  }
+
+  .attack-chip {
+    padding: 2px 8px;
+    font-size: 11px;
+  }
+}

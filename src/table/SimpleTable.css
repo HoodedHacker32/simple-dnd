@@ -1,0 +1,363 @@
+.simple-table {
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+  min-height: 0;
+}
+
+.simple-dice {
+  position: sticky;
+  top: 0;
+}
+
+.simple-people {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
+}
+
+/* --- Groups ------------------------------------------------------------- */
+.simple-group-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  padding-bottom: 8px;
+  margin-bottom: 12px;
+  border-bottom: 2px solid rgba(212, 175, 55, 0.28);
+}
+
+.simple-group-head h3 {
+  font-family: var(--font-display);
+  font-size: 22px;
+  color: var(--gold-bright);
+}
+
+.simple-group-head .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.simple-empty {
+  margin: 0;
+  max-width: 62ch;
+  font-size: 15px;
+  font-style: italic;
+  color: rgba(239, 224, 192, 0.5);
+}
+
+.simple-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(232px, 1fr));
+  gap: 12px;
+}
+
+/* --- One person or creature --------------------------------------------- */
+.simple-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 15px 13px;
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-left: 4px solid var(--c-accent, var(--gold));
+  border-radius: 3px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.36));
+}
+
+.simple-down {
+  opacity: 0.6;
+  filter: grayscale(0.5);
+}
+
+.simple-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.simple-name {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--font-heading);
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--parchment-light);
+  overflow-wrap: anywhere;
+}
+
+.simple-name-input {
+  flex: 1;
+  min-width: 0;
+  padding: 6px 9px;
+  font-family: var(--font-heading);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.simple-remove {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  color: rgba(239, 224, 192, 0.3);
+  background: none;
+  border: none;
+  border-radius: 2px;
+  transition: color 0.2s ease, background 0.2s ease;
+}
+
+.simple-remove:hover {
+  color: #e88b7d;
+  background: rgba(140, 47, 36, 0.25);
+}
+
+/* --- Health ------------------------------------------------------------- */
+.simple-bar {
+  position: relative;
+  height: 30px;
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  border-radius: 2px;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.simple-fill {
+  height: 100%;
+  transition: width 0.35s cubic-bezier(0.2, 0.8, 0.3, 1);
+}
+
+.hp-well .simple-fill {
+  background: linear-gradient(180deg, #4fae66, #2f6b42);
+}
+
+.hp-hurt .simple-fill {
+  background: linear-gradient(180deg, #d9a441, #a5761f);
+}
+
+.hp-dire .simple-fill {
+  background: linear-gradient(180deg, #c0492f, #7d2118);
+}
+
+.simple-hp {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  font-family: var(--font-heading);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--parchment-light);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+}
+
+.simple-hp em {
+  font-style: normal;
+  opacity: 0.5;
+}
+
+/* Typed straight on the bar, so setting an enemy's health is one action. */
+.simple-max {
+  width: 58px;
+  padding: 1px 4px;
+  font: inherit;
+  text-align: center;
+  color: var(--parchment-light);
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  border-radius: 2px;
+}
+
+.simple-max:focus {
+  outline: none;
+  border-color: var(--gold-bright);
+}
+
+/* --- Damage and healing ------------------------------------------------- */
+.simple-controls {
+  display: flex;
+  gap: 7px;
+}
+
+.simple-controls .btn {
+  flex: 1;
+  padding: 10px 6px;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.simple-amount {
+  width: 72px;
+  flex-shrink: 0;
+  padding: 8px 6px;
+  text-align: center;
+  font-size: 16px;
+}
+
+.simple-hurt {
+  color: #f0998a;
+  border-color: rgba(140, 47, 36, 0.5);
+}
+
+.simple-hurt:hover:not(:disabled) {
+  background: rgba(140, 47, 36, 0.32);
+  box-shadow: none;
+}
+
+.simple-heal {
+  color: #8ad9a2;
+  border-color: rgba(47, 107, 66, 0.5);
+}
+
+.simple-heal:hover:not(:disabled) {
+  background: rgba(47, 107, 66, 0.32);
+  box-shadow: none;
+}
+
+.simple-downed {
+  margin: 0;
+  text-align: center;
+  font-family: var(--font-heading);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #e88b7d;
+}
+
+.simple-footer {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 8px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(212, 175, 55, 0.15);
+}
+
+.simple-footer .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+@media (max-width: 900px) {
+  .simple-table {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .simple-dice {
+    position: static;
+  }
+}
+
+/* Landscape tablets: the dice shrink so both groups stay on screen. */
+@media (min-width: 900px) and (max-height: 860px) {
+  .simple-table {
+    grid-template-columns: 260px minmax(0, 1fr);
+    gap: 16px;
+  }
+  .simple-people {
+    gap: 14px;
+  }
+  .simple-group-head {
+    margin-bottom: 9px;
+    padding-bottom: 6px;
+  }
+  .simple-group-head h3 {
+    font-size: 19px;
+  }
+  .simple-card {
+    gap: 8px;
+    padding: 11px 12px 10px;
+  }
+  .simple-bar {
+    height: 26px;
+  }
+}
+
+/* --- Shell and the view switch ------------------------------------------ */
+.table-simple-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-height: 0;
+}
+
+.simple-bar-top {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.view-toggle {
+  display: flex;
+  gap: 3px;
+  padding: 3px;
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.32);
+}
+
+.view-btn {
+  padding: 7px 16px;
+  cursor: pointer;
+  font-family: var(--font-heading);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(239, 224, 192, 0.55);
+  background: none;
+  border: none;
+  border-radius: 2px;
+  transition: color 0.2s ease, background 0.2s ease;
+}
+
+.view-btn:hover {
+  color: var(--parchment-light);
+}
+
+.view-on {
+  color: var(--wood-darkest);
+  background: linear-gradient(180deg, var(--gold-bright), var(--gold-deep));
+}
+
+.simple-message {
+  font-size: 14.5px;
+  color: rgba(239, 224, 192, 0.8);
+}
+
+.simple-message.message-bad {
+  color: #e88b7d;
+}
+
+/* The dashboard keeps its own copy of the switch, above the board. */
+.dash-main > .view-toggle {
+  align-self: flex-start;
+}
+
+/* Pinned shell: the people scroll, the dice and the switch stay put. */
+@media (min-width: 900px) {
+  .main-fill .table-simple-shell {
+    flex: 1;
+    min-height: 0;
+  }
+
+  .table-simple-shell .simple-table {
+    flex: 1;
+    min-height: 0;
+  }
+
+  .table-simple-shell .simple-people {
+    max-height: 100%;
+    overflow-y: auto;
+    padding-right: 4px;
+  }
+}

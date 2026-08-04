@@ -26,6 +26,7 @@ import {
 import { CombatantCard } from './CombatantCard';
 import { DicePad, RollLog } from './DiceRoller';
 import { QuickReference } from './QuickReference';
+import { SimpleTable } from './SimpleTable';
 import './TablePanel.css';
 
 interface TablePanelProps {
@@ -35,6 +36,8 @@ interface TablePanelProps {
   /** A character that arrived in the address bar, if the DM opened a share link. */
   incomingCode?: string | null;
 }
+
+const DETAIL_KEY = 'chroniclers-table.detailed';
 
 /** Stat scores for a player, so their spells resolve on the right number. */
 function scoresFor(c: Combatant, characters: Map<string, Character>): Record<string, number> {
@@ -51,10 +54,20 @@ export function TablePanel({ onLog, rolls, onClearRolls, incomingCode }: TablePa
   const [message, setMessage] = useState<{ text: string; bad?: boolean } | null>(null);
   const [sources, setSources] = useState<Map<string, Character>>(new Map());
   const [bestiary, setBestiary] = useState<BestiaryEntry[]>(loadBestiary);
+  // Plain by default. Everything else is opt-in, because most of a session is
+  // just health going up and down and somebody rolling a d20.
+  const [detailed, setDetailed] = useState(() => localStorage.getItem(DETAIL_KEY) === 'yes');
   const fileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => saveEncounter(state), [state]);
   useEffect(() => saveBestiary(bestiary), [bestiary]);
+  useEffect(() => {
+    try {
+      localStorage.setItem(DETAIL_KEY, detailed ? 'yes' : 'no');
+    } catch {
+      /* the preference is a convenience, not something worth failing over */
+    }
+  }, [detailed]);
 
   // A share link only counts once — the address is cleared so a refresh does not
   // add the same character to the party a second time.
@@ -141,27 +154,80 @@ export function TablePanel({ onLog, rolls, onClearRolls, incomingCode }: TablePa
       combatants: s.combatants.map((c) => ({ ...c, hp: c.maxHp, mana: c.maxMana, downed: false })),
     }));
 
+  const viewToggle = (
+    <div className="view-toggle">
+      <button
+        className={`view-btn${detailed ? '' : ' view-on'}`}
+        onClick={() => setDetailed(false)}
+        aria-pressed={!detailed}
+      >
+        Simple
+      </button>
+      <button
+        className={`view-btn${detailed ? ' view-on' : ''}`}
+        onClick={() => setDetailed(true)}
+        aria-pressed={detailed}
+      >
+        Everything
+      </button>
+    </div>
+  );
+
+  if (!detailed) {
+    return (
+      <div className="table-simple-shell">
+        <div className="simple-bar-top">
+          {viewToggle}
+          {message && <span className={`simple-message${message.bad ? ' message-bad' : ''}`}>{message.text}</span>}
+        </div>
+
+        <SimpleTable
+          combatants={state.combatants}
+          onChange={patchCombatant}
+          onRemove={(id) => setState((s) => ({ ...s, combatants: s.combatants.filter((x) => x.id !== id) }))}
+          onAddEnemy={() => addToBoard(blankMonster())}
+          onLoad={() => fileRef.current?.click()}
+          onRestAll={rest}
+          onLog={onLog}
+        />
+
+        <input
+          ref={fileRef}
+          type="file"
+          accept=".dndchar,.dndparty,.json,application/json"
+          hidden
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (file) importFile(file);
+            e.target.value = '';
+          }}
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="dm-dashboard">
       <div className="dash-main">
+        {viewToggle}
       {/* ------------------------------------------------------ Party bar */}
       <div className="party-bar">
-        <div className="party-name-field">
-          <label className="field-label" htmlFor="party-name">
-            Party
-          </label>
-          <input
-            id="party-name"
-            className="input"
-            value={state.partyName}
-            onChange={(e) => update({ partyName: e.target.value })}
-          />
-        </div>
+        <div className="party-row">
+          <div className="party-name-field">
+            <label className="field-label" htmlFor="party-name">
+              Party
+            </label>
+            <input
+              id="party-name"
+              className="input"
+              value={state.partyName}
+              onChange={(e) => update({ partyName: e.target.value })}
+            />
+          </div>
 
-        <div className="party-actions">
           <button className="btn" onClick={() => fileRef.current?.click()}>
             <Icon name="document" size={14} />
-            Load .dndchar / .dndparty
+            Load
           </button>
           <button
             className="btn"
@@ -178,23 +244,23 @@ export function TablePanel({ onLog, rolls, onClearRolls, incomingCode }: TablePa
             }}
           >
             <Icon name="save" size={14} />
-            Save party
+            Save
           </button>
         </div>
-      </div>
 
-      <div className="code-bar">
-        <input
-          className="input"
-          value={code}
-          placeholder="Paste a share code from a player — CT1:…"
-          spellCheck={false}
-          onChange={(e) => setCode(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && importCode()}
-        />
-        <button className="btn btn-primary" disabled={!code.trim()} onClick={importCode}>
-          Add to party
-        </button>
+        <div className="party-row">
+          <input
+            className="input code-input"
+            value={code}
+            placeholder="Paste a share code from a player — CT1:…"
+            spellCheck={false}
+            onChange={(e) => setCode(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && importCode()}
+          />
+          <button className="btn btn-primary" disabled={!code.trim()} onClick={importCode}>
+            Add to party
+          </button>
+        </div>
       </div>
 
       {message && <div className={`table-message${message.bad ? ' message-bad' : ''}`}>{message.text}</div>}
@@ -245,6 +311,7 @@ export function TablePanel({ onLog, rolls, onClearRolls, incomingCode }: TablePa
       )}
 
       {/* ------------------------------------------------------ The board */}
+      <div className="board-scroll">
       {state.combatants.length === 0 ? (
         <div className="empty-state parchment-surface">
           <h3>Nobody at the table yet</h3>
@@ -299,6 +366,8 @@ export function TablePanel({ onLog, rolls, onClearRolls, incomingCode }: TablePa
           )}
         </>
       )}
+
+      </div>
 
       <div className="board-tools">
         <button className="btn" onClick={() => addToBoard(blankMonster())}>

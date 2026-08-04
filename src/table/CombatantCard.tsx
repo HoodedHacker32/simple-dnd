@@ -4,7 +4,7 @@ import type { Spell } from '../types/spells';
 import { ATTACK_SPEEDS, type AttackSpeed } from '../types/spells';
 import { CONTENT } from '../content';
 import { healingFrom, makeRoll, resolveSpell, type Roll } from './dice';
-import { applyDamage, applyHealing, spellsFor, type Combatant } from './encounter';
+import { applyDamage, applyHealing, setMaxHp, spellsFor, type Combatant } from './encounter';
 import './CombatantCard.css';
 
 interface CombatantCardProps {
@@ -203,10 +203,7 @@ export function CombatantCard({
                 type="number"
                 min={1}
                 value={c.maxHp}
-                onChange={(e) => {
-                  const maxHp = Math.max(1, Number(e.target.value));
-                  onChange({ ...c, maxHp, hp: Math.min(c.hp, maxHp) });
-                }}
+                onChange={(e) => onChange(setMaxHp(c, Number(e.target.value)))}
               />
             </label>
             <label className="edit-field">
