@@ -308,14 +308,31 @@
     padding-top: 10px;
   }
 
+  /* Side by side rather than stacked — three rows of this cost more height
+     than the sidebar can spare. */
   .dash-side .dice-ref-rows {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 4px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 5px;
+    margin-bottom: 0;
   }
 
   .dash-side .dice-ref-row {
-    padding: 4px 9px;
-    font-size: 13px;
+    flex-direction: column;
+    align-items: center;
+    gap: 1px;
+    padding: 5px 4px;
+    font-size: 11px;
+    text-align: center;
+  }
+
+  .dash-side .dice-ref-row em {
+    display: none;
+  }
+
+  .dash-side .dice-ref-row strong {
+    font-family: var(--font-heading);
+    font-size: 14px;
+    color: var(--ink);
   }
 
   .dash-side .dice-history {

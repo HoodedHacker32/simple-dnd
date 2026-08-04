@@ -8,11 +8,12 @@ import './QuickReference.css';
  */
 export function QuickReference() {
   const m = CONTENT.mechanics;
-  const [open, setOpen] = useState<string>('turn');
+  const [open, setOpen] = useState<string>('');
 
   const section = (id: string, title: string, body: React.ReactNode) => (
     <div className={`qr-section${open === id ? ' qr-open' : ''}`} key={id}>
       <button className="qr-head" onClick={() => setOpen(open === id ? '' : id)}>
+        <span className="qr-caret" aria-hidden="true" />
         {title}
       </button>
       {open === id && <div className="qr-body">{body}</div>}
@@ -33,21 +34,19 @@ export function QuickReference() {
       {section(
         'turn',
         'A turn',
-        <ul className="qr-list">
-          <li>Highest Speed acts first, down to the lowest. Equal speeds — the players decide between them.</li>
-          <li>Roll a d{m.movement.die} for movement, multiply, round down.</li>
-          <li>One attack or one spell, before, during or after moving.</li>
-          <li>Melee reaches one tile in any direction, like a king. Two creatures never share a tile.</li>
-        </ul>,
-      )}
-
-      {section(
-        'protect',
-        'Protect throws',
-        <>
-          {m.protectThrows.map((t) => row(`${t.label} (${t.speed})`, `${t.target}+`))}
-          <p className="qr-note">Dodging moves you a square, defending holds you still. Same throw either way.</p>
-        </>,
+        <ol className="qr-steps">
+          {[
+            'Highest Speed acts first, down to the lowest. Equal speeds — the players decide between them.',
+            `Roll a d${m.movement.die} for movement, multiply, round down.`,
+            'One attack or one spell, before, during or after moving.',
+            'Melee reaches one tile in any direction, like a king. Two creatures never share a tile.',
+          ].map((step, i) => (
+            <li key={i}>
+              <span className="qr-step-n">{i + 1}</span>
+              <span className="qr-step-text">{step}</span>
+            </li>
+          ))}
+        </ol>,
       )}
 
       {section(

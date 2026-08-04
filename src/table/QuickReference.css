@@ -33,20 +33,35 @@
   transition: color 0.18s ease;
 }
 
-.qr-head::before {
-  content: '▸';
+/* Drawn rather than typed, so it matches the rest of the plate instead of
+   looking like a stray character. */
+.qr-caret {
   display: inline-block;
-  width: 15px;
-  color: var(--gold-deep);
-  transition: transform 0.18s ease;
+  width: 0;
+  height: 0;
+  margin-right: 10px;
+  vertical-align: 1px;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  border-left: 6px solid var(--gold-deep);
+  transition: transform 0.18s ease, border-left-color 0.18s ease;
+}
+
+.qr-head {
+  display: flex;
+  align-items: center;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 11px;
 }
 
 .qr-open .qr-head {
   color: var(--gold-bright);
 }
 
-.qr-open .qr-head::before {
+.qr-open .qr-caret {
   transform: rotate(90deg);
+  border-left-color: var(--gold-bright);
 }
 
 .qr-body {
@@ -71,21 +86,55 @@
   color: var(--parchment-light);
 }
 
-.qr-list {
+/* Numbered plates rather than browser bullets, so the panel reads as part of
+   the screen instead of a list dropped into it. */
+.qr-steps {
   margin: 0;
-  padding-left: 16px;
-  font-size: 13.5px;
-  line-height: 1.55;
-  color: rgba(239, 224, 192, 0.72);
+  padding: 0;
+  list-style: none;
+  counter-reset: step;
 }
 
-.qr-list li {
-  margin-bottom: 6px;
+.qr-steps li {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+  padding: 6px 0;
+  border-bottom: 1px dotted rgba(212, 175, 55, 0.12);
+}
+
+.qr-steps li:last-child {
+  border-bottom: none;
+}
+
+.qr-step-n {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  font-family: var(--font-heading);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--gold-bright);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.32);
+}
+
+.qr-step-text {
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: rgba(239, 224, 192, 0.78);
 }
 
 .qr-note {
-  margin: 8px 0 0;
+  margin: 10px 0 0;
+  padding-left: 10px;
+  border-left: 2px solid rgba(212, 175, 55, 0.25);
   font-size: 12.5px;
   font-style: italic;
-  color: rgba(239, 224, 192, 0.45);
+  line-height: 1.5;
+  color: rgba(239, 224, 192, 0.5);
 }
