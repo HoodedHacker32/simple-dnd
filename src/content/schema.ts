@@ -1,7 +1,7 @@
 import type { Ability, CharacterField, ClassEffect, ClassEffectKind, DndClass, FieldType, Race, StatBlock, StatKey } from '../types/character';
 import { EFFECT_KINDS, FIELD_TYPES, STAT_ORDER } from '../types/character';
 import type { Mechanics, RuleSection, Rounding, TierValues } from '../types/rules';
-import type { AttackSpeed, ProtectThrow, Spell, SpellTier } from '../types/spells';
+import type { AttackSpeed, ProtectThrow, Spell, SpellSummon, SpellTier } from '../types/spells';
 import { ATTACK_SPEEDS } from '../types/spells';
 
 export const PACK_FORMAT = 'chroniclers-table-content';
@@ -286,6 +286,18 @@ function parseSpell(value: unknown, i: number, classIds: Set<string>): Spell {
 
   const damage = sp.damage ? obj(sp.damage, `${path}.damage`) : undefined;
   const healing = sp.healing ? obj(sp.healing, `${path}.healing`) : undefined;
+  const summonRaw = sp.summons ? obj(sp.summons, `${path}.summons`) : undefined;
+  const summons: SpellSummon | undefined = summonRaw
+    ? {
+        name: str(summonRaw.name, `${path}.summons.name`),
+        hp: num(summonRaw.hp, `${path}.summons.hp`),
+        retaliation:
+          summonRaw.retaliation === undefined || summonRaw.retaliation === null
+            ? undefined
+            : num(summonRaw.retaliation, `${path}.summons.retaliation`),
+        note: summonRaw.note ? str(summonRaw.note, `${path}.summons.note`) : undefined,
+      }
+    : undefined;
 
   return {
     id: id(sp.id, `${path}.id`),
@@ -304,6 +316,7 @@ function parseSpell(value: unknown, i: number, classIds: Set<string>): Spell {
       : undefined,
     speed: speed as AttackSpeed | undefined,
     oncePerDay: Boolean(sp.oncePerDay),
+    summons,
     notes: arr(sp.notes ?? [], `${path}.notes`).map((n, j) => str(n, `${path}.notes[${j}]`)),
   };
 }

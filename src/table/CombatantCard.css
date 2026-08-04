@@ -394,3 +394,25 @@ button.attack-chip:hover {
   width: 92px;
   flex-shrink: 0;
 }
+
+.unnamed {
+  font-size: 14px;
+  font-weight: 400;
+  color: rgba(239, 224, 192, 0.4);
+}
+
+.edit-actions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.keep-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  font-size: 10px;
+  color: var(--gold);
+  border-color: rgba(212, 175, 55, 0.4);
+}

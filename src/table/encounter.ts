@@ -1,5 +1,5 @@
 import type { Character, StatBlock } from '../types/character';
-import type { AttackSpeed } from '../types/spells';
+import type { AttackSpeed, Spell } from '../types/spells';
 import { CONTENT } from '../content';
 import { RACE_BY_ID } from '../data/races';
 import { CLASS_BY_ID } from '../data/classes';
@@ -68,20 +68,51 @@ export function combatantFromCharacter(character: Character): Combatant {
   };
 }
 
-export function blankMonster(name = 'New creature'): Combatant {
+/**
+ * A genuinely empty creature. The rules give no monster stat blocks, so the app
+ * invents none — the DM fills in every number themselves.
+ */
+export function blankMonster(): Combatant {
   return {
     id: uid(),
-    name,
+    name: '',
     kind: 'monster',
-    hp: 60,
-    maxHp: 60,
+    hp: 1,
+    maxHp: 1,
     mana: 0,
     maxMana: 0,
-    speed: 1,
+    speed: 0,
     accent: '#8c2f24',
     subtitle: '',
-    attacks: [{ name: 'Strike', damage: 20, speed: 'SN' }],
+    attacks: [],
     notes: '',
+    downed: false,
+  };
+}
+
+/** The entities the rules themselves give health to, read out of the spell list. */
+export function ruleEntities(): { spellId: string; summon: NonNullable<Spell['summons']> }[] {
+  return CONTENT.spells
+    .filter((s): s is Spell & { summons: NonNullable<Spell['summons']> } => Boolean(s.summons))
+    .map((s) => ({ spellId: s.id, summon: s.summons }));
+}
+
+export function combatantFromSummon(summon: NonNullable<Spell['summons']>): Combatant {
+  return {
+    id: uid(),
+    name: summon.name,
+    kind: 'prop',
+    hp: summon.hp,
+    maxHp: summon.hp,
+    mana: 0,
+    maxMana: 0,
+    speed: 0,
+    accent: '#5c8a3a',
+    subtitle: 'From the rules',
+    attacks: summon.retaliation
+      ? [{ name: 'Retaliation', damage: summon.retaliation, speed: 'SN' }]
+      : [],
+    notes: summon.note ?? '',
     downed: false,
   };
 }
@@ -111,6 +142,40 @@ export function applyHealing(c: Combatant, amount: number): Combatant {
 export function spellsFor(combatant: Combatant) {
   if (!combatant.classId) return [];
   return CONTENT.spells.filter((s) => s.classIds.includes(combatant.classId!));
+}
+
+/* ---------------------------------------------------------------- bestiary */
+
+const BESTIARY_KEY = 'chroniclers-table.bestiary.v1';
+
+/** A creature the DM built and kept, ready to drop onto the board again. */
+export type BestiaryEntry = Omit<Combatant, 'id' | 'hp' | 'mana' | 'downed' | 'characterId' | 'classId'>;
+
+export function loadBestiary(): BestiaryEntry[] {
+  try {
+    const raw = localStorage.getItem(BESTIARY_KEY);
+    const parsed = raw ? JSON.parse(raw) : [];
+    return Array.isArray(parsed) ? (parsed as BestiaryEntry[]) : [];
+  } catch {
+    return [];
+  }
+}
+
+export function saveBestiary(entries: BestiaryEntry[]): void {
+  try {
+    localStorage.setItem(BESTIARY_KEY, JSON.stringify(entries));
+  } catch {
+    // Out of storage — the bestiary still holds for this session.
+  }
+}
+
+export function toBestiaryEntry(c: Combatant): BestiaryEntry {
+  const { id: _id, hp: _hp, mana: _mana, downed: _downed, characterId: _cid, classId: _clsId, ...rest } = c;
+  return rest;
+}
+
+export function fromBestiaryEntry(entry: BestiaryEntry): Combatant {
+  return { ...entry, id: uid(), hp: entry.maxHp, mana: entry.maxMana, downed: false };
 }
 
 /* ------------------------------------------------------------- persistence */

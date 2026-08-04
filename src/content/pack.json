@@ -1,7 +1,7 @@
 {
   "format": "chroniclers-table-content",
   "version": 1,
-  "label": "Combat rules, mana and the full spell list",
+  "label": "Mark the entities the rules give health to",
   "updatedAt": "2026-08-01T15:47:04.948Z",
   "races": [
     {
@@ -1042,7 +1042,13 @@
       ],
       "notes": [
         "The thorns break after 60 damage. That damage lands whenever the trapped enemy attacks, or when an ally attacks the thorns for them."
-      ]
+      ],
+      "summons": {
+        "name": "Thorns",
+        "hp": 60,
+        "retaliation": 15,
+        "note": "Breaks once 60 damage is done to it. Deals 15 at the end of the trapped turn."
+      }
     },
     {
       "id": "thorn-wall",
@@ -1114,7 +1120,13 @@
       ],
       "notes": [
         "The wall has 120 health and deals 15 damage when hit in melee."
-      ]
+      ],
+      "summons": {
+        "name": "Thorn Wall",
+        "hp": 120,
+        "retaliation": 15,
+        "note": "One tile. Deals 40 damage if summoned underneath an enemy."
+      }
     },
     {
       "id": "elemental-blade",

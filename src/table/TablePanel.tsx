@@ -10,9 +10,16 @@ import type { Roll } from './dice';
 import {
   blankMonster,
   combatantFromCharacter,
+  combatantFromSummon,
+  fromBestiaryEntry,
+  loadBestiary,
   loadEncounter,
+  ruleEntities,
+  saveBestiary,
   saveEncounter,
+  toBestiaryEntry,
   turnOrder,
+  type BestiaryEntry,
   type Combatant,
   type EncounterState,
 } from './encounter';
@@ -43,9 +50,11 @@ export function TablePanel({ onLog, rolls, onClearRolls, incomingCode }: TablePa
   const [code, setCode] = useState('');
   const [message, setMessage] = useState<{ text: string; bad?: boolean } | null>(null);
   const [sources, setSources] = useState<Map<string, Character>>(new Map());
+  const [bestiary, setBestiary] = useState<BestiaryEntry[]>(loadBestiary);
   const fileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => saveEncounter(state), [state]);
+  useEffect(() => saveBestiary(bestiary), [bestiary]);
 
   // A share link only counts once — the address is cleared so a refresh does not
   // add the same character to the party a second time.
@@ -106,6 +115,19 @@ export function TablePanel({ onLog, rolls, onClearRolls, incomingCode }: TablePa
 
   const patchCombatant = (id: string, next: Combatant) =>
     setState((s) => ({ ...s, combatants: s.combatants.map((c) => (c.id === id ? next : c)) }));
+
+  const addToBoard = (c: Combatant) => setState((s) => ({ ...s, combatants: [...s.combatants, c] }));
+
+  /** Keeps a creature the DM built so it can be dropped in again later. */
+  const keep = (c: Combatant) => {
+    const name = c.name.trim();
+    if (!name) {
+      setMessage({ text: 'Give it a name before saving it to the bestiary.', bad: true });
+      return;
+    }
+    setBestiary((list) => [...list.filter((e) => e.name !== name), toBestiaryEntry(c)]);
+    setMessage({ text: `${name} saved to the bestiary.` });
+  };
 
   const players = state.combatants.filter((c) => c.kind === 'player');
   const others = state.combatants.filter((c) => c.kind !== 'player');
@@ -269,6 +291,7 @@ export function TablePanel({ onLog, rolls, onClearRolls, incomingCode }: TablePa
                       setState((s) => ({ ...s, combatants: s.combatants.filter((x) => x.id !== c.id) }))
                     }
                     onLog={onLog}
+                    onKeep={() => keep(c)}
                   />
                 ))}
               </div>
@@ -278,28 +301,23 @@ export function TablePanel({ onLog, rolls, onClearRolls, incomingCode }: TablePa
       )}
 
       <div className="board-tools">
-        <button
-          className="btn"
-          onClick={() => setState((s) => ({ ...s, combatants: [...s.combatants, blankMonster()] }))}
-        >
+        <button className="btn" onClick={() => addToBoard(blankMonster())}>
           <Icon name="plus" size={14} />
-          Add a creature
+          Blank creature
         </button>
-        <button
-          className="btn"
-          onClick={() =>
-            setState((s) => ({
-              ...s,
-              combatants: [
-                ...s.combatants,
-                { ...blankMonster('Thorn Wall'), kind: 'prop', hp: 120, maxHp: 120, speed: 0, accent: '#5c8a3a' },
-              ],
-            }))
-          }
-        >
-          <Icon name="plus" size={14} />
-          Add a prop
-        </button>
+
+        {ruleEntities().map(({ spellId, summon }) => (
+          <button
+            key={spellId}
+            className="btn"
+            title={summon.note}
+            onClick={() => addToBoard(combatantFromSummon(summon))}
+          >
+            <Icon name="plus" size={14} />
+            {summon.name} ({summon.hp})
+          </button>
+        ))}
+
         {state.combatants.length > 0 && (
           <button className="btn" onClick={rest} title="Sleeping restores health and mana in full">
             <Icon name="star" size={14} />
@@ -310,7 +328,7 @@ export function TablePanel({ onLog, rolls, onClearRolls, incomingCode }: TablePa
           <button
             className="btn btn-ghost danger-btn"
             onClick={() => {
-              if (confirm('Clear everyone from the board? Saved character files are untouched.')) {
+              if (confirm('Clear everyone from the board? Saved characters and the bestiary are untouched.')) {
                 setState({ ...state, combatants: [], round: 1, activeIndex: 0 });
               }
             }}
@@ -319,6 +337,28 @@ export function TablePanel({ onLog, rolls, onClearRolls, incomingCode }: TablePa
           </button>
         )}
       </div>
+
+      {bestiary.length > 0 && (
+        <div className="bestiary">
+          <h4 className="bestiary-title">Your bestiary</h4>
+          <div className="bestiary-row">
+            {bestiary.map((entry) => (
+              <span className="bestiary-chip" key={entry.name} style={{ '--b-accent': entry.accent } as React.CSSProperties}>
+                <button className="bestiary-add" onClick={() => addToBoard(fromBestiaryEntry(entry))}>
+                  {entry.name} <em>{entry.maxHp} HP</em>
+                </button>
+                <button
+                  className="bestiary-drop"
+                  aria-label={`Forget ${entry.name}`}
+                  onClick={() => setBestiary((list) => list.filter((e) => e.name !== entry.name))}
+                >
+                  <Icon name="close" size={11} />
+                </button>
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
 
       <input
         ref={fileRef}

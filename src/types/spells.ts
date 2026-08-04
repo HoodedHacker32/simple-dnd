@@ -38,6 +38,19 @@ export interface SpellHealing {
   multiplier: number;
 }
 
+/**
+ * A spell that puts something with its own health onto the board — the Thorn
+ * Wall, or the thorns of a Thorn Hold. These are the only entities the rules
+ * give stats for, so they are the only ones the DM screen offers ready-made.
+ */
+export interface SpellSummon {
+  name: string;
+  hp: number;
+  /** Damage dealt back to anything striking it in melee. */
+  retaliation?: number;
+  note?: string;
+}
+
 export interface Spell {
   id: string;
   name: string;
@@ -54,6 +67,7 @@ export interface Spell {
   healing?: SpellHealing;
   speed?: AttackSpeed;
   oncePerDay?: boolean;
+  summons?: SpellSummon;
   notes: string[];
 }
 

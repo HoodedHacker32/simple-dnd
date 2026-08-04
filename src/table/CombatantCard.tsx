@@ -15,9 +15,19 @@ interface CombatantCardProps {
   onChange: (next: Combatant) => void;
   onRemove: () => void;
   onLog: (roll: Roll) => void;
+  /** Keeps this creature in the bestiary. Absent for player characters. */
+  onKeep?: () => void;
 }
 
-export function CombatantCard({ combatant: c, active, keyScores, onChange, onRemove, onLog }: CombatantCardProps) {
+export function CombatantCard({
+  combatant: c,
+  active,
+  keyScores,
+  onChange,
+  onRemove,
+  onLog,
+  onKeep,
+}: CombatantCardProps) {
   const [amount, setAmount] = useState(10);
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState(false);
@@ -91,7 +101,7 @@ export function CombatantCard({ combatant: c, active, keyScores, onChange, onRem
               onChange={(e) => onChange({ ...c, name: e.target.value })}
             />
           ) : (
-            <h4 className="combatant-name">{c.name}</h4>
+            <h4 className="combatant-name">{c.name || <em className="unnamed">Unnamed — press edit</em>}</h4>
           )}
           {c.subtitle && !editing && <span className="combatant-sub">{c.subtitle}</span>}
         </div>
@@ -269,13 +279,21 @@ export function CombatantCard({ combatant: c, active, keyScores, onChange, onRem
               </button>
             </div>
           ))}
-          <button
-            className="btn btn-ghost list-add"
-            onClick={() => onChange({ ...c, attacks: [...c.attacks, { name: 'Attack', damage: 15, speed: 'SN' }] })}
-          >
-            <Icon name="plus" size={12} />
-            Add attack
-          </button>
+          <div className="edit-actions">
+            <button
+              className="btn btn-ghost list-add"
+              onClick={() => onChange({ ...c, attacks: [...c.attacks, { name: 'Attack', damage: 15, speed: 'SN' }] })}
+            >
+              <Icon name="plus" size={12} />
+              Add attack
+            </button>
+            {onKeep && (
+              <button className="btn keep-btn" onClick={onKeep} title="Keep this creature for later encounters">
+                <Icon name="save" size={12} />
+                Save to bestiary
+              </button>
+            )}
+          </div>
         </div>
       )}
 
