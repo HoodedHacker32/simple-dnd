@@ -145,6 +145,19 @@ export function TablePanel({ onLog, rolls, onClearRolls, incomingCode }: TablePa
   const players = state.combatants.filter((c) => c.kind === 'player');
   const others = state.combatants.filter((c) => c.kind !== 'player');
 
+  /** Writes the party out as .dndparty. Shared by both views. */
+  const saveParty = () => {
+    const members = state.combatants
+      .filter((c) => c.kind === 'player')
+      .map((p) => (p.characterId ? sources.get(p.characterId) : undefined))
+      .filter((c): c is Character => Boolean(c));
+    if (members.length === 0) {
+      setMessage({ text: 'Only characters loaded this session can be saved back out.', bad: true });
+      return;
+    }
+    downloadParty(state.partyName, members);
+  };
+
   /** Sleeping restores everything, per the mana rules. */
   const rest = () =>
     setState((s) => ({
@@ -187,8 +200,12 @@ export function TablePanel({ onLog, rolls, onClearRolls, incomingCode }: TablePa
           onRemove={(id) => setState((s) => ({ ...s, combatants: s.combatants.filter((x) => x.id !== id) }))}
           onAddEnemy={() => addToBoard(blankMonster())}
           onLoad={() => fileRef.current?.click()}
+          onSave={saveParty}
           onRestAll={rest}
           onLog={onLog}
+          code={code}
+          onCodeChange={setCode}
+          onAddCode={importCode}
         />
 
         <input
@@ -229,20 +246,7 @@ export function TablePanel({ onLog, rolls, onClearRolls, incomingCode }: TablePa
             <Icon name="document" size={14} />
             Load
           </button>
-          <button
-            className="btn"
-            disabled={players.length === 0}
-            onClick={() => {
-              const members = players
-                .map((p) => (p.characterId ? sources.get(p.characterId) : undefined))
-                .filter((c): c is Character => Boolean(c));
-              if (members.length === 0) {
-                setMessage({ text: 'Only characters loaded this session can be saved back out.', bad: true });
-                return;
-              }
-              downloadParty(state.partyName, members);
-            }}
-          >
+          <button className="btn" disabled={players.length === 0} onClick={saveParty}>
             <Icon name="save" size={14} />
             Save
           </button>

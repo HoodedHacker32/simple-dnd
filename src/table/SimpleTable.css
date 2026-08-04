@@ -361,3 +361,44 @@
     padding-right: 4px;
   }
 }
+
+/* --- Party import and export -------------------------------------------- */
+.simple-group-actions {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+}
+
+.simple-group-actions .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.simple-code-row {
+  display: flex;
+  gap: 7px;
+  margin-bottom: 12px;
+}
+
+.simple-code-row .input {
+  flex: 1;
+  min-width: 0;
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-size: 13px;
+}
+
+.simple-code-row .btn {
+  flex: 0 0 auto;
+}
+
+@media (min-width: 900px) and (max-height: 860px) {
+  .simple-code-row {
+    margin-bottom: 9px;
+  }
+  .simple-code-row .input,
+  .simple-code-row .btn {
+    padding-top: 7px;
+    padding-bottom: 7px;
+  }
+}

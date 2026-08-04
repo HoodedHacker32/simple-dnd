@@ -20,8 +20,13 @@ interface SimpleTableProps {
   onRemove: (id: string) => void;
   onAddEnemy: () => void;
   onLoad: () => void;
+  onSave: () => void;
   onRestAll: () => void;
   onLog: (roll: Roll) => void;
+  /** The share code box, so a player's link or code works here too. */
+  code: string;
+  onCodeChange: (code: string) => void;
+  onAddCode: () => void;
 }
 
 function SimpleCard({
@@ -115,8 +120,12 @@ export function SimpleTable({
   onRemove,
   onAddEnemy,
   onLoad,
+  onSave,
   onRestAll,
   onLog,
+  code,
+  onCodeChange,
+  onAddCode,
 }: SimpleTableProps) {
   const party = combatants.filter((c) => c.kind === 'player');
   const enemies = combatants.filter((c) => c.kind !== 'player');
@@ -131,16 +140,36 @@ export function SimpleTable({
         <div className="simple-group">
           <div className="simple-group-head">
             <h3>Your party</h3>
-            <button className="btn" onClick={onLoad}>
-              <Icon name="document" size={14} />
-              Add a character
+            <div className="simple-group-actions">
+              <button className="btn" onClick={onLoad}>
+                <Icon name="document" size={14} />
+                Add a character
+              </button>
+              <button className="btn" disabled={party.length === 0} onClick={onSave}>
+                <Icon name="save" size={14} />
+                Save party
+              </button>
+            </div>
+          </div>
+
+          <div className="simple-code-row">
+            <input
+              className="input"
+              value={code}
+              placeholder="Or paste a share code a player sent you"
+              spellCheck={false}
+              onChange={(e) => onCodeChange(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && onAddCode()}
+            />
+            <button className="btn btn-primary" disabled={!code.trim()} onClick={onAddCode}>
+              Add
             </button>
           </div>
 
           {party.length === 0 ? (
             <p className="simple-empty">
-              No one here yet. Open a link a player sent you, or press <strong>Add a character</strong> to
-              load their file.
+              No one here yet. Open a link a player sent you, paste their code above, or press
+              <strong> Add a character</strong> to load their file.
             </p>
           ) : (
             <div className="simple-grid">
